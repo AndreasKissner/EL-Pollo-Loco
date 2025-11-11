@@ -1,14 +1,14 @@
 let canvas
 let ctx;
-let character = new Character();
-let chicken = new Chicken();
+
+let world = new World();
 
 function init() {
     canvas = document.getElementById("canvas");
     ctx = canvas.getContext("2d");
 
-   console.log("My character is", character);
-   console.log("My chicken is", chicken);
+    console.log("My character is", world.character);
+    console.log("My chicken is", world.enemies);
 
     //Notlösung
     /*     setTimeout(() => {
