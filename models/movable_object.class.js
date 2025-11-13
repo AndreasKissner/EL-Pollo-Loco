@@ -6,11 +6,8 @@ class MovableObject {
    width = 120;
    imageCache = {};
    currentImage = 0;
-   speed  = 0.15;
+   speed = 0.15;
    otherDirection = false;
-
-
-
 
    loadImage(path) {
       this.img = new Image('img/2_character_pepe/2_walk/W-21.png');
@@ -28,14 +25,13 @@ class MovableObject {
          img.src = path;
          this.imageCache[path] = img;
       });
-
    }
 
-   playAnimation(images){
+   playAnimation(images) {
       let i = this.currentImage % this.IMAGES_WALKING.length;// let i = 0 % 6
-                let path = images[i];
-                this.img = this.imageCache[path];
-                this.currentImage++;
+      let path = images[i];
+      this.img = this.imageCache[path];
+      this.currentImage++;
    }
 
    moveRight() {
@@ -47,12 +43,12 @@ class MovableObject {
          this.x -= this.speed;
       }, 1000 / 60);
    }
-  // Respawn nur, wenn nicht gestoppt 
-   checkEnemyRespawn() {
-    if (this.world && this.x < -50 && this.world.respawnStopped === false) {
-        this.x = 3750;
-    }
-}
 
+   // Respawn nur, wenn nicht gestoppt 
+   checkEnemyRespawn() {
+      if (this.world && this.x < -50 && this.world.respawnStopped === false) {
+         this.x = 3750;
+      }
+   }
 
 }

@@ -22,9 +22,15 @@ const level1 = new Level(
     [
         new Cloud()
     ],
-    /* [
-        new Platform()
-    ], */
+
+     [
+        new Platform(500, 280),
+        new Platform(800, 220),
+        new Platform(1300, 280),
+        new Platform(2400, 280),
+        new Platform(2700, 220),
+        new Platform(3100, 200)
+    ], 
 
     [
         new BackgroundObject('img/5_background/layers/air.png', -719),

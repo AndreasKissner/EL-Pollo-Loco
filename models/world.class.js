@@ -11,7 +11,6 @@ class World {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
-
         this.setWorld(); // Pepe bekommt seine World
         this.draw();
     }
@@ -36,15 +35,16 @@ class World {
         "Pepe Position: X = " + Math.round(this.character.x) +
         " | Y = " + Math.round(this.character.y);
 
-    // 🔵 NEU: Respawn dauerhaft stoppen, wenn Pepe > 3200
+    // NEU: Respawn dauerhaft stoppen, wenn Pepe > 3200
     if (this.character.x > 3200) {
         this.respawnStopped = true;
     }
 
-    this.addObjectsToMap(this.level.backgroundObjects);
-    this.addToMap(this.character)
-    this.addObjectsToMap(this.level.enemies);
+   this.addObjectsToMap(this.level.backgroundObjects);
+    this.addObjectsToMap(this.level.platforms);
     this.addObjectsToMap(this.level.clouds);
+    this.addObjectsToMap(this.level.enemies);
+       this.addToMap(this.character)
 
     this.ctx.translate(-this.camera_x, 0);
 
@@ -74,14 +74,5 @@ class World {
             this.ctx.restore();
         }
     }
-
-    checkRespawn(enemy) {
-        // Wenn Pepe mehr wie 3200 hat respan stopp
-        if (this.character.x > 3200) {
-            this.respawnStopped = true;
-        }
-    }
-
-
 
 }
