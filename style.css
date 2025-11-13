@@ -26,3 +26,15 @@ canvas {
     height: 100vh;
   }
 }
+
+
+#pos-char{
+        position: fixed;
+        top: 15px;
+        left: 300px;
+        color: rgb(247, 13, 5);
+        z-index: 999;
+        font-size: 24px;
+        font-family: monospace;
+        font-weight: 900;
+}

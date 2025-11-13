@@ -7,7 +7,7 @@ function init() {
     world = new World(canvas,keyboard);
 
     console.log("My character is", world.character);
-    console.log("My chicken is", world.enemies);
+    console.log("My chicken is", world.level.enemies);
     //Notlösung
     /*     setTimeout(() => {
               ctx.drawImage(character, 20, 20, 50, 150);
