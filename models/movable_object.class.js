@@ -47,6 +47,12 @@ class MovableObject {
          this.x -= this.speed;
       }, 1000 / 60);
    }
+  // Respawn nur, wenn nicht gestoppt 
+   checkEnemyRespawn() {
+    if (this.world && this.x < -50 && this.world.respawnStopped === false) {
+        this.x = 3750;
+    }
+}
 
 
 }
