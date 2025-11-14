@@ -72,6 +72,44 @@ const level1 = new Level(
         new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 719 * 6),
         new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 719 * 6),
         new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 719 * 6),
-    ]
+    ],
+
+     [
+        new Coin(430, 180),
+        new Coin(510, 130),
+        new Coin(600, 180),
+
+        new Coin(1230, 180),
+        new Coin(1370, 180),
+        new Coin(1310, 110),
+
+        new Coin(1800, 200),
+        new Coin(1900, 150),
+        new Coin(2000, 150),
+        new Coin(2100, 200),
+
+        new Coin(2635, 120),
+        new Coin(2710, 90),
+        new Coin(2770, 120),
+
+        new Coin(3200, 50),
+        new Coin(3300, 20),
+        new Coin(3400, 50),
+        new Coin(3500, 100),
+    ],
+
+         [ // ✅ Bottles-Array jetzt extra Parameter
+        new Bottle(800, 180),
+        new Bottle(900, 180),
+
+        new Bottle(1310, 240),
+        new Bottle(1410, 240),
+
+        new Bottle(1635, 100),
+        new Bottle(1735, 100),
+
+        new Bottle(2375, 230),
+        new Bottle(2525, 230)
+    ], 
 
 );

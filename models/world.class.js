@@ -23,35 +23,37 @@ class World {
         });
     }
 
-   draw() {
-    //Clear world
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    draw() {
+        //Clear world
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    //Verschiebt nach links
-    this.ctx.translate(this.camera_x, 0);
+        //Verschiebt nach links
+        this.ctx.translate(this.camera_x, 0);
 
-    //Position character
-    document.getElementById("pos-char").innerText =
-        "Pepe Position: X = " + Math.round(this.character.x) +
-        " | Y = " + Math.round(this.character.y);
+        //Position character
+        document.getElementById("pos-char").innerText =
+            "Pepe Position: X = " + Math.round(this.character.x) +
+            " | Y = " + Math.round(this.character.y);
 
-    // NEU: Respawn dauerhaft stoppen, wenn Pepe > 3200
-    if (this.character.x > 3200) {
-        this.respawnStopped = true;
+        // NEU: Respawn dauerhaft stoppen, wenn Pepe > 3200
+        if (this.character.x > 3200) {
+            this.respawnStopped = true;
+        }
+
+        this.addObjectsToMap(this.level.backgroundObjects);
+        this.addObjectsToMap(this.level.platforms);
+        this.addObjectsToMap(this.level.clouds);
+        this.addObjectsToMap(this.level.enemies);
+        this.addObjectsToMap(this.level.coins);
+           this.addObjectsToMap(this.level.bottles);
+        this.addToMap(this.character)
+
+        this.ctx.translate(-this.camera_x, 0);
+
+        requestAnimationFrame(() => {
+            this.draw();
+        });
     }
-
-   this.addObjectsToMap(this.level.backgroundObjects);
-    this.addObjectsToMap(this.level.platforms);
-    this.addObjectsToMap(this.level.clouds);
-    this.addObjectsToMap(this.level.enemies);
-       this.addToMap(this.character)
-
-    this.ctx.translate(-this.camera_x, 0);
-
-    requestAnimationFrame(() => {
-        this.draw();
-    });
-}
 
     addObjectsToMap(objects) {
         objects.forEach(o => {
