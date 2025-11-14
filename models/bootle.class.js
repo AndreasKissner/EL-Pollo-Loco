@@ -1,9 +1,9 @@
 class Bottle extends MovableObject {
     
     constructor(x, y) {
-        super();   // Eltern-Konstruktor korrekt aufrufen
+        super(); 
 
-        this.loadImage('img/6_salsa_bottle/salsa_bottle.png');  // Nur EIN Bild
+        this.loadImage('img/6_salsa_bottle/salsa_bottle.png');  // 
 
         this.x = x;
         this.y = y;
