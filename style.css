@@ -8,6 +8,28 @@ body {
   background-position: center;
 }
 
+button{
+  position: relative;
+  background: greenyellow;
+  top: 70px;
+  padding: 5px 20px;
+  border: none;
+  border-radius: 25px;
+}
+button:hover{
+  background-color: rgb(231, 134, 7);
+}
+
+#pos-char{
+        position: fixed;
+        top: 45px;
+        left: 300px;
+        color: rgb(247, 13, 5);
+        z-index: 999;
+        font-size: 24px;
+        font-family: monospace;
+        font-weight: 900;
+}
 
 canvas {
     background: black;
@@ -28,13 +50,3 @@ canvas {
 }
 
 
-#pos-char{
-        position: fixed;
-        top: 15px;
-        left: 300px;
-        color: rgb(247, 13, 5);
-        z-index: 999;
-        font-size: 24px;
-        font-family: monospace;
-        font-weight: 900;
-}

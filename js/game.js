@@ -2,6 +2,26 @@ let canvas
 let world;
 let keyboard = new Keyboard();
 
+// --- DEBUG ANZEIGE ---
+setInterval(() => {
+    let box = document.getElementById("debug");
+    if (box) {
+        box.innerHTML = `
+            RIGHT: <span style="color:${keyboard.RIGHT ? 'lime' : 'red'}">${keyboard.RIGHT}</span><br>
+            LEFT: <span style="color:${keyboard.LEFT ? 'lime' : 'red'}">${keyboard.LEFT}</span><br>
+            UP: <span style="color:${keyboard.UP ? 'lime' : 'red'}">${keyboard.UP}</span><br>
+            DOWN: <span style="color:${keyboard.DOWN ? 'lime' : 'red'}">${keyboard.DOWN}</span><br>
+            SPACE: <span style="color:${keyboard.SPACE ? 'lime' : 'red'}">${keyboard.SPACE}</span><br>
+            D: <span style="color:${keyboard.D ? 'lime' : 'red'}">${keyboard.D}</span><br>
+        `;
+    }
+}, 100);
+
+//Reload for Test
+function reload() {
+    location.reload();
+}
+
 function init() {
     canvas = document.getElementById("canvas");
     world = new World(canvas,keyboard);

@@ -9,14 +9,20 @@ class MovableObject {
    speed = 0.15;
    otherDirection = false;
    speedY = 0;
-   acceleration = 1; 
+   acceleration = 2.5; 
 
 
    applyGravity() {
       setInterval(() => {
+         if(this.isAboveGround() || this.speedY > 0 ){
          this.y -= this.speedY;
          this.speedY -= this.acceleration;
+         }
       }, 1000/25);
+   }
+
+   isAboveGround(){
+      return this.y < 229;
    }
 
    loadImage(path) {
@@ -44,7 +50,6 @@ class MovableObject {
       this.img = this.imageCache[path];
       this.currentImage++;
    }
-
 
    moveRight() {
       console.log("Moving right");

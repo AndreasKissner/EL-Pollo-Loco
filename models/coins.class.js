@@ -17,8 +17,8 @@ constructor(x, y) {
     this.loadImages(this.IMAGES_COIN);
     this.x = x;
     this.y = y;
-    this.width = 200;
-    this.height = 130;
+    this.width = 180;
+    this.height = 110;
     this.animate();
 }
 
