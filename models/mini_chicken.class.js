@@ -3,7 +3,7 @@ class MiniChicken extends MovableObject {
     y = 390;
     height = 30;
     width = 30;
-  
+
 
     IMAGES_WALKING = [
         'img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
@@ -20,15 +20,17 @@ class MiniChicken extends MovableObject {
     }
 
     animate() {
-        this.moveLeft();
+        setInterval(() => {
+            this.moveLeft();
+        }, 1000 / 60);
         setInterval(() => {
             this.playAnimation(this.IMAGES_WALKING);
-           
+
             this.checkEnemyRespawn();
 
         }, 200);
     }
-    
+
 }
 
 
