@@ -70,14 +70,14 @@ class Character extends MovableObject {
     animate() {
         setInterval(() => {
             if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-              this.moveRight();
-                 this.otherDirection = false;
-            } 
-            
+                this.moveRight();
+                this.otherDirection = false;
+            }
+
             // Character stop left for go
             if (this.world.keyboard.LEFT && this.x > 0) {
                 this.moveLeft();
-                    this.otherDirection = true;
+                this.otherDirection = true;
             }
             if (this.world.keyboard.SPACE && !this.isAboveGround()) {
                 this.jump();

@@ -26,10 +26,8 @@ class World {
     draw() {
         //Clear world
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
         //Verschiebt nach links
         this.ctx.translate(this.camera_x, 0);
-
         //Position character
         document.getElementById("pos-char").innerText =
             "Pepe Position: X = " + Math.round(this.character.x) +
@@ -65,16 +63,26 @@ class World {
     addToMap(mo) {
         //flip img
         if (mo.otherDirection) {
-            this.ctx.save();
+          this.flipImage(mo);
+        }
+        mo.draw(this.ctx);
+        mo.drawFrame(this.ctx);
+
+        if (mo.otherDirection) {
+         this.flipImageBack(mo);
+        }
+    }
+
+    flipImage(mo){
+          this.ctx.save();
             this.ctx.translate(mo.width, 0);
             this.ctx.scale(-1, 1);
             mo.x = mo.x * -1;
-        }
-        this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
-        if (mo.otherDirection) {
-            mo.x = mo.x * -1;
+    }
+
+    flipImageBack(mo){
+           mo.x = mo.x * -1;
             this.ctx.restore();
-        }
     }
 
 }
