@@ -6,10 +6,10 @@ class Character extends MovableObject {
     speed = 30;
     world;
     deadPlayed = false;
-deadIndex = 0;              // Welches Dead-Bild wir zeigen
-deadAnimationSpeed = 200;   // 200ms pro Frame
-lastDeadFrameTime = 0;
-deadFinished = false;
+    deadIndex = 0;              // Welches Dead-Bild wir zeigen
+    deadAnimationSpeed = 200;   // 200ms pro Frame
+    lastDeadFrameTime = 0;
+    deadFinished = false;
 
 
 
@@ -70,7 +70,7 @@ deadFinished = false;
         'img/2_character_pepe/5_dead/D-57.png'
     ];
 
-      IMAGES_HURT = [
+    IMAGES_HURT = [
         'img/2_character_pepe/4_hurt/H-41.png',
         'img/2_character_pepe/4_hurt/H-42.png',
         'img/2_character_pepe/4_hurt/H-43.png'
@@ -107,84 +107,84 @@ deadFinished = false;
             }
             if (this.world.keyboard.SPACE && !this.isAboveGround()) {
                 this.jump();
+                this.idleTimer = 0;   //Wichtig das er nich tmerh schkäft
             }
             // startpoint character
-            this.world.camera_x = - this.x + 50;
+            this.world.camera_x = - this.x + 100;
         }, 1000 / 60);
 
 
-       setInterval(() => {
+        setInterval(() => {
 
-    // --- DEAD ANIMATION --- (höchste Priorität)
-    if (this.isDead()) {
+            // --- DEAD ANIMATION --- (höchste Priorität)
+            if (this.isDead()) {
+                this.speed = 0;
+                const now = Date.now();
 
-        this.speed = 0;
+                if (!this.deadFinished) {
+                    if (now - this.lastDeadFrameTime >= this.deadAnimationSpeed) {
 
-        const now = Date.now();
+                        this.lastDeadFrameTime = now;
+                        this.img = this.imageCache[this.IMAGES_DEAD[this.deadIndex]];
+                        this.deadIndex++;
 
-        if (!this.deadFinished) {
-            if (now - this.lastDeadFrameTime >= this.deadAnimationSpeed) {
-
-                this.lastDeadFrameTime = now;
-                this.img = this.imageCache[this.IMAGES_DEAD[this.deadIndex]];
-                this.deadIndex++;
-
-                if (this.deadIndex >= this.IMAGES_DEAD.length) {
-                    this.deadFinished = true;
-                    this.deadIndex = this.IMAGES_DEAD.length - 1;
+                        if (this.deadIndex >= this.IMAGES_DEAD.length) {
+                            this.deadFinished = true;
+                            this.deadIndex = this.IMAGES_DEAD.length - 1;
+                        }
+                    }
                 }
+                return; // NIX anderes darf mehr laufen
             }
-        }
-        return; // NIX anderes darf mehr laufen
-    }
 
 
-    // --- HURT --- (zweithöchste Priorität!)
-    if (this.isHurt()) {
+            // --- HURT --- (zweithöchste Priorität!)
+            if (this.isHurt()) {
 
-        // Hurt-Animation abspielen
-        this.playAnimation(this.IMAGES_HURT);
+                // Hurt-Animation abspielen
+                this.playAnimation(this.IMAGES_HURT);
 
-        return; 
-        // GANZ WICHTIG:
-        // Return verhindert, dass Jump/Walk/Idle
-        // die Hurt-Animation überschreiben
-    }
-
-
-    // --- STATUS ERMITTELN ---
-    let isWalking = this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
-    let isJumping = this.isAboveGround();
+                return;
+                // GANZ WICHTIG:
+                // Return verhindert, dass Jump/Walk/Idle
+                // die Hurt-Animation überschreiben
+            }
 
 
-    // --- JUMPING (kommt nach Hurt)
-    if (isJumping) {
-        this.playAnimation(this.IMAGES_JUMPING);
-        return;
-    }
+            // --- STATUS ERMITTELN ---
+            let isWalking = this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
+            let isJumping = this.isAboveGround();
 
 
-    // --- WALKING (nach Jump)
-    if (isWalking) {
-        this.playAnimation(this.IMAGES_WALKING);
-        return;
-    }
+            // --- JUMPING (kommt nach Hurt)
+            if (isJumping) {
+                this.playAnimation(this.IMAGES_JUMPING);
+                this.idleTimer = 0;  
+                return;
+            }
+
+            // --- WALKING (nach Jump)
+            if (isWalking) {
+                this.playAnimation(this.IMAGES_WALKING);
+                this.idleTimer = 0;
+                return;
+            }
 
 
-    // --- IDLE / LONG-IDLE (letzte Priorität) ---
-    if (!isWalking && !isJumping) {
-        this.idleTimer++;
-    } else {
-        this.idleTimer = 0;
-    }
+            // --- IDLE / LONG-IDLE (letzte Priorität) ---
+            if (!isWalking && !isJumping) {
+                this.idleTimer++;
+            } else {
+                this.idleTimer = 0;
+            }
 
-    if (this.idleTimer > 50) {
-        this.playAnimation(this.IMAGES_LONG_IDLE);
-        return;
-    }
+            if (this.idleTimer > 50) {
+                this.playAnimation(this.IMAGES_LONG_IDLE);
+                return;
+            }
 
-    this.playAnimation(this.IMAGES_IDLE);
+            this.playAnimation(this.IMAGES_IDLE);
 
-}, 100);
+        }, 100);
     }
 }
