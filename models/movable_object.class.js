@@ -9,10 +9,11 @@ class MovableObject {
    speed = 0.15;
    otherDirection = false;
    speedY = 0;
+   speedX = 0;
    acceleration = 2.5;
    energy = 100;
-
    lastHit = 0;
+   hitBlocked = false;
 
    offset = {
       top: 0,
@@ -22,14 +23,26 @@ class MovableObject {
    };
 
 
-   applyGravity() {
-      setInterval(() => {
-         if (this.isAboveGround() || this.speedY > 0) {
+applyGravity() {
+    setInterval(() => {
+        if (this.isAboveGround() || this.speedY > 0) {
             this.y -= this.speedY;
             this.speedY -= this.acceleration;
-         }
-      }, 1000 / 25);
-   }
+        }
+
+        // Knockback / Bewegung seitlich
+        this.x += this.speedX;
+        this.speedX *= 0.92;   // smooth slowdown
+
+        // ⭐ WICHTIG: Schutz gegen aus dem Level fallen
+        if (this.x < 0) {
+            this.x = 0;
+            this.speedX = 0;
+        }
+
+    }, 1000 / 25);
+}
+
 
    isAboveGround() {
       return this.y < 220;
@@ -64,14 +77,19 @@ class MovableObject {
       );
    }
 
-   hit() {
-      this.energy -= 20;
-      if (this.energy < 0) {
-         this.energy = 0;
-      } else {
-         this.lastHit = new Date().getTime();
-      }
-   }
+hit() {
+    if (this.hitBlocked) return;
+
+    this.energy -= 20;
+
+    if (this.energy < 0) {
+        this.energy = 0;
+    } else {
+        this.lastHit = new Date().getTime();
+        this.hitOutTime();
+    }
+}
+
 
    isHurt() {
       let timepassed = new Date().getTime() - this.lastHit;
@@ -121,5 +139,34 @@ class MovableObject {
          this.x = 3750;
       }
    }
+
+
+hitOutTime() {
+
+    if (this.hitBlocked) return;
+
+    this.hitBlocked = true;
+
+    const jumpStrength = 12;
+    const knockback = 5;
+
+    // ✨ Knockback entgegengesetzt der Blickrichtung
+    if (this.otherDirection) {
+        // schaut nach links → Gegner kam von rechts → Knockback nach rechts
+        this.speedX = knockback;
+    } else {
+        // schaut nach rechts → Gegner kam von links → Knockback nach links
+        this.speedX = -knockback;
+    }
+
+    // kleiner Jump
+    this.speedY = jumpStrength;
+
+    setTimeout(() => {
+        this.hitBlocked = false;
+    }, 2000);
+}
+
+
 
 }

@@ -22,19 +22,28 @@ class World {
             enemy.world = this;
         });
     }
+checkCollisions() {
+    setInterval(() => {
 
-    checkCollisions() {
-        setInterval(() => {
-            this.level.enemies.forEach((enemy) => {
-                if (this.character.isColliding(enemy)) {
-           
-                 this.character.hit();
-                    console.log("Collision with Character, energy", this.character.energy);
-                }
+        this.level.enemies.forEach((enemy) => {
 
-            });
-        }, 200);
-    }
+            if (this.character.isColliding(enemy)) {
+
+                // === DEBUG (optional) ===
+                console.log("Collision with Character, energy:", this.character.energy);
+
+                // === HIT AUSLÖSEN (ohne Richtung) ===
+                this.character.hit();
+            }
+
+        });
+
+    }, 200);
+}
+
+
+
+
 
     draw() {
         //Clear world
