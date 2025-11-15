@@ -5,6 +5,13 @@ class Character extends MovableObject {
     y = 230
     speed = 30;
     world;
+    deadPlayed = false;
+deadIndex = 0;              // Welches Dead-Bild wir zeigen
+deadAnimationSpeed = 200;   // 200ms pro Frame
+lastDeadFrameTime = 0;
+deadFinished = false;
+
+
 
     IMAGES_WALKING = [
         'img/2_character_pepe/2_walk/W-21.png',
@@ -53,6 +60,23 @@ class Character extends MovableObject {
         'img/2_character_pepe/1_idle/long_idle/I-20.png',
     ];
 
+    IMAGES_DEAD = [
+        'img/2_character_pepe/5_dead/D-51.png',
+        'img/2_character_pepe/5_dead/D-52.png',
+        'img/2_character_pepe/5_dead/D-53.png',
+        'img/2_character_pepe/5_dead/D-54.png',
+        'img/2_character_pepe/5_dead/D-55.png',
+        'img/2_character_pepe/5_dead/D-56.png',
+        'img/2_character_pepe/5_dead/D-57.png'
+    ];
+
+      IMAGES_HURT = [
+        'img/2_character_pepe/4_hurt/H-41.png',
+        'img/2_character_pepe/4_hurt/H-42.png',
+        'img/2_character_pepe/4_hurt/H-43.png'
+    ];
+
+
 
     constructor() {
         super().loadImage('img/2_character_pepe/2_walk/W-21.png')
@@ -60,6 +84,8 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_JUMPING);
         this.loadImages(this.IMAGES_IDLE);
         this.loadImages(this.IMAGES_LONG_IDLE);
+        this.loadImages(this.IMAGES_DEAD);
+        this.loadImages(this.IMAGES_HURT);
 
         this.idleTimer = 0;
 
@@ -87,46 +113,78 @@ class Character extends MovableObject {
         }, 1000 / 60);
 
 
-        setInterval(() => {
+       setInterval(() => {
 
-            // 1. Spielerzustände abfragen hier nicht oben
+    // --- DEAD ANIMATION --- (höchste Priorität)
+    if (this.isDead()) {
 
-            let isWalking = this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
-            let isJumping = this.isAboveGround();
+        this.speed = 0;
 
+        const now = Date.now();
 
-            // 2. Idle-Timer hochzählen oder neustart
+        if (!this.deadFinished) {
+            if (now - this.lastDeadFrameTime >= this.deadAnimationSpeed) {
 
-            if (!isWalking && !isJumping) {
-                this.idleTimer++; // Spieler macht nichts  Idle Zeit steigt
-            } else {
-                this.idleTimer = 0; // Bewegung  Timer zurücksetzen
+                this.lastDeadFrameTime = now;
+                this.img = this.imageCache[this.IMAGES_DEAD[this.deadIndex]];
+                this.deadIndex++;
+
+                if (this.deadIndex >= this.IMAGES_DEAD.length) {
+                    this.deadFinished = true;
+                    this.deadIndex = this.IMAGES_DEAD.length - 1;
+                }
             }
-
-            // 3. Animationen nach reihenfolge
-
-            // SPRUNG (höchste Priorität)
-            if (isJumping) {
-                this.playAnimation(this.IMAGES_JUMPING);
-                return; // nichts anderes ausführen
-            }
-
-            // WALKING
-            if (isWalking) {
-                this.playAnimation(this.IMAGES_WALKING);
-                return;
-            }
-
-            // LONG IDLE 
-            if (this.idleTimer > 50) {
-                this.playAnimation(this.IMAGES_LONG_IDLE);
-                return;
-            }
-
-            // NORMAL IDLE
-            this.playAnimation(this.IMAGES_IDLE);
-
-        }, 100);
+        }
+        return; // NIX anderes darf mehr laufen
     }
 
+
+    // --- HURT --- (zweithöchste Priorität!)
+    if (this.isHurt()) {
+
+        // Hurt-Animation abspielen
+        this.playAnimation(this.IMAGES_HURT);
+
+        return; 
+        // GANZ WICHTIG:
+        // Return verhindert, dass Jump/Walk/Idle
+        // die Hurt-Animation überschreiben
+    }
+
+
+    // --- STATUS ERMITTELN ---
+    let isWalking = this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
+    let isJumping = this.isAboveGround();
+
+
+    // --- JUMPING (kommt nach Hurt)
+    if (isJumping) {
+        this.playAnimation(this.IMAGES_JUMPING);
+        return;
+    }
+
+
+    // --- WALKING (nach Jump)
+    if (isWalking) {
+        this.playAnimation(this.IMAGES_WALKING);
+        return;
+    }
+
+
+    // --- IDLE / LONG-IDLE (letzte Priorität) ---
+    if (!isWalking && !isJumping) {
+        this.idleTimer++;
+    } else {
+        this.idleTimer = 0;
+    }
+
+    if (this.idleTimer > 50) {
+        this.playAnimation(this.IMAGES_LONG_IDLE);
+        return;
+    }
+
+    this.playAnimation(this.IMAGES_IDLE);
+
+}, 100);
+    }
 }
