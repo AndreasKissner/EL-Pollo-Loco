@@ -1,11 +1,6 @@
-class MovableObject {
-   x = 40;
-   y = 250;
+class MovableObject extends DrawableObject {
+   
    img;
-   height = 150;
-   width = 120;
-   imageCache = {};
-   currentImage = 0;
    speed = 0.15;
    otherDirection = false;
    speedY = 0;
@@ -23,49 +18,31 @@ class MovableObject {
    };
 
 
-applyGravity() {
-    setInterval(() => {
-        if (this.isAboveGround() || this.speedY > 0) {
+   applyGravity() {
+      setInterval(() => {
+         if (this.isAboveGround() || this.speedY > 0) {
             this.y -= this.speedY;
             this.speedY -= this.acceleration;
-        }
+         }
 
-        // Knockback / Bewegung seitlich
-        this.x += this.speedX;
-        this.speedX *= 0.92;   // smooth slowdown
+         // Knockback / Bewegung seitlich
+         this.x += this.speedX;
+         this.speedX *= 0.92;   // smooth slowdown
 
-        // ⭐ WICHTIG: Schutz gegen aus dem Level fallen
-        if (this.x < 0) {
+         // ⭐ WICHTIG: Schutz gegen aus dem Level fallen
+         if (this.x < 0) {
             this.x = 0;
             this.speedX = 0;
-        }
+         }
 
-    }, 1000 / 25);
-}
+      }, 1000 / 25);
+   }
 
 
    isAboveGround() {
       return this.y < 220;
    }
 
-   loadImage(path) {
-      this.img = new Image('img/2_character_pepe/2_walk/W-21.png');
-      this.img.src = path;
-   }
-
-   draw(ctx) {
-      ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-   }
-
-   drawFrame(ctx) {
-      if (this instanceof Character || this instanceof Chicken || this instanceof MiniChicken || this instanceof Endboss) {
-         ctx.beginPath();
-         ctx.lineWidth = '5';
-         ctx.strokeStyle = 'blue';
-         ctx.rect(this.x, this.y, this.width, this.height);
-         ctx.stroke();
-      }
-   }
 
    //Is collading(chicken)
    isColliding(mo) {
@@ -77,19 +54,16 @@ applyGravity() {
       );
    }
 
-hit() {
-    if (this.hitBlocked) return;
-
-    this.energy -= 20;
-
-    if (this.energy < 0) {
-        this.energy = 0;
-    } else {
-        this.lastHit = new Date().getTime();
-        this.hitOutTime();
-    }
-}
-
+   hit() {
+      if (this.hitBlocked) return;
+      this.energy -= 20;
+      if (this.energy < 0) {
+         this.energy = 0;
+      } else {
+         this.lastHit = new Date().getTime();
+         this.hitOutTime();
+      }
+   }
 
    isHurt() {
       let timepassed = new Date().getTime() - this.lastHit;
@@ -101,17 +75,6 @@ hit() {
       return this.energy == 0;
    }
 
-   /**
-* 
-* @param {Arry} arr -['img/image1.png', 'img/image2.png' usw.]
-*/
-   loadImages(arr) {
-      arr.forEach(path => {
-         let img = new Image();
-         img.src = path;
-         this.imageCache[path] = img;
-      });
-   }
 
    playAnimation(images) {
       if (!images || images.length === 0) return;  // Schutz for fehler
@@ -140,32 +103,28 @@ hit() {
       }
    }
 
+   hitOutTime() {
+      if (this.hitBlocked) return;
+      this.hitBlocked = true;
+      const jumpStrength = 12;
+      const knockback = 5;
 
-hitOutTime() {
+      // ✨ Knockback entgegengesetzt der Blickrichtung
+      if (this.otherDirection) {
+         // schaut nach links → Gegner kam von rechts → Knockback nach rechts
+         this.speedX = knockback;
+      } else {
+         // schaut nach rechts → Gegner kam von links → Knockback nach links
+         this.speedX = -knockback;
+      }
 
-    if (this.hitBlocked) return;
+      // kleiner Jump
+      this.speedY = jumpStrength;
 
-    this.hitBlocked = true;
-
-    const jumpStrength = 12;
-    const knockback = 5;
-
-    // ✨ Knockback entgegengesetzt der Blickrichtung
-    if (this.otherDirection) {
-        // schaut nach links → Gegner kam von rechts → Knockback nach rechts
-        this.speedX = knockback;
-    } else {
-        // schaut nach rechts → Gegner kam von links → Knockback nach links
-        this.speedX = -knockback;
-    }
-
-    // kleiner Jump
-    this.speedY = jumpStrength;
-
-    setTimeout(() => {
-        this.hitBlocked = false;
-    }, 2000);
-}
+      setTimeout(() => {
+         this.hitBlocked = false;
+      }, 2000);
+   }
 
 
 

@@ -6,6 +6,8 @@ class World {
     keyboard;
     camera_x = 0;
     respawnStopped = false;    // 🔵 NEU: Respawn-Sperre
+    statusBar = new Statusbar();
+
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -22,11 +24,10 @@ class World {
             enemy.world = this;
         });
     }
+
 checkCollisions() {
     setInterval(() => {
-
         this.level.enemies.forEach((enemy) => {
-
             if (this.character.isColliding(enemy)) {
 
                 // === DEBUG (optional) ===
@@ -34,6 +35,8 @@ checkCollisions() {
 
                 // === HIT AUSLÖSEN (ohne Richtung) ===
                 this.character.hit();
+                // StatusBar wird in5 Schritte runtergmacht
+                this.statusBar.setPersentage(this.character.energy);
             }
 
         });
@@ -42,38 +45,37 @@ checkCollisions() {
 }
 
 
+draw() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.translate(this.camera_x, 0);
 
+    // === FIX: StatusBar soll immer sichtbar bleiben ===
+    this.statusBar.x = -this.camera_x + 20; 
+    this.statusBar.y = 20;
 
+    document.getElementById("pos-char").innerText =
+        "Pepe Position: X = " + Math.round(this.character.x) +
+        " | Y = " + Math.round(this.character.y);
 
-    draw() {
-        //Clear world
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        //Verschiebt nach links
-        this.ctx.translate(this.camera_x, 0);
-        //Position character
-        document.getElementById("pos-char").innerText =
-            "Pepe Position: X = " + Math.round(this.character.x) +
-            " | Y = " + Math.round(this.character.y);
-
-        // NEU: Respawn dauerhaft stoppen, wenn Pepe > 3200
-        if (this.character.x > 3200) {
-            this.respawnStopped = true;
-        }
-
-        this.addObjectsToMap(this.level.backgroundObjects);
-        this.addObjectsToMap(this.level.platforms);
-        this.addObjectsToMap(this.level.clouds);
-        this.addObjectsToMap(this.level.coins);
-        this.addObjectsToMap(this.level.bottles);
-        this.addObjectsToMap(this.level.enemies);
-        this.addToMap(this.character)
-
-        this.ctx.translate(-this.camera_x, 0);
-
-        requestAnimationFrame(() => {
-            this.draw();
-        });
+    if (this.character.x > 3200) {
+        this.respawnStopped = true;
     }
+
+    this.addObjectsToMap(this.level.backgroundObjects);
+    this.addObjectsToMap(this.level.platforms);
+    this.addObjectsToMap(this.level.clouds);
+    this.addObjectsToMap(this.level.coins);
+    this.addObjectsToMap(this.level.bottles);
+    this.addObjectsToMap(this.level.enemies);
+    this.addToMap(this.character);
+
+    this.addToMap(this.statusBar);
+
+    this.ctx.translate(-this.camera_x, 0);
+
+    requestAnimationFrame(() => this.draw());
+}
+ 
 
     addObjectsToMap(objects) {
         objects.forEach(o => {

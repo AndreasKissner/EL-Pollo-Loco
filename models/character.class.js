@@ -95,15 +95,12 @@ class Character extends MovableObject {
 
     animate() {
         setInterval(() => {
-        if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-
+            if (!this.hitBlocked && this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
                 this.moveRight();
                 this.otherDirection = false;
             }
-
             // Character stop left for go
-      if (this.world.keyboard.LEFT && this.x > 0) {
-
+            if (this.world.keyboard.LEFT && this.x > 0) {
                 this.moveLeft();
                 this.otherDirection = true;
             }
@@ -145,7 +142,7 @@ class Character extends MovableObject {
 
                 // Hurt-Animation abspielen
                 this.playAnimation(this.IMAGES_HURT);
-                this.idleTimer = 0;  
+                this.idleTimer = 0;
 
                 return;
                 // GANZ WICHTIG:
@@ -153,7 +150,7 @@ class Character extends MovableObject {
                 // die Hurt-Animation überschreiben
             }
 
-            
+
 
 
             // --- STATUS ERMITTELN ---
@@ -164,7 +161,7 @@ class Character extends MovableObject {
             // --- JUMPING (kommt nach Hurt)
             if (isJumping) {
                 this.playAnimation(this.IMAGES_JUMPING);
-                this.idleTimer = 0;  
+                this.idleTimer = 0;
                 return;
             }
 
