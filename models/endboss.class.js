@@ -4,14 +4,18 @@ class Endboss extends MovableObject {
     height = 400;
     y = 50;
 
-    // --- Best Practice Variablen ---
-    speed = 2.5;                      // Konstante Laufgeschwindigkeit
+
+    speed = 2.25;                      // Konstante Laufgeschwindigkeit
     direction = "left";               // "left" oder "right"
     minX = 100;                      // Linker Patrouillenpunkt
     maxX = 4450;                      // Rechter Patrouillenpunkt
     alertZone = 3940;                 // Wann Boss dich sieht
     isAlert = false;                  // Hat der Boss den Spieler entdeckt?
-    
+    lastFrameTime = 0;
+    frameInterval = 100; // ms zwischen Bildern → 150 = schön langsam
+
+
+
 
     // --- Animationen ---
     IMAGES_WALK = [
@@ -50,6 +54,7 @@ class Endboss extends MovableObject {
 
         this.x = this.maxX;   // Start rechts
         this.animate();
+
     }
 
 
@@ -62,6 +67,9 @@ class Endboss extends MovableObject {
 
         }, 1000 / 30); // Best Practice: 30 FPS
     }
+
+
+
 
 
     // --- 1. Spieler erkennen ---
@@ -81,26 +89,42 @@ class Endboss extends MovableObject {
 
     // --- 2. Animationen sauber steuern ---
     updateAnimation() {
-
-        if (this.isAlert && Date.now() - this.alertStartTime < 2000) {
-            this.playAnimation(this.IMAGES_ALERT);
-            return; // Während Alert NICHT laufen
+        const now = Date.now();
+        // Warten bis ein neues Frame erlaubt ist
+        if (now - this.lastFrameTime < this.frameInterval) {
+            return; // zu früh → kein Bildwechsel
+        }
+        // Jetzt darf ein Bild kommen
+        this.lastFrameTime = now;
+        // 1. Boss steht still
+        if (!this.isAlert) {
+            this.img = this.imageCache[this.IMAGES_WALK[0]];
+            return;
         }
 
-        // Danach normales Walking
+        const alertDuration = 2000;
+        // 2. Während Alert
+        if (Date.now() - this.alertStartTime < alertDuration) {
+            this.playAnimation(this.IMAGES_ALERT);
+            return;
+        }
+        // 3. Walking nach Alert
         this.playAnimation(this.IMAGES_WALK);
     }
 
 
+
     // --- 3. Bewegung & Drehen (Best Practice) ---
     updateMovement() {
-
         if (!this.isAlert) {
-            return; // Boss bleibt stehen bis Spieler nah genug ist
+            return; // Boss steht still bis Spieler in Zone kommt
         }
-
-        // WICHTIG: Gegner drehen sich nur optisch,
-        // NICHT ihre echte X-Koordinate manipulieren!
+        // Boss bleibt stehen während Alert-Animation
+        const alertDuration = 2000;
+        if (Date.now() - this.alertStartTime < alertDuration) {
+            return; // WICHTIG! Keine Bewegung während ALERT
+        }
+        // ---- AB HIER DARF ER SICH BEWEGEN ----
         if (this.direction === "left") {
             this.moveLeft();
             this.otherDirection = false;

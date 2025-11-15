@@ -10,6 +10,7 @@ class MovableObject {
    otherDirection = false;
    speedY = 0;
    acceleration = 2.5;
+   
      offset = {
         top: 0,
         left: 0,
