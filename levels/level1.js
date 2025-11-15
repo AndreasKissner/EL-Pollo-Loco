@@ -23,14 +23,14 @@ const level1 = new Level(
         new Cloud()
     ],
 
-     [
+    [
         new Platform(500, 280),
         new Platform(800, 220),
         new Platform(1300, 280),
         new Platform(2400, 280),
         new Platform(2700, 220),
         new Platform(3100, 200)
-    ], 
+    ],
 
     [
         new BackgroundObject('img/5_background/layers/air.png', -719),
@@ -74,7 +74,7 @@ const level1 = new Level(
         new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 719 * 6),
     ],
 
-     [
+    [
         new Coin(430, 180),
         new Coin(510, 130),
         new Coin(600, 180),
@@ -98,7 +98,7 @@ const level1 = new Level(
         new Coin(3500, 100),
     ],
 
-         [ // ✅ Bottles-Array jetzt extra Parameter
+    [
         new Bottle(800, 180),
         new Bottle(900, 180),
 
@@ -110,6 +110,6 @@ const level1 = new Level(
 
         new Bottle(2405, 230),
         new Bottle(2505, 230)
-    ], 
+    ],
 
 );

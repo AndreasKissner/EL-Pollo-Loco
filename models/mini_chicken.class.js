@@ -21,7 +21,7 @@ class MiniChicken extends MovableObject {
         super().loadImage(this.IMAGES_WALKING[0]);
         this.loadImages(this.IMAGES_WALKING);
         this.x = 200 + Math.random() * 4200;
-        this.speed = 4.35;
+        this.speed = 0.35;
         this.animate();
     }
 
