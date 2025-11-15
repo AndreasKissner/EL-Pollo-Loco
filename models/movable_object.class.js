@@ -22,7 +22,7 @@ class MovableObject {
    }
 
    isAboveGround() {
-      return this.y < 229;
+      return this.y < 220;
    }
 
    loadImage(path) {
@@ -43,6 +43,14 @@ class MovableObject {
             ctx.stroke();
         }
     }
+
+    isColliding(mo) {
+    return this.x + this.width > mo.x &&
+           this.y + this.height > mo.y &&
+           this.x < mo.x + mo.width &&
+           this.y < mo.y + mo.height;
+}
+
 
    /**
 * 
