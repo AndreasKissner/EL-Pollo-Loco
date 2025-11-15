@@ -7,6 +7,8 @@ class World {
     camera_x = 0;
     respawnStopped = false;    // 🔵 NEU: Respawn-Sperre
     statusBar = new Statusbar();
+    statusBarCoins = new StatusbarCoins();
+    statusBarBottle = new StatusbarBottle();
 
 
     constructor(canvas, keyboard) {
@@ -35,7 +37,7 @@ checkCollisions() {
 
                 // === HIT AUSLÖSEN (ohne Richtung) ===
                 this.character.hit();
-                // StatusBar wird in5 Schritte runtergmacht
+                // StatusBar wird in 5 Schritte runtergmacht
                 this.statusBar.setPersentage(this.character.energy);
             }
 
@@ -47,19 +49,10 @@ checkCollisions() {
 
 draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    // ===== Welt mit Kamera verschieben =====
+    this.ctx.save();
     this.ctx.translate(this.camera_x, 0);
-
-    // === FIX: StatusBar soll immer sichtbar bleiben ===
-    this.statusBar.x = -this.camera_x + 20; 
-    this.statusBar.y = 20;
-
-    document.getElementById("pos-char").innerText =
-        "Pepe Position: X = " + Math.round(this.character.x) +
-        " | Y = " + Math.round(this.character.y);
-
-    if (this.character.x > 3200) {
-        this.respawnStopped = true;
-    }
 
     this.addObjectsToMap(this.level.backgroundObjects);
     this.addObjectsToMap(this.level.platforms);
@@ -69,12 +62,19 @@ draw() {
     this.addObjectsToMap(this.level.enemies);
     this.addToMap(this.character);
 
-    this.addToMap(this.statusBar);
+    this.ctx.restore(); // Kamera AUS — HUD bleibt fix!
 
-    this.ctx.translate(-this.camera_x, 0);
+    // ===== StatusBars OHNE Kamera =====
+
+ 
+
+    this.addToMap(this.statusBar);
+    this.addToMap(this.statusBarCoins);
+    this.addToMap(this.statusBarBottle);
 
     requestAnimationFrame(() => this.draw());
 }
+
  
 
     addObjectsToMap(objects) {
