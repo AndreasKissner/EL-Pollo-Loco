@@ -1,11 +1,17 @@
+ @font-face{
+  font-family: mexican;
+  src : url("fonts/mexican.ttf");
+}
+
 body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-image: url('img/background.webp');
+  background-image: url('img/background.png');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
+  font-family: 'mexican', Arial, Helvetica, sans-serif;
 }
 
 button{
@@ -32,7 +38,6 @@ button:hover{
 }
 
 canvas {
-    background: black;
     display: block;
 }
 /* Smartphones ----------- */

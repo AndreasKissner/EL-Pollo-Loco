@@ -1,5 +1,5 @@
 class MovableObject extends DrawableObject {
-   
+
    img;
    speed = 0.15;
    otherDirection = false;
@@ -40,7 +40,11 @@ class MovableObject extends DrawableObject {
 
 
    isAboveGround() {
-      return this.y < 220;
+      if (this instanceof ThrowableObject) { // Throwable object should alway fall
+         return true
+      } else {
+         return this.y < 220;
+      }
    }
 
 
