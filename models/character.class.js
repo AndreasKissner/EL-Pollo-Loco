@@ -12,6 +12,8 @@ class Character extends MovableObject {
     deadFinished = false;
     coins = 0;
     bottles = 0;
+    maxBottleLimit = 5;
+
 
 
 
