@@ -10,6 +10,9 @@ class Character extends MovableObject {
     deadAnimationSpeed = 200;   // 200ms pro Frame
     lastDeadFrameTime = 0;
     deadFinished = false;
+    coins = 0;
+    bottles = 0;
+
 
 
 

@@ -42,22 +42,64 @@ class World {
         }
     }
 
-    checkcollision() {
-        //check  Collision
-        this.level.enemies.forEach((enemy) => {
-            if (this.character.isColliding(enemy)) {
+checkcollision() {
+    // === Enemies ===
+    this.level.enemies.forEach((enemy) => {
+        if (this.character.isColliding(enemy)) {
+            console.log("Collision with Character, energy:", this.character.energy);
+          /*   this.character.hit(); */
+              this.statusBar.setPercentage(this.character.energy);
+        }
+    });
 
-                // === DEBUG (optional) ===
-                console.log("Collision with Character, energy:", this.character.energy);
+    // === Coins ===
+    this.level.coins.forEach((coin, index) => {
+        if (this.character.isColliding(coin)) {
 
-                // === HIT AUSLÖSEN (ohne Richtung) ===
-                this.character.hit();
-                // StatusBar wird in 5 Schritte runtergmacht
-                this.statusBar.setPersentage(this.character.energy);
+            this.level.coins.splice(index, 1);
+
+            this.character.coins++;
+
+            this.statusBarCoins.percentage++;
+            this.statusBarCoins.setPercentage(this.statusBarCoins.percentage);
+
+            if (this.statusBarCoins.percentage >= 5) {
+                this.statusBarCoins.percentage = 0;
+                this.statusBarCoins.setPercentage(0);
+
+                if (this.character.bottles < 10) {
+                    this.character.bottles++;
+                    console.log("BONUS! Extra Bottle bekommen. Flaschen:", this.character.bottles);
+                } else {
+                    console.log("Maximale Anzahl Bottles erreicht (10). Kein Bonus mehr.");
+                }
+
+                this.statusBarBottle.setPercentage(this.character.bottles);
+            }
+        }
+    });
+
+    // === Bottles einsammeln ===
+    this.level.bottles.forEach((bottle, index) => {
+        if (this.character.isColliding(bottle)) {
+
+            // Bottle von der Map entfernen
+            this.level.bottles.splice(index, 1);
+
+            // Nur bis max. 10 erhöhen
+            if (this.character.bottles < 10) {
+                this.character.bottles++;
+                console.log("Bottle eingesammelt. Flaschen:", this.character.bottles);
+            } else {
+                console.log("Maximale Anzahl Bottles erreicht (10). Weitere werden ignoriert.");
             }
 
-        });
-    }
+            // HUD aktualisieren
+            this.statusBarBottle.setPercentage(this.character.bottles);
+        }
+    });
+}
+
 
 
     draw() {
