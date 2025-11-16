@@ -18,7 +18,7 @@ class StatusbarCoins extends Statusbar {
         this.loadImages(this.IMAGES);
 
         this.x = 10;
-        this.y = 70;
+        this.y = 60;
         this.width = 170;
         this.height = 60;
 
