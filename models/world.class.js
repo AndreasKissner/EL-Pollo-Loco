@@ -9,6 +9,7 @@ class World {
     statusBar = new Statusbar();
     statusBarCoins = new StatusbarCoins();
     statusBarBottle = new StatusbarBottle();
+    throwableObjects = [];
 
 
     constructor(canvas, keyboard) {
@@ -17,7 +18,7 @@ class World {
         this.keyboard = keyboard;
         this.setWorld(); // Pepe bekommt seine World
         this.draw();
-        this.checkCollisions();
+        this.run();
     }
 
     setWorld() {
@@ -27,8 +28,22 @@ class World {
         });
     }
 
-checkCollisions() {
-    setInterval(() => {
+    run() {
+        setInterval(() => {
+            this.checkcollision();
+            this.checkThrowObjects();
+
+        }, 200);
+    }
+    checkThrowObjects() {
+        if (this.keyboard.D) {
+            let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 95);
+            this.throwableObjects.push(bottle);
+        }
+    }
+
+    checkcollision() {
+        //check  Collision
         this.level.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy)) {
 
@@ -42,40 +57,39 @@ checkCollisions() {
             }
 
         });
-
-    }, 200);
-}
+    }
 
 
-draw() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    draw() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // ===== Welt mit Kamera verschieben =====
-    this.ctx.save();
-    this.ctx.translate(this.camera_x, 0);
+        // ===== Welt mit Kamera verschieben =====
+        this.ctx.save();
+        this.ctx.translate(this.camera_x, 0);
 
-    this.addObjectsToMap(this.level.backgroundObjects);
-    this.addObjectsToMap(this.level.platforms);
-    this.addObjectsToMap(this.level.clouds);
-    this.addObjectsToMap(this.level.coins);
-    this.addObjectsToMap(this.level.bottles);
-    this.addObjectsToMap(this.level.enemies);
-    this.addToMap(this.character);
+        this.addObjectsToMap(this.level.backgroundObjects);
+        this.addObjectsToMap(this.level.platforms);
+        this.addObjectsToMap(this.level.clouds);
+        this.addObjectsToMap(this.level.coins);
+        this.addObjectsToMap(this.level.bottles);
+        this.addObjectsToMap(this.level.enemies);
+        this.addObjectsToMap(this.throwableObjects);
+        this.addToMap(this.character);
 
-    this.ctx.restore(); // Kamera AUS — HUD bleibt fix!
+        this.ctx.restore(); // Kamera AUS — HUD bleibt fix!
 
-    // ===== StatusBars OHNE Kamera =====
+        // ===== StatusBars OHNE Kamera =====
 
- 
 
-    this.addToMap(this.statusBar);
-    this.addToMap(this.statusBarCoins);
-    this.addToMap(this.statusBarBottle);
 
-    requestAnimationFrame(() => this.draw());
-}
+        this.addToMap(this.statusBar);
+        this.addToMap(this.statusBarCoins);
+        this.addToMap(this.statusBarBottle);
 
- 
+        requestAnimationFrame(() => this.draw());
+    }
+
+
 
     addObjectsToMap(objects) {
         objects.forEach(o => {
