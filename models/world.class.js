@@ -42,77 +42,77 @@ class World {
         }
     }
 
-checkcollision() {
-    // === Enemies ===
-    this.level.enemies.forEach((enemy) => {
-        if (this.character.isColliding(enemy)) {
-            console.log("Collision with Character, energy:", this.character.energy);
-            // this.character.hit();
-            this.statusBar.setPercentage(this.character.energy);
-        }
-    });
+    checkcollision() {
+        // === Enemies ===
+        this.level.enemies.forEach((enemy) => {
+            if (this.character.isColliding(enemy)) {
+                console.log("Collision with Character, energy:", this.character.energy);
+               /*  this.character.hit(); */
+                this.statusBar.setPercentage(this.character.energy);
+            }
+        });
 
-    
-    // === COINS ===
-    this.level.coins.forEach((coin, index) => {
-        if (this.character.isColliding(coin)) {
 
-            // Coin entfernen
-            this.level.coins.splice(index, 1);
+        // === COINS ===
+        this.level.coins.forEach((coin, index) => {
+            if (this.character.isColliding(coin)) {
 
-            // Coin Counter
-            this.character.coins++;
-              console.log("Coins eingesammelt:", this.character.coins);
+                // Coin entfernen
+                this.level.coins.splice(index, 1);
 
-            // Coin-Bar +1
-            this.statusBarCoins.percentage++;
-            this.statusBarCoins.setPercentage(this.statusBarCoins.percentage);
+                // Coin Counter
+                this.character.coins++;
+                console.log("Coins eingesammelt:", this.character.coins);
 
-            // --- BONUS-FLASCHE BEI 5 COINS ---
-            if (this.statusBarCoins.percentage >= 5) {
+                // Coin-Bar +1
+                this.statusBarCoins.percentage++;
+                this.statusBarCoins.setPercentage(this.statusBarCoins.percentage);
 
-                // Coin-Bar wieder auf 0
-                this.statusBarCoins.percentage = 0;
-                this.statusBarCoins.setPercentage(0);
+                // --- BONUS-FLASCHE BEI 5 COINS ---
+                if (this.statusBarCoins.percentage >= 5) {
 
-                // Nur wenn Bottles < 10
-                if (this.character.bottles < 10) {
-                    this.character.bottles++;
-                    console.log("BONUS Bottle! Jetzt:", this.character.bottles);
-                } else {
-                    console.log("BONUS gestoppt: Max 10 Bottles erreicht.");
+                    // Coin-Bar wieder auf 0
+                    this.statusBarCoins.percentage = 0;
+                    this.statusBarCoins.setPercentage(0);
+
+                    // Nur wenn Bottles < 10
+                    if (this.character.bottles < 10) {
+                        this.character.bottles++;
+                        console.log("BONUS Bottle! Jetzt:", this.character.bottles);
+                    } else {
+                        console.log("BONUS gestoppt: Max 10 Bottles erreicht.");
+                    }
+
+                    // HUD aktualisieren
+                    this.statusBarBottle.setPercentage(this.character.bottles);
                 }
-
-                // HUD aktualisieren
-                this.statusBarBottle.setPercentage(this.character.bottles);
             }
-        }
-    });
+        });
 
 
-    // === BOTTLES VOM BODEN ===
-    this.level.bottles.forEach((bottle, index) => {
-        if (this.character.isColliding(bottle)) {
+        // === BOTTLES VOM BODEN ===
+        this.level.bottles.forEach((bottle, index) => {
+            if (this.character.isColliding(bottle)) {
 
-            // Wenn noch Platz → Bottle einsammeln
-            if (this.character.bottles < 10) {
+                // Wenn noch Platz → Bottle einsammeln
+                if (this.character.bottles < 10) {
 
-                this.character.bottles++;
-                console.log("Bottle eingesammelt:", this.character.bottles);
+                    this.character.bottles++;
+                    console.log("Bottle eingesammelt:", this.character.bottles);
 
-                // Bottle verschwindet aus der Welt
-                this.level.bottles.splice(index, 1);
+                    // Bottle verschwindet aus der Welt
+                    this.level.bottles.splice(index, 1);
 
-                // HUD aktualisieren
-                this.statusBarBottle.setPercentage(this.character.bottles);
+                    // HUD aktualisieren
+                    this.statusBarBottle.setPercentage(this.character.bottles);
 
-            } else {
-                // Pepe hat 10 → Bottle bleibt liegen!
-                console.log("Bottle-Limit (10) erreicht – Bottle bleibt liegen.");
+                } else {
+                    // Pepe hat 10 → Bottle bleibt liegen!
+                    console.log("Bottle-Limit (10) erreicht – Bottle bleibt liegen.");
+                }
             }
-        }
-    });
-}
+        });
+    }
 
 
 
@@ -142,6 +142,9 @@ checkcollision() {
         this.addToMap(this.statusBar);
         this.addToMap(this.statusBarCoins);
         this.addToMap(this.statusBarBottle);
+
+        // 🟢 HUD Counter aktualisieren (Übergabe von this)
+       this.drawHudCounters();
 
         requestAnimationFrame(() => this.draw());
     }
@@ -179,5 +182,23 @@ checkcollision() {
         mo.x = mo.x * -1;
         this.ctx.restore();
     }
+
+drawHudCounters() {
+    // Schrift einstellen
+    this.ctx.font = "14px mexican";
+    this.ctx.fillStyle = "red";
+
+
+    // === HEALTH (über der Health-Bar) ===
+    this.ctx.fillText(this.character.energy, 190, 59);
+
+    // === COINS ===
+    this.ctx.fillText(this.character.coins, 190, 109);
+
+    // === BOTTLES ===
+    this.ctx.fillText(this.character.bottles, 190, 160);
+}
+
+ 
 
 }
