@@ -35,19 +35,54 @@ class World {
 
         }, 200);
     }
+
     checkThrowObjects() {
-        if (this.keyboard.D) {
-            let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 95);
+        if (this.keyboard.D && this.character.bottles > 0) {
+
+            // Richtung prüfen
+            let direction;
+            if (this.character.otherDirection) {
+                direction = -1;     // er schaut nach links
+            } else {
+                direction = 1;      // er schaut nach rechts
+            }
+
+
+            // Bottle erstellen (links oder rechts)
+            // Startposition für rechts und links separat Bottle 
+            let offsetX;
+            if (direction === 1) {
+                offsetX = 100;   // nach rechts
+            } else {
+                offsetX = -30;   // nach links
+            }
+
+
+            let bottle = new ThrowableObject(
+                this.character.x + offsetX,
+                this.character.y + 95,
+                direction
+            );
+
+
             this.throwableObjects.push(bottle);
+
+            // Bottle -1
+            this.character.bottles--;
+            this.statusBarBottle.setPercentage(this.character.bottles);
+
+            console.log("Bottle geworfen! Richtung:", direction);
         }
     }
+
+
 
     checkcollision() {
         // === Enemies ===
         this.level.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy)) {
                 console.log("Collision with Character, energy:", this.character.energy);
-               /*  this.character.hit(); */
+                /*  this.character.hit(); */
                 this.statusBar.setPercentage(this.character.energy);
             }
         });
@@ -144,7 +179,7 @@ class World {
         this.addToMap(this.statusBarBottle);
 
         // 🟢 HUD Counter aktualisieren (Übergabe von this)
-       this.drawHudCounters();
+        this.drawHudCounters();
 
         requestAnimationFrame(() => this.draw());
     }
@@ -183,22 +218,22 @@ class World {
         this.ctx.restore();
     }
 
-drawHudCounters() {
-    // Schrift einstellen
-    this.ctx.font = "14px mexican";
-    this.ctx.fillStyle = "red";
+    drawHudCounters() {
+        // Schrift einstellen
+        this.ctx.font = "14px mexican";
+        this.ctx.fillStyle = "red";
 
 
-    // === HEALTH (über der Health-Bar) ===
-    this.ctx.fillText(this.character.energy, 190, 59);
+        // === HEALTH (über der Health-Bar) ===
+        this.ctx.fillText(this.character.energy, 190, 59);
 
-    // === COINS ===
-    this.ctx.fillText(this.character.coins, 190, 109);
+        // === COINS ===
+        this.ctx.fillText(this.character.coins, 190, 109);
 
-    // === BOTTLES ===
-    this.ctx.fillText(this.character.bottles, 190, 160);
-}
+        // === BOTTLES ===
+        this.ctx.fillText(this.character.bottles, 190, 160);
+    }
 
- 
+
 
 }
