@@ -5,6 +5,7 @@ class World {
     ctx;
     keyboard;
     camera_x = 0;
+    canThrow = true;
     respawnStopped = false;    // 🔵 NEU: Respawn-Sperre
     statusBar = new Statusbar();
     statusBarCoins = new StatusbarCoins();
@@ -36,44 +37,65 @@ class World {
         }, 200);
     }
 
-    checkThrowObjects() {
-        if (this.keyboard.D && this.character.bottles > 0) {
+ checkThrowObjects() {
 
-            // Richtung prüfen
-            let direction;
-            if (this.character.otherDirection) {
-                direction = -1;     // er schaut nach links
-            } else {
-                direction = 1;      // er schaut nach rechts
-            }
+    // Flasche werfen NUR wenn:
+    // - D gedrückt ist
+    // - Werfen erlaubt (canThrow = true)
+    // - mindestens 1 Bottle vorhanden
+    if (this.keyboard.D && this.canThrow && this.character.bottles > 0) {
 
+        // Werfen blockieren, solange Taste gehalten wird
+        this.canThrow = false;
 
-            // Bottle erstellen (links oder rechts)
-            // Startposition für rechts und links separat Bottle 
-            let offsetX;
-            if (direction === 1) {
-                offsetX = 100;   // nach rechts
-            } else {
-                offsetX = -30;   // nach links
-            }
+        // ------------------------------
+        // RICHTUNG BESTIMMEN (ausgeschrieben)
+        // ------------------------------
+        let direction;
 
-
-            let bottle = new ThrowableObject(
-                this.character.x + offsetX,
-                this.character.y + 95,
-                direction
-            );
-
-
-            this.throwableObjects.push(bottle);
-
-            // Bottle -1
-            this.character.bottles--;
-            this.statusBarBottle.setPercentage(this.character.bottles);
-
-            console.log("Bottle geworfen! Richtung:", direction);
+        if (this.character.otherDirection === true) {
+            direction = -1;   // nach links
+        } else {
+            direction = 1;    // nach rechts
         }
+
+        // ------------------------------
+        // ABWURFPUNKT (OFFSET) BESTIMMEN (ausgeschrieben)
+        // ------------------------------
+        let offsetX;
+
+        if (direction === 1) {
+            offsetX = 100;    // nach rechts starten
+        } else {
+            offsetX = -30;    // nach links starten
+        }
+
+        // ------------------------------
+        // BOTTLE ERSTELLEN
+        // ------------------------------
+        let bottle = new ThrowableObject(
+            this.character.x + offsetX,
+            this.character.y + 95,
+            direction
+        );
+
+        this.throwableObjects.push(bottle);
+
+        // Eine Bottle abziehen
+        this.character.bottles--;
+        this.statusBarBottle.setPercentage(this.character.bottles);
+
+        console.log("Bottle geworfen!");
     }
+
+    // ------------------------------------------
+    // Wenn Taste NICHT gedrückt ist → wieder werfen möglich
+    // ------------------------------------------
+    if (!this.keyboard.D) {
+        this.canThrow = true;
+    }
+}
+
 
 
 
