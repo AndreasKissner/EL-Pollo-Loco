@@ -37,56 +37,53 @@ class World {
         }, 200);
     }
 
- checkThrowObjects() {
+    checkThrowObjects() {
 
-    // Flasche werfen NUR wenn:
-    // - D gedrückt ist
-    // - Werfen erlaubt (canThrow = true)
-    // - mindestens 1 Bottle vorhanden
-    if (this.keyboard.D && this.canThrow && this.character.bottles > 0) {
+        // Flasche werfen NUR wenn:
+        // - D gedrückt ist
+        // - Werfen erlaubt (canThrow = true)
+        // - mindestens 1 Bottle vorhanden
+        if (this.keyboard.D && this.canThrow && this.character.bottles > 0) {
 
-        // Werfen blockieren, solange Taste gehalten wird
-        this.canThrow = false;
+            // Werfen blockieren, solange Taste gehalten wird
+            this.canThrow = false;
 
-   
-        // RICHTUNG BESTIMMEN (ausgeschrieben)
-    
-        let direction;
-        if (this.character.otherDirection === true) {
-            direction = -1;   // nach links
-        } else {
-            direction = 1;    // nach rechts
+
+            // RICHTUNG BESTIMMEN (ausgeschrieben)
+
+            let direction;
+            if (this.character.otherDirection === true) {
+                direction = -1;   // nach links
+            } else {
+                direction = 1;    // nach rechts
+            }
+
+            // ABWURFPUNKT (OFFSET) BESTIMMEN (ausgeschrieben)
+            let offsetX;
+            if (direction === 1) {
+                offsetX = 100;    // nach rechts starten
+            } else {
+                offsetX = -30;    // nach links starten
+            }
+            // BOTTLE ERSTELLEN
+            let bottle = new ThrowableObject(
+                this.character.x + offsetX,
+                this.character.y + 95,
+                direction
+            );
+
+            this.throwableObjects.push(bottle);
+
+            // Eine Bottle abziehen
+            this.character.bottles--;
+            this.statusBarBottle.setPercentage(this.character.bottles);
+            console.log("Bottle geworfen!");
         }
-
-        // ABWURFPUNKT (OFFSET) BESTIMMEN (ausgeschrieben)
-        let offsetX;
-        if (direction === 1) {
-            offsetX = 100;    // nach rechts starten
-        } else {
-            offsetX = -30;    // nach links starten
+        // Wenn Taste NICHT gedrückt ist → wieder werfen möglich
+        if (!this.keyboard.D) {
+            this.canThrow = true;
         }
-        // BOTTLE ERSTELLEN
-        let bottle = new ThrowableObject(
-            this.character.x + offsetX,
-            this.character.y + 95,
-            direction
-        );
-
-        this.throwableObjects.push(bottle);
-
-        // Eine Bottle abziehen
-        this.character.bottles--;
-        this.statusBarBottle.setPercentage(this.character.bottles);
-        console.log("Bottle geworfen!");
     }
-    // Wenn Taste NICHT gedrückt ist → wieder werfen möglich
-    if (!this.keyboard.D) {
-        this.canThrow = true;
-    }
-}
-
-
-
 
     checkcollision() {
         // === Enemies ===
@@ -158,6 +155,36 @@ class World {
                 }
             }
         });
+
+        // === PLATTFORM-KOLLISION ===
+this.character.currentPlatform = null; // default: keine Plattform
+
+this.level.platforms.forEach(p => {
+
+    // Prüfen ob Pepe horizontal über der Plattform ist
+    let horizontal =
+        this.character.x + this.character.width > p.x + p.offset.left &&
+        this.character.x < p.x + p.width - p.offset.right;
+
+    // Prüfen ob Pepe die Plattform berührt (von oben)
+    let vertical =
+        this.character.y + this.character.height > p.y - p.offset.top &&
+        this.character.y + this.character.height < p.y + 30 &&
+        this.character.speedY <= 0;
+
+    if (horizontal && vertical) {
+
+        // Pepe wird auf die Plattform gesetzt
+        this.character.y = p.y - this.character.height + p.offset.top;
+
+        // Fallgeschwindigkeit stoppen
+        this.character.speedY = 0;
+
+        // Plattform MERKEN ✔
+        this.character.currentPlatform = p;
+    }
+});
+
     }
 
 
@@ -179,27 +206,22 @@ class World {
         this.addObjectsToMap(this.throwableObjects);
         let newArray = [];
 
-for (let i = 0; i < this.throwableObjects.length; i++) {
+        for (let i = 0; i < this.throwableObjects.length; i++) {
 
-    let currentBottle = this.throwableObjects[i];
+            let currentBottle = this.throwableObjects[i];
 
-    // Wenn Bottle NICHT gelöscht werden soll → behalten!
-    if (currentBottle.markForDeletion !== true) {
-        newArray.push(currentBottle);
-    }
-}
+            // Wenn Bottle NICHT gelöscht werden soll → behalten!
+            if (currentBottle.markForDeletion !== true) {
+                newArray.push(currentBottle);
+            }
+        }
 
-// altes Array ersetzen
-this.throwableObjects = newArray;
-
+        // altes Array ersetzen
+        this.throwableObjects = newArray;
         this.addToMap(this.character);
-
         this.ctx.restore(); // Kamera AUS — HUD bleibt fix!
 
         // ===== StatusBars OHNE Kamera =====
-
-
-
         this.addToMap(this.statusBar);
         this.addToMap(this.statusBarCoins);
         this.addToMap(this.statusBarBottle);
