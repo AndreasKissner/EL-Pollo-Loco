@@ -18,25 +18,21 @@ class MovableObject extends DrawableObject {
    };
 
 
-   applyGravity() {
-      setInterval(() => {
-         if (this.isAboveGround() || this.speedY > 0) {
+ applyGravity() {
+    setInterval(() => {
+
+        // Wenn Objekt nicht mehr fallen soll → NICHT weiter ausführen
+        if (this.isFalling === false) {
+            return;
+        }
+
+        if (this.isAboveGround() || this.speedY > 0) {
             this.y -= this.speedY;
             this.speedY -= this.acceleration;
-         }
+        }
 
-         // Knockback / Bewegung seitlich
-         this.x += this.speedX;
-         this.speedX *= 0.92;   // smooth slowdown
-
-         // ⭐ WICHTIG: Schutz gegen aus dem Level fallen
-         if (this.x < 0) {
-            this.x = 0;
-            this.speedX = 0;
-         }
-
-      }, 1000 / 25);
-   }
+    }, 1000 / 25);
+}
 
 
    isAboveGround() {
