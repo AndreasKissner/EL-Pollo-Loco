@@ -1,6 +1,27 @@
 class ThrowableObject extends MovableObject {
 
-  IMAGES_BOTTLE_ROTATE = [
+ 
+
+
+  constructor(x, y, direction) {
+    super();
+    this.loadImage('img/6_salsa_bottle/salsa_bottle.png');
+
+    this.x = x;
+    this.y = y;
+    this.width = 50;
+    this.height = 60;
+    this.direction = direction;
+
+    // ⭐ NEU: Rotation (ausgeschrieben)
+    this.rotation = 0;
+    this.rotationSpeed = 0.25;
+    this.throw();
+    this.loadImages(this.IMAGES_BOTTLE_ROTATE);
+    this.loadImages(this.IMAGES_BOTTLE_BREAK);
+  }
+
+   IMAGES_BOTTLE_ROTATE = [
     'img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png',
     'img/6_salsa_bottle/bottle_rotation/2_bottle_rotation.png',
     'img/6_salsa_bottle/bottle_rotation/3_bottle_rotation.png',
@@ -16,30 +37,8 @@ class ThrowableObject extends MovableObject {
     'img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png'
   ];
 
-
-
-  constructor(x, y, direction) {
-    super();
-    this.loadImage('img/6_salsa_bottle/salsa_bottle.png');
-
-    this.x = x;
-    this.y = y;
-    this.width = 50;
-    this.height = 60;
-
-    this.direction = direction;
-
-    // ⭐ NEU: Rotation (ausgeschrieben)
-    this.rotation = 0;
-    this.rotationSpeed = 0.25;
-    this.throw();
-    this.loadImages(this.IMAGES_BOTTLE_ROTATE);
-    this.loadImages(this.IMAGES_BOTTLE_BREAK);
-
-  }
   animate() {
     setInterval(() => {
-
       // Wenn Bottle noch fliegt → Rotation
       if (!this.hasHitGround) {
         this.playAnimation(this.IMAGES_BOTTLE_ROTATE);
@@ -54,7 +53,6 @@ class ThrowableObject extends MovableObject {
           this.markForDeletion = true;
         }
       }
-
     }, 100);
   }
 
@@ -63,9 +61,7 @@ class ThrowableObject extends MovableObject {
   throw() {
     this.speedY = 16;
     this.applyGravity();
-
     this.animate();
-
     let bottleInterval = setInterval(() => {
       this.x += 9 * this.direction;
 
@@ -85,12 +81,8 @@ class ThrowableObject extends MovableObject {
 
         // ⭐ Stoppt die horizontale Bewegung!
         clearInterval(bottleInterval);
-
         console.log("Bottle am Boden – Bewegung gestoppt.");
       }
-
-
-
     }, 25);
   }
 

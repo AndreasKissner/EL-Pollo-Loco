@@ -100,24 +100,71 @@ class Character extends MovableObject {
     }
 
     animate() {
-        setInterval(() => {
-            if (!this.hitBlocked && this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-                this.moveRight();
-                this.otherDirection = false;
-            }
-            // Character stop left for go
-            if (this.world.keyboard.LEFT && this.x > 0) {
-                this.moveLeft();
-                this.otherDirection = true;
-            }
-            if (this.world.keyboard.SPACE && !this.isAboveGround()) {
-                this.jump();
-                this.idleTimer = 0;   //Wichtig das er nich tmerh schkäft
-            }
-            // startpoint character
-            this.world.camera_x = - this.x + 100;
-        }, 1000 / 60);
+    setInterval(() => {
 
+        // →→→ Nach RECHTS ←←←
+        if (!this.hitBlocked && this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+
+            if (this.currentPlatform) {
+                let p = this.currentPlatform;
+                let rightEdge = p.x + p.width - this.width + p.offset.right;
+
+                if (this.x >= rightEdge) {
+                    return;
+                }
+            }
+
+            this.moveRight();
+            this.otherDirection = false;
+        }
+
+        // ←←← Nach LINKS →→→
+        if (this.world.keyboard.LEFT && this.x > 0) { 
+ 
+            if (this.currentPlatform) {
+                let p = this.currentPlatform;
+                let leftEdge = p.x - this.width + p.offset.left;
+
+
+
+                if (this.x <= leftEdge) {
+                    return;
+                }
+            }
+
+            this.moveLeft();
+            this.otherDirection = true;
+        }
+
+        // SPRINGEN
+       if (this.world.keyboard.SPACE && !this.isAboveGround()) {
+    this.jump();
+    this.idleTimer = 0;
+
+    // ⬇⬇⬇ HIER einfügen! ⬇⬇⬇
+    this.currentPlatform = null;
+
+}
+// === Überprüfen, ob Pepe noch auf der Plattform steht ===
+if (this.currentPlatform) {
+    let p = this.currentPlatform;
+
+let isLeftOfPlatform = this.x + this.width <= p.x + p.offset.left;
+let isRightOfPlatform = this.x >= p.x + p.width - p.offset.right;
+
+
+    // Wenn Pepe links oder rechts runterläuft → Plattform verlieren
+    if (isLeftOfPlatform || isRightOfPlatform) {
+        this.currentPlatform = null;
+    }
+}
+
+
+        // KAMERA
+        this.world.camera_x = - this.x + 100;
+
+    }, 1000 / 60);
+    
 
         setInterval(() => {
 
@@ -195,4 +242,55 @@ class Character extends MovableObject {
 
         }, 100);
     }
+
+    isAboveGround() {
+        // 1. Wenn es eine Plattform unter Pepe gibt und er gerade darauf landet,
+        //    dann ist er NICHT mehr "über dem Boden" → Gravity soll stoppen.
+
+        if (this.world && this.world.level && this.world.level.platforms) {
+
+            let platforms = this.world.level.platforms;
+
+            // So würde Pepe sich im nächsten Gravity-Schritt bewegen:
+            let nextY = this.y - this.speedY;
+            let bottomNow = this.y + this.height;
+            let bottomNext = nextY + this.height;
+
+        for (let i = 0; i < platforms.length; i++) {
+    let p = platforms[i];
+
+    let platformTop = p.y + (p.offset?.top || 0);
+
+    // horizontale Überlappung
+    let overlapsX =
+        this.x + this.width > p.x + p.offset.left &&
+        this.x < p.x + p.width - p.offset.right;
+
+    // Pepe's aktueller Boden
+    let bottomNow = this.y + this.height;
+
+    // Pepe würde im nächsten Gravity-Schritt in die Plattform „reinfallen“
+    let nextBottom = bottomNow - this.speedY;
+
+    // PEPE MUSS FALLEN (nicht hochspringen)
+    let falling = this.speedY <= 0;
+
+    if (overlapsX && falling && bottomNow <= platformTop && nextBottom >= platformTop) {
+        
+        // Landung perfekt
+        this.y = platformTop - this.height;
+        this.speedY = 0;
+        this.currentPlatform = p;
+
+        return false; // Nicht above ground
+    }
+}
+
+        }
+
+        // 2. Wenn keine Plattform-Landung:
+        //    Normales Verhalten vom MovableObject (Boden bei y >= 220)
+        return super.isAboveGround();
+    }
+
 }
