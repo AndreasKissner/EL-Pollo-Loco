@@ -95,7 +95,6 @@ class World {
             }
         });
 
-
         // === COINS ===
         this.level.coins.forEach((coin, index) => {
             if (this.character.isColliding(coin)) {
@@ -132,7 +131,6 @@ class World {
             }
         });
 
-
         // === BOTTLES VOM BODEN ===
         this.level.bottles.forEach((bottle, index) => {
             if (this.character.isColliding(bottle)) {
@@ -157,38 +155,34 @@ class World {
         });
 
         // === PLATTFORM-KOLLISION ===
-this.character.currentPlatform = null; // default: keine Plattform
+        this.character.currentPlatform = null; // default: keine Plattform
 
-this.level.platforms.forEach(p => {
+        this.level.platforms.forEach(p => {
 
-    // Prüfen ob Pepe horizontal über der Plattform ist
-    let horizontal =
-        this.character.x + this.character.width > p.x + p.offset.left &&
-        this.character.x < p.x + p.width - p.offset.right;
+            // Prüfen ob Pepe horizontal über der Plattform ist
+            let horizontal =
+                this.character.x + this.character.width > p.x + p.offset.left &&
+                this.character.x < p.x + p.width - p.offset.right;
 
-    // Prüfen ob Pepe die Plattform berührt (von oben)
-    let vertical =
-        this.character.y + this.character.height > p.y - p.offset.top &&
-        this.character.y + this.character.height < p.y + 30 &&
-        this.character.speedY <= 0;
+            // Prüfen ob Pepe die Plattform berührt (von oben)
+            let vertical =
+                this.character.y + this.character.height > p.y - p.offset.top &&
+                this.character.y + this.character.height < p.y + 30 &&
+                this.character.speedY <= 0;
 
-    if (horizontal && vertical) {
+            if (horizontal && vertical) {
 
-        // Pepe wird auf die Plattform gesetzt
-        this.character.y = p.y - this.character.height + p.offset.top;
+                // Pepe wird auf die Plattform gesetzt
+                this.character.y = p.y - this.character.height + p.offset.top;
 
-        // Fallgeschwindigkeit stoppen
-        this.character.speedY = 0;
+                // Fallgeschwindigkeit stoppen
+                this.character.speedY = 0;
 
-        // Plattform MERKEN ✔
-        this.character.currentPlatform = p;
+                // Plattform MERKEN ✔
+                this.character.currentPlatform = p;
+            }
+        });
     }
-});
-
-    }
-
-
-
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -232,13 +226,10 @@ this.level.platforms.forEach(p => {
         requestAnimationFrame(() => this.draw());
     }
 
-
-
     addObjectsToMap(objects) {
         objects.forEach(o => {
             this.addToMap(o);
         });
-
     }
 
     addToMap(mo) {
@@ -271,7 +262,6 @@ this.level.platforms.forEach(p => {
         this.ctx.font = "14px mexican";
         this.ctx.fillStyle = "red";
 
-
         // === HEALTH (über der Health-Bar) ===
         this.ctx.fillText(this.character.energy, 190, 59);
 
@@ -281,7 +271,5 @@ this.level.platforms.forEach(p => {
         // === BOTTLES ===
         this.ctx.fillText(this.character.bottles, 190, 160);
     }
-
-
 
 }

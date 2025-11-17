@@ -1,5 +1,4 @@
 class Character extends MovableObject {
-
     height = 200;
     width = 150;
     y = 230
@@ -14,11 +13,6 @@ class Character extends MovableObject {
     bottles = 0;
     maxBottleLimit = 5;
 
-
-
-
-
-
     IMAGES_WALKING = [
         'img/2_character_pepe/2_walk/W-21.png',
         'img/2_character_pepe/2_walk/W-22.png',
@@ -29,7 +23,7 @@ class Character extends MovableObject {
     ];
 
     IMAGES_JUMPING = [
-        /*    'img/2_character_pepe/3_jump/J-31.png',
+        /*  'img/2_character_pepe/3_jump/J-31.png',
             'img/2_character_pepe/3_jump/J-32.png',
             'img/2_character_pepe/3_jump/J-33.png', */
         'img/2_character_pepe/3_jump/J-34.png',
@@ -82,8 +76,6 @@ class Character extends MovableObject {
         'img/2_character_pepe/4_hurt/H-43.png'
     ];
 
-
-
     constructor() {
         super().loadImage('img/2_character_pepe/2_walk/W-21.png')
         this.loadImages(this.IMAGES_WALKING);
@@ -92,82 +84,73 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_LONG_IDLE);
         this.loadImages(this.IMAGES_DEAD);
         this.loadImages(this.IMAGES_HURT);
-
         this.idleTimer = 0;
-
         this.applyGravity();
         this.animate();
     }
 
     animate() {
-    setInterval(() => {
-
-        // →→→ Nach RECHTS ←←←
-        if (!this.hitBlocked && this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-
-            if (this.currentPlatform) {
-                let p = this.currentPlatform;
-                let rightEdge = p.x + p.width - this.width + p.offset.right;
-
-                if (this.x >= rightEdge) {
-                    return;
-                }
-            }
-
-            this.moveRight();
-            this.otherDirection = false;
-        }
-
-        // ←←← Nach LINKS →→→
-        if (this.world.keyboard.LEFT && this.x > 0) { 
- 
-            if (this.currentPlatform) {
-                let p = this.currentPlatform;
-                let leftEdge = p.x - this.width + p.offset.left;
-
-
-
-                if (this.x <= leftEdge) {
-                    return;
-                }
-            }
-
-            this.moveLeft();
-            this.otherDirection = true;
-        }
-
-        // SPRINGEN
-       if (this.world.keyboard.SPACE && !this.isAboveGround()) {
-    this.jump();
-    this.idleTimer = 0;
-
-    // ⬇⬇⬇ HIER einfügen! ⬇⬇⬇
-    this.currentPlatform = null;
-
-}
-// === Überprüfen, ob Pepe noch auf der Plattform steht ===
-if (this.currentPlatform) {
-    let p = this.currentPlatform;
-
-let isLeftOfPlatform = this.x + this.width <= p.x + p.offset.left;
-let isRightOfPlatform = this.x >= p.x + p.width - p.offset.right;
-
-
-    // Wenn Pepe links oder rechts runterläuft → Plattform verlieren
-    if (isLeftOfPlatform || isRightOfPlatform) {
-        this.currentPlatform = null;
-    }
-}
-
-
-        // KAMERA
-        this.world.camera_x = - this.x + 100;
-
-    }, 1000 / 60);
-    
-
         setInterval(() => {
 
+            // →→→ Nach RECHTS ←←←
+            if (!this.hitBlocked && this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+
+                if (this.currentPlatform) {
+                    let p = this.currentPlatform;
+                    let rightEdge = p.x + p.width - this.width + p.offset.right;
+
+                    if (this.x >= rightEdge) {
+                        return;
+                    }
+                }
+
+                this.moveRight();
+                this.otherDirection = false;
+            }
+
+            // ←←← Nach LINKS →→→
+            if (this.world.keyboard.LEFT && this.x > 0) {
+
+                if (this.currentPlatform) {
+                    let p = this.currentPlatform;
+                    let leftEdge = p.x - this.width + p.offset.left;
+
+
+
+                    if (this.x <= leftEdge) {
+                        return;
+                    }
+                }
+
+                this.moveLeft();
+                this.otherDirection = true;
+            }
+
+            // SPRINGEN
+            if (this.world.keyboard.SPACE && !this.isAboveGround()) {
+                this.jump();
+                this.idleTimer = 0;
+
+                // ⬇⬇⬇ HIER einfügen! ⬇⬇⬇
+                this.currentPlatform = null;
+
+            }
+            // === Überprüfen, ob Pepe noch auf der Plattform steht ===
+            if (this.currentPlatform) {
+                let p = this.currentPlatform;
+
+                let isLeftOfPlatform = this.x + this.width <= p.x + p.offset.left;
+                let isRightOfPlatform = this.x >= p.x + p.width - p.offset.right;
+
+                // Wenn Pepe links oder rechts runterläuft → Plattform verlieren
+                if (isLeftOfPlatform || isRightOfPlatform) {
+                    this.currentPlatform = null;
+                }
+            }
+            this.world.camera_x = - this.x + 100;
+        }, 1000 / 60);
+
+        setInterval(() => {
             // --- DEAD ANIMATION --- (höchste Priorität)
             if (this.isDead()) {
                 this.speed = 0;
@@ -189,27 +172,21 @@ let isRightOfPlatform = this.x >= p.x + p.width - p.offset.right;
                 return; // NIX anderes darf mehr laufen
             }
 
-
             // --- HURT --- (zweithöchste Priorität!)
             if (this.isHurt()) {
 
                 // Hurt-Animation abspielen
                 this.playAnimation(this.IMAGES_HURT);
                 this.idleTimer = 0;
-
                 return;
                 // GANZ WICHTIG:
                 // Return verhindert, dass Jump/Walk/Idle
                 // die Hurt-Animation überschreiben
             }
 
-
-
-
             // --- STATUS ERMITTELN ---
             let isWalking = this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
             let isJumping = this.isAboveGround();
-
 
             // --- JUMPING (kommt nach Hurt)
             if (isJumping) {
@@ -224,7 +201,6 @@ let isRightOfPlatform = this.x >= p.x + p.width - p.offset.right;
                 this.idleTimer = 0;
                 return;
             }
-
 
             // --- IDLE / LONG-IDLE (letzte Priorität) ---
             if (!isWalking && !isJumping) {
@@ -256,36 +232,35 @@ let isRightOfPlatform = this.x >= p.x + p.width - p.offset.right;
             let bottomNow = this.y + this.height;
             let bottomNext = nextY + this.height;
 
-        for (let i = 0; i < platforms.length; i++) {
-    let p = platforms[i];
+            for (let i = 0; i < platforms.length; i++) {
+                let p = platforms[i];
 
-    let platformTop = p.y + (p.offset?.top || 0);
+                let platformTop = p.y + (p.offset?.top || 0);
 
-    // horizontale Überlappung
-    let overlapsX =
-        this.x + this.width > p.x + p.offset.left &&
-        this.x < p.x + p.width - p.offset.right;
+                // horizontale Überlappung
+                let overlapsX =
+                    this.x + this.width > p.x + p.offset.left &&
+                    this.x < p.x + p.width - p.offset.right;
 
-    // Pepe's aktueller Boden
-    let bottomNow = this.y + this.height;
+                // Pepe's aktueller Boden
+                let bottomNow = this.y + this.height;
 
-    // Pepe würde im nächsten Gravity-Schritt in die Plattform „reinfallen“
-    let nextBottom = bottomNow - this.speedY;
+                // Pepe würde im nächsten Gravity-Schritt in die Plattform „reinfallen“
+                let nextBottom = bottomNow - this.speedY;
 
-    // PEPE MUSS FALLEN (nicht hochspringen)
-    let falling = this.speedY <= 0;
+                // PEPE MUSS FALLEN (nicht hochspringen)
+                let falling = this.speedY <= 0;
 
-    if (overlapsX && falling && bottomNow <= platformTop && nextBottom >= platformTop) {
-        
-        // Landung perfekt
-        this.y = platformTop - this.height;
-        this.speedY = 0;
-        this.currentPlatform = p;
+                if (overlapsX && falling && bottomNow <= platformTop && nextBottom >= platformTop) {
 
-        return false; // Nicht above ground
-    }
-}
+                    // Landung perfekt
+                    this.y = platformTop - this.height;
+                    this.speedY = 0;
+                    this.currentPlatform = p;
 
+                    return false; // Nicht above ground
+                }
+            }
         }
 
         // 2. Wenn keine Plattform-Landung:

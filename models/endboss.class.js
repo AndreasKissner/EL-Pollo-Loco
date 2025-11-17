@@ -14,10 +14,6 @@ class Endboss extends MovableObject {
     lastFrameTime = 0;
     frameInterval = 100; // ms zwischen Bildern → 150 = schön langsam
 
-
-
-
-    // --- Animationen ---
     IMAGES_WALK = [
         'img/4_enemie_boss_chicken/1_walk/G1.png',
         'img/4_enemie_boss_chicken/1_walk/G2.png',
@@ -47,29 +43,20 @@ class Endboss extends MovableObject {
 
     constructor() {
         super().loadImage(this.IMAGES_WALK[0]);
-
-        // Bilder im Cache speichern
         this.loadImages(this.IMAGES_WALK);
         this.loadImages(this.IMAGES_ALERT);
-
         this.x = this.maxX;   // Start rechts
         this.animate();
 
     }
 
-
     animate() {
-
         setInterval(() => {
             this.checkAlert();
             this.updateAnimation();
             this.updateMovement();
-
-        }, 1000 / 30); // Best Practice: 30 FPS
+        }, 1000 / 30); 
     }
-
-
-
 
 
     // --- 1. Spieler erkennen ---
@@ -85,7 +72,6 @@ class Endboss extends MovableObject {
             this.alertStartTime = Date.now();
         }
     }
-
 
     // --- 2. Animationen sauber steuern ---
     updateAnimation() {

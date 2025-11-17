@@ -20,7 +20,6 @@ class MovableObject extends DrawableObject {
 
  applyGravity() {
     setInterval(() => {
-
         // Wenn Objekt nicht mehr fallen soll → NICHT weiter ausführen
         if (this.isFalling === false) {
             return;

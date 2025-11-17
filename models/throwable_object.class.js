@@ -1,6 +1,6 @@
 class ThrowableObject extends MovableObject {
 
- 
+
 
 
   constructor(x, y, direction) {
@@ -21,7 +21,7 @@ class ThrowableObject extends MovableObject {
     this.loadImages(this.IMAGES_BOTTLE_BREAK);
   }
 
-   IMAGES_BOTTLE_ROTATE = [
+  IMAGES_BOTTLE_ROTATE = [
     'img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png',
     'img/6_salsa_bottle/bottle_rotation/2_bottle_rotation.png',
     'img/6_salsa_bottle/bottle_rotation/3_bottle_rotation.png',
@@ -56,8 +56,6 @@ class ThrowableObject extends MovableObject {
     }, 100);
   }
 
-
-
   throw() {
     this.speedY = 16;
     this.applyGravity();
@@ -85,7 +83,5 @@ class ThrowableObject extends MovableObject {
       }
     }, 25);
   }
-
-
 
 }

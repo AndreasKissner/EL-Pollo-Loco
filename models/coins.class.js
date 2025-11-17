@@ -1,31 +1,30 @@
 class Coin extends MovableObject {
-   offset = {
+    offset = {
         top: 50,
         bottom: 50,
         left: 35,
         right: 35
     }
 
-IMAGES_COIN = [
-    'img/8_coin/coin_1.png',
-    'img/8_coin/coin_2.png'
-];
+    IMAGES_COIN = [
+        'img/8_coin/coin_1.png',
+        'img/8_coin/coin_2.png'
+    ];
 
+    constructor(x, y) {
+        super().loadImage(this.IMAGES_COIN[0]);
+        this.loadImages(this.IMAGES_COIN);
+        this.x = x;
+        this.y = y;
+        this.width = 180;
+        this.height = 110;
+        this.animate();
+    }
 
-constructor(x, y) {
-    super().loadImage(this.IMAGES_COIN[0]);
-    this.loadImages(this.IMAGES_COIN);
-    this.x = x;
-    this.y = y;
-    this.width = 180;
-    this.height = 110;
-    this.animate();
-}
-
-animate() {
-    setInterval(() => {
-        this.playAnimation(this.IMAGES_COIN);
-    }, 300); // alle 300ms wechseln
-}
+    animate() {
+        setInterval(() => {
+            this.playAnimation(this.IMAGES_COIN);
+        }, 300); // alle 300ms wechseln
+    }
 
 }
