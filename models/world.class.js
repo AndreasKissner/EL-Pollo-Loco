@@ -85,104 +85,103 @@ class World {
         }
     }
 
-    checkcollision() {
-        // === Enemies ===
-        this.level.enemies.forEach((enemy) => {
-            if (this.character.isColliding(enemy)) {
-                console.log("Collision with Character, energy:", this.character.energy);
-                /*  this.character.hit(); */
+ checkcollision() {
+
+    // === ENEMIES ===
+    this.level.enemies.forEach((enemy, index) => {
+        if (enemy.isDead()) return;
+
+        if (this.character.isColliding(enemy)) {
+
+            // Pepe springt von oben → killt Gegner
+            if (this.character.isAboveGround() && this.character.speedY < 0 && !this.character.hitBlocked) {
+
+                enemy.energy = 0;
+                this.character.speedY = 15;
+                console.log("Huhn erledigt!");
+
+            } else {
+
+                // Pepe nimmt Schaden
+                this.character.hit();
                 this.statusBar.setPercentage(this.character.energy);
             }
-        });
+        }
+    });
 
-        // === COINS ===
-        this.level.coins.forEach((coin, index) => {
-            if (this.character.isColliding(coin)) {
+    // === COINS ===
+    this.level.coins.forEach((coin, index) => {
+        if (this.character.isColliding(coin)) {
 
-                // Coin entfernen
-                this.level.coins.splice(index, 1);
+            this.level.coins.splice(index, 1);
 
-                // Coin Counter
-                this.character.coins++;
-                console.log("Coins eingesammelt:", this.character.coins);
+            this.character.coins++;
+            console.log("Coins eingesammelt:", this.character.coins);
 
-                // Coin-Bar +1
-                this.statusBarCoins.percentage++;
-                this.statusBarCoins.setPercentage(this.statusBarCoins.percentage);
+            this.statusBarCoins.percentage++;
+            this.statusBarCoins.setPercentage(this.statusBarCoins.percentage);
 
-                // --- BONUS-FLASCHE BEI 5 COINS ---
-                if (this.statusBarCoins.percentage >= 5) {
+            // Bonus-Bottle bei 5 Coins
+            if (this.statusBarCoins.percentage >= 5) {
 
-                    // Coin-Bar wieder auf 0
-                    this.statusBarCoins.percentage = 0;
-                    this.statusBarCoins.setPercentage(0);
+                this.statusBarCoins.percentage = 0;
+                this.statusBarCoins.setPercentage(0);
 
-                    // Nur wenn Bottles < 10
-                    if (this.character.bottles < 10) {
-                        this.character.bottles++;
-                        console.log("BONUS Bottle! Jetzt:", this.character.bottles);
-                    } else {
-                        console.log("BONUS gestoppt: Max 10 Bottles erreicht.");
-                    }
-
-                    // HUD aktualisieren
-                    this.statusBarBottle.setPercentage(this.character.bottles);
-                }
-            }
-        });
-
-        // === BOTTLES VOM BODEN ===
-        this.level.bottles.forEach((bottle, index) => {
-            if (this.character.isColliding(bottle)) {
-
-                // Wenn noch Platz → Bottle einsammeln
                 if (this.character.bottles < 10) {
-
                     this.character.bottles++;
-                    console.log("Bottle eingesammelt:", this.character.bottles);
-
-                    // Bottle verschwindet aus der Welt
-                    this.level.bottles.splice(index, 1);
-
-                    // HUD aktualisieren
-                    this.statusBarBottle.setPercentage(this.character.bottles);
-
+                    console.log("BONUS Bottle! Jetzt:", this.character.bottles);
                 } else {
-                    // Pepe hat 10 → Bottle bleibt liegen!
-                    console.log("Bottle-Limit (10) erreicht – Bottle bleibt liegen.");
+                    console.log("BONUS gestoppt: Max 10 Bottles erreicht.");
                 }
+
+                this.statusBarBottle.setPercentage(this.character.bottles);
             }
-        });
+        }
+    });
 
-        // === PLATTFORM-KOLLISION ===
-        this.character.currentPlatform = null; // default: keine Plattform
+    // === BOTTLES AM BODEN ===
+    this.level.bottles.forEach((bottle, index) => {
+        if (this.character.isColliding(bottle)) {
 
-        this.level.platforms.forEach(p => {
+            if (this.character.bottles < 10) {
 
-            // Prüfen ob Pepe horizontal über der Plattform ist
-            let horizontal =
-                this.character.x + this.character.width > p.x + p.offset.left &&
-                this.character.x < p.x + p.width - p.offset.right;
+                this.character.bottles++;
+                console.log("Bottle eingesammelt:", this.character.bottles);
 
-            // Prüfen ob Pepe die Plattform berührt (von oben)
-            let vertical =
-                this.character.y + this.character.height > p.y - p.offset.top &&
-                this.character.y + this.character.height < p.y + 30 &&
-                this.character.speedY <= 0;
+                this.level.bottles.splice(index, 1);
 
-            if (horizontal && vertical) {
+                this.statusBarBottle.setPercentage(this.character.bottles);
 
-                // Pepe wird auf die Plattform gesetzt
-                this.character.y = p.y - this.character.height + p.offset.top;
-
-                // Fallgeschwindigkeit stoppen
-                this.character.speedY = 0;
-
-                // Plattform MERKEN ✔
-                this.character.currentPlatform = p;
+            } else {
+                console.log("Bottle-Limit (10) erreicht – Bottle bleibt liegen.");
             }
-        });
-    }
+        }
+    });
+
+    // === PLATTFORM-KOLLISION ===
+    this.character.currentPlatform = null;
+
+    this.level.platforms.forEach(p => {
+
+        let horizontal =
+            this.character.x + this.character.width > p.x + p.offset.left &&
+            this.character.x < p.x + p.width - p.offset.right;
+
+        let vertical =
+            this.character.y + this.character.height > p.y - p.offset.top &&
+            this.character.y + this.character.height < p.y + 30 &&
+            this.character.speedY <= 0;
+
+        if (horizontal && vertical) {
+
+            this.character.y = p.y - this.character.height + p.offset.top;
+            this.character.speedY = 0;
+
+            this.character.currentPlatform = p;
+        }
+    });
+}
+
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
