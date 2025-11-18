@@ -258,7 +258,6 @@ class World {
     }
 
     drawHudCounters() {
-        // Schrift einstellen
         this.ctx.font = "14px mexican";
         this.ctx.fillStyle = "red";
 
