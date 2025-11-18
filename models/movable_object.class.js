@@ -54,6 +54,7 @@ class MovableObject extends DrawableObject {
    }
 
    hit() {
+      return;
       if (this.hitBlocked) return;
       this.energy -= 20;
       if (this.energy < 0) {
@@ -102,29 +103,28 @@ class MovableObject extends DrawableObject {
       }
    }
 
-   hitOutTime() {
-      if (this.hitBlocked) return;
-      this.hitBlocked = true;
-      const jumpStrength = 12;
-      const knockback = 5;
+ // movable-object.class.js
 
-      // ✨ Knockback entgegengesetzt der Blickrichtung
-      if (this.otherDirection) {
-         // schaut nach links → Gegner kam von rechts → Knockback nach rechts
-         this.speedX = knockback;
-      } else {
-         // schaut nach rechts → Gegner kam von links → Knockback nach links
-         this.speedX = -knockback;
-      }
+hitOutTime() {
+    if (this.hitBlocked) return;
+    this.hitBlocked = true;
+    
+    // Stärke des Rückstoßes (damit er nicht zu weit fliegt, nimm 5 oder weniger)
+    const knockback = 3; 
+    
+    if (this.otherDirection) {
+        this.speedX = knockback;
+    } else {
+        this.speedX = -knockback;
+    }
+    
+    this.speedY = 10; // Kleiner Sprung nach oben beim Treffer
 
-      // kleiner Jump
-      this.speedY = jumpStrength;
-
-      setTimeout(() => {
-         this.hitBlocked = false;
-      }, 2000);
-   }
-
-
-
+    // ⬇️⬇️⬇️ HIER IST DIE ZEIT-EINSTELLUNG ⬇️⬇️⬇️
+    // 1000 ms = 1 Sekunde Sperre
+    setTimeout(() => {
+        this.hitBlocked = false; // Erst nach 1 Sekunde darf er wieder töten
+        this.speedX = 0;         // Bremsen
+    }, 1000); 
+} 
 }

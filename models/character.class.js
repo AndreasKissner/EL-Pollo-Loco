@@ -2,7 +2,8 @@ class Character extends MovableObject {
     height = 200;
     width = 150;
     y = 230
-    speed = 30;
+       offset = { top: 10, left: 10, right: 10, bottom: -10 };
+    speed = 10;
     world;
     deadPlayed = false;
     deadIndex = 0;              // Welches Dead-Bild wir zeigen
