@@ -53,6 +53,8 @@ class MovableObject extends DrawableObject {
         );
     }
 
+// movable-object.class.js
+
     hit() {
         if (this.hitBlocked) return;
         this.energy -= 20; // 20 Schaden pro Treffer
@@ -61,13 +63,15 @@ class MovableObject extends DrawableObject {
             this.energy = 0;
         }
 
-        // 🔥 KORREKTUR: hitOutTime() WIRD IMMER bei Treffer aufgerufen, 
-        // auch wenn Energie auf 0 fällt. Dadurch macht Pepe den finalen Sprung/Rückstoß.
+      if (this instanceof Endboss) {
+             SoundManager.play('hurtEndboss', 0.6); 
+        } else {
+             SoundManager.play('hurtPepe', 1); 
+        }
+
+        // Die Zeilen für den Rückstoß/Kickback sind hier:
         this.lastHit = new Date().getTime();
-        this.hitOutTime();
-        
-        // Wichtig: Jetzt muss in der Character-Klasse der Todes-Loop die isHurt()-Animation überschreiben!
-        // Das ist aber in der Endboss-Logik (höchste Priorität) schon erledigt.
+        this.hitOutTime(); // <--- DIESE FUNKTION LÖST DEN SPRUNG AUS
     }
 
     isHurt() {
