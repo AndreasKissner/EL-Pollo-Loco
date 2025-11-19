@@ -15,7 +15,7 @@ class ThrowableObject extends MovableObject {
         this.direction = direction;
 
         this.rotation = 0;
-        this.rotationSpeed = 0.25;
+        this.rotationSpeed = 0.25;// brauc ich?
         this.throw();
         this.loadImages(this.IMAGES_BOTTLE_ROTATE);
         this.loadImages(this.IMAGES_BOTTLE_BREAK);
@@ -78,6 +78,20 @@ class ThrowableObject extends MovableObject {
                 console.log("Bottle am Boden – Bewegung gestoppt.");
             }
         }, 25);
+    }
+
+    /**
+     * NEU: Wird von der World-Klasse aufgerufen, wenn die Flasche einen Gegner trifft.
+     * Stoppt die Flasche sofort und markiert sie als 'hit'.
+     */
+    onHitEnemy() {
+        this.hasHitEnemy = true;
+        this.currentImage = 0; // Startet die Zerbrech-Animation von vorne
+        this.speedY = 0;
+        this.acceleration = 0;
+        this.isFalling = false;
+        clearInterval(this.movementIntervalId); // Stoppt die horizontale Bewegung
+        console.log("Bottle hat Gegner getroffen – Bewegung gestoppt.");
     }
 
 }
