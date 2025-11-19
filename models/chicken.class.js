@@ -4,7 +4,7 @@ class Chicken extends MovableObject {
     width = 60;
     
     offset = {
-        top: 5,      // Hitbox optimiert
+        top: -10,      // Hitbox optimiert
         bottom: 5,
         left: 5,
         right: 5

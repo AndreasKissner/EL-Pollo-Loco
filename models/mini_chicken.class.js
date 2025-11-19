@@ -4,12 +4,11 @@ class MiniChicken extends MovableObject {
     height = 35;
     width = 35;
 
-    // Optimierte Hitbox für einfachere Treffer
     offset = {
-        top: 5,
+        top: -10,
         bottom: 0, 
-        left: 2,
-        right: 2
+        left: -20,
+        right: -25
     };
 
     IMAGES_WALKIN = [

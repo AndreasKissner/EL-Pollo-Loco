@@ -5,7 +5,8 @@ class World {
     ctx;
     keyboard;
     camera_x = 0;
-    canThrow = true;
+    // ❌ canThrow wurde entfernt und durch lastThrowTime ersetzt.
+    lastThrowTime = 0; // 🔥 NEU: Timer für Cooldown (Timestamp des letzten Wurfs)
     respawnStopped = false;
     statusBar = new Statusbar();
     statusBarCoins = new StatusbarCoins();
@@ -33,7 +34,7 @@ class World {
             this.checkcollision();
             this.checkThrowObjects();
             this.checkRespawn();
-        }, 200); 
+        }, 1000/30); 
     }
 
     checkRespawn() {
@@ -60,8 +61,18 @@ class World {
     }
 
     checkThrowObjects() {
-        if (this.keyboard.D && this.canThrow && this.character.bottles > 0) {
-            this.canThrow = false;
+        const now = Date.now();
+        const cooldown = 1500; // 1 Sekunde Cooldown
+
+        // Flasche werfen NUR wenn:
+        // 1. D gedrückt ist
+        // 2. Cooldown ist abgelaufen (mindestens 1000ms seit dem letzten Wurf)
+        // 3. mindestens 1 Bottle vorhanden
+        if (this.keyboard.D && (now - this.lastThrowTime) >= cooldown && this.character.bottles > 0) {
+
+            // Werfen blockieren, indem der Timer aktualisiert wird
+            this.lastThrowTime = now; 
+
             let direction = this.character.otherDirection ? -1 : 1;
             let offsetX = direction === 1 ? 100 : -30;
             
@@ -73,11 +84,11 @@ class World {
             this.throwableObjects.push(bottle);
             this.character.bottles--;
             this.statusBarBottle.setPercentage(this.character.bottles);
+            console.log("Bottle geworfen! Cooldown aktiv.");
         }
-        if (!this.keyboard.D) {
-            this.canThrow = true;
-        }
+        // ❌ Entfernt die alte canThrow Logik (die hier unten stand)
     }
+
 
     checkcollision() {
         
@@ -119,23 +130,16 @@ class World {
             if (bottle.hasHitGround || bottle.hasHitEnemy) return; // Schon kaputt
 
             this.level.platforms.forEach(platform => {
-                // Flasche muss fallen (speedY < 0) und die Plattform berühren
                 let isFalling = bottle.speedY <= 0;
                 
-                // Wir nutzen die einfache Kollision, aber nur für den Zeitpunkt des Aufpralls (von oben nach unten)
                 let touchesPlatform = 
                     bottle.isColliding(platform) && 
-                    isFalling &&
-                    (bottle.y + bottle.height) > platform.y; 
+                    isFalling; 
 
                 if (touchesPlatform) {
-                    // Flasche hat die Plattform getroffen, wird als "am Boden" markiert,
-                    // was den Splash auslöst und die Bewegung stoppt.
                     bottle.hasHitGround = true;
                     bottle.currentImage = 0;
                     bottle.speedY = 0;
-                    bottle.acceleration = 0;
-                    bottle.isFalling = false;
                     if (bottle.movementIntervalId) clearInterval(bottle.movementIntervalId); 
                     
                     console.log("💥 Flasche trifft Plattform und zerbricht.");
@@ -262,10 +266,10 @@ class World {
     }
 
     drawHudCounters() {
-        this.ctx.font = "14px mexican";
+        this.ctx.font = "12px mexican";
         this.ctx.fillStyle = "red";
-        this.ctx.fillText(this.character.energy, 190, 59);
-        this.ctx.fillText(this.character.coins, 190, 109);
-        this.ctx.fillText(this.character.bottles, 190, 160);
+        this.ctx.fillText(this.character.energy, 145, 45);
+        this.ctx.fillText(this.character.coins, 145, 83);
+        this.ctx.fillText(this.character.bottles, 145, 122);
     }
 }

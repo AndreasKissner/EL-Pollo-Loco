@@ -2,7 +2,7 @@ class Character extends MovableObject {
     height = 270;
     width = 120;
     y = 50;             // Startet etwas höher (fällt sanft herunter)
-    speed = 7;
+    speed = 5;
     
     // 🔥 FIX: Wir setzen den Boden auf die finale Bodenlinie des Bosses (440).
     groundLevel = 440; 
@@ -21,7 +21,7 @@ class Character extends MovableObject {
     offset = {
         top: 100,    
         bottom: 0,   
-        left: 30,    
+        left: 10,    
         right: 30    
     };
 
