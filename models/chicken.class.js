@@ -1,9 +1,14 @@
-// *** chicken.class.js ***
 class Chicken extends MovableObject {
-    y = 370;
-    height = 70;
-    width = 70;
-    offset = { top: 10, left: 0, right: 10, bottom: 10 };
+    y = 380; // Y-Position auf Bodenhöhe angepasst
+    height = 60;
+    width = 60;
+    
+    offset = {
+        top: 5,      // Hitbox optimiert
+        bottom: 5,
+        left: 5,
+        right: 5
+    };
 
     IMAGES_WALKING = [
         'img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
@@ -15,34 +20,38 @@ class Chicken extends MovableObject {
         'img/3_enemies_chicken/chicken_normal/2_dead/dead.png'
     ];
 
-    constructor() {
+    // 🔥 NEU: constructor akzeptiert jetzt 'x'
+    constructor(x) {
         super().loadImage(this.IMAGES_WALKING[0]);
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_DEAD);
-        this.x = 400 + Math.random() * 4200;
+
+        // Wenn ein x übergeben wird, nutze es. Sonst Zufall (Fallback).
+        if (x) {
+            this.x = x;
+        } else {
+            this.x = 400 + Math.random() * 4200;
+        }
+        
         this.speed = 0.20 + Math.random() * 0.25;
         this.animate();
     }
 
-   animate() {
-        // 1. Bewegung & Logik (60 FPS)
+    animate() {
         setInterval(() => {
             if (!this.isDead()) {
                 this.moveLeft();
-                
-                // Nur lebende Hühner sollen wiederkommen, wenn sie rauslaufen
-                // (Falls du die Methode in der Klasse hast)
-                this.checkEnemyRespawn(); 
             }
         }, 1000 / 60);
-        
-        // 2. Animation / Bilder (Langsam)
+
         setInterval(() => {
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
             } else {
                 this.playAnimation(this.IMAGES_WALKING);
             }
+            // ❌ HIER WURDE DIE FEHLERHAFTE ZEILE ENTFERNT! 
+            // Der Respawn läuft jetzt korrekt über die World-Klasse.
         }, 200);
     }
 }

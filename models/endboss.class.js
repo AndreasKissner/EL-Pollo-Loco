@@ -2,17 +2,32 @@ class Endboss extends MovableObject {
 
     width = 450;
     height = 400;
-    y = 50;
 
+    // FIX: Bodenlinie des Spiels
+    groundLevel = 440;
 
-    speed = 2.25;                      // Konstante Laufgeschwindigkeit
-    direction = "left";               // "left" oder "right"
-    minX = 100;                      // Linker Patrouillenpunkt
-    maxX = 4450;                      // Rechter Patrouillenpunkt
-    alertZone = 3940;                 // Wann Boss dich sieht
-    isAlert = false;                  // Hat der Boss den Spieler entdeckt?
+    offset = {
+        top: 50,
+        bottom: 110,
+        left: 60,
+        right: 40
+    };
+
+    speed = 2.25;
+    direction = "left";
+    minX = 100;
+    maxX = 4450;
+    alertZone = 3940;
+    isAlert = false;
     lastFrameTime = 0;
-    frameInterval = 100; // ms zwischen Bildern → 150 = schön langsam
+    frameInterval = 100; // Normale Animationsgeschwindigkeit (Walk/Alert/Hurt)
+
+    // 🔥 NEU: SPEZIELLE STEUERUNG FÜR DEN TODES-LOOP
+    deathFrameInterval = 250; // ⬅️ HIER die Zahl ÄNDERN (250ms = 4 Bilder pro Sekunde)
+    lastDeathFrameTime = 0;   // Timer für den Todes-Loop
+
+    deathLoopCount = 0;
+    maxDeathLoops = 3;
 
     IMAGES_WALK = [
         'img/4_enemie_boss_chicken/1_walk/G1.png',
@@ -40,14 +55,33 @@ class Endboss extends MovableObject {
         'img/4_enemie_boss_chicken/3_attack/G20.png'
     ];
 
+    IMAGES_HURT = [
+        'img/4_enemie_boss_chicken/4_hurt/G21.png',
+        'img/4_enemie_boss_chicken/4_hurt/G22.png',
+        'img/4_enemie_boss_chicken/4_hurt/G23.png'
+    ];
+
+    IMAGES_DEAD = [
+        'img/4_enemie_boss_chicken/5_dead/G24.png',
+        'img/4_enemie_boss_chicken/5_dead/G25.png',
+        'img/4_enemie_boss_chicken/5_dead/G26.png',
+    ];
+
 
     constructor() {
         super().loadImage(this.IMAGES_WALK[0]);
         this.loadImages(this.IMAGES_WALK);
         this.loadImages(this.IMAGES_ALERT);
-        this.x = this.maxX;   // Start rechts
-        this.animate();
+        this.loadImages(this.IMAGES_DEAD);
+        this.loadImages(this.IMAGES_HURT);
+        this.x = this.maxX;
 
+        // 🔥 FIX: Korrekter Y-Startpunkt für GroundLevel=440
+        // 440 (Boden) - 400 (Höhe) = 40
+        this.y = this.groundLevel - this.height;
+
+        this.animate();
+        this.applyGravity();
     }
 
     animate() {
@@ -55,62 +89,104 @@ class Endboss extends MovableObject {
             this.checkAlert();
             this.updateAnimation();
             this.updateMovement();
-        }, 1000 / 30); 
+        }, 1000 / 30);
     }
 
 
-    // --- 1. Spieler erkennen ---
     checkAlert() {
-        if (!this.world) return;
+        if (!this.world || this.isDead()) return;
 
         let playerX = this.world.character.x;
 
         if (!this.isAlert && playerX >= this.alertZone) {
             this.isAlert = true;
-
-            // 2 Sekunden ALERT-Animation
             this.alertStartTime = Date.now();
         }
     }
 
-    // --- 2. Animationen sauber steuern ---
     updateAnimation() {
         const now = Date.now();
-        // Warten bis ein neues Frame erlaubt ist
-        if (now - this.lastFrameTime < this.frameInterval) {
-            return; // zu früh → kein Bildwechsel
+
+        // Normale Animations-Bremse
+        if (!this.isDead() && now - this.lastFrameTime < this.frameInterval) {
+            return;
         }
-        // Jetzt darf ein Bild kommen
         this.lastFrameTime = now;
-        // 1. Boss steht still
+
+        // 1. DEAD (höchste Priorität)
+        if (this.isDead()) {
+            this.handleDeathAnimationLoop(); // Nutzt den langsameren Timer intern
+            this.speed = 0;
+            return;
+        }
+
+        // 2. HURT (zweite Priorität)
+        if (this.isHurt()) {
+            this.playAnimation(this.IMAGES_HURT);
+            return;
+        }
+
+        // 3. Boss steht still (Idle)
         if (!this.isAlert) {
             this.img = this.imageCache[this.IMAGES_WALK[0]];
             return;
         }
 
         const alertDuration = 2000;
-        // 2. Während Alert
+        // 4. Während Alert/Attack
         if (Date.now() - this.alertStartTime < alertDuration) {
             this.playAnimation(this.IMAGES_ALERT);
             return;
         }
-        // 3. Walking nach Alert
+
+        // 5. Walking nach Alert
         this.playAnimation(this.IMAGES_WALK);
     }
 
 
+    handleDeathAnimationLoop() {
+        let images = this.IMAGES_DEAD;
 
-    // --- 3. Bewegung & Drehen (Best Practice) ---
-    updateMovement() {
-        if (!this.isAlert) {
-            return; // Boss steht still bis Spieler in Zone kommt
+        const now = Date.now();
+        // 🔥 HIER ist der Timer für die Todes-Geschwindigkeit
+        if (now - this.lastDeathFrameTime < this.deathFrameInterval) {
+            return;
         }
-        // Boss bleibt stehen während Alert-Animation
+        this.lastDeathFrameTime = now; // Timer zurücksetzen
+
+        // --- Loop Zähler ---
+        if (this.deathLoopCount >= this.maxDeathLoops) {
+            this.img = this.imageCache[images[images.length - 1]];
+            return;
+        }
+
+        if (this.currentImage >= images.length) {
+            this.deathLoopCount++;
+            this.currentImage = 0;
+
+            if (this.deathLoopCount >= this.maxDeathLoops) {
+                this.currentImage = images.length - 1;
+                this.img = this.imageCache[images[this.currentImage]];
+                return;
+            }
+        }
+
+        let path = images[this.currentImage];
+        this.img = this.imageCache[path];
+        this.currentImage++;
+    }
+
+
+    updateMovement() {
+        if (!this.isAlert || this.isDead() || this.isHurt()) {
+            return;
+        }
+
         const alertDuration = 2000;
         if (Date.now() - this.alertStartTime < alertDuration) {
-            return; // WICHTIG! Keine Bewegung während ALERT
+            return;
         }
-        // ---- AB HIER DARF ER SICH BEWEGEN ----
+
         if (this.direction === "left") {
             this.moveLeft();
             this.otherDirection = false;

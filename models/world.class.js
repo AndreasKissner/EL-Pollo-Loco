@@ -29,11 +29,12 @@ class World {
     }
 
     run() {
+        // Interval for collision and logic checks
         setInterval(() => {
             this.checkcollision();
             this.checkThrowObjects();
             this.checkRespawn();
-        }, 200); 
+        }, 1000 / 60); // WICHTIG: Sollte schneller sein (z.B. 1000/60 oder 1000/30) für bessere Kollisionsprüfung
     }
 
     checkRespawn() {
@@ -52,7 +53,8 @@ class World {
                 maxPosition = enemy.x;
 
                 if(enemy.isDead()) {
-                    enemy.energy = 100;
+                    // NEU: Setze Energie auf den initialen Wert (100) zurück, nicht nur 100
+                    enemy.energy = enemy.initialEnergy; 
                     enemy.speed = 0.15 + Math.random() * 0.25;
                 }
             }
@@ -73,40 +75,43 @@ class World {
             this.throwableObjects.push(bottle);
             this.character.bottles--;
             this.statusBarBottle.setPercentage(this.character.bottles);
+
+            // Setze Wurfverzögerung (z.B. 500ms)
+            setTimeout(() => {
+                this.canThrow = true;
+            }, 500); 
         }
-        if (!this.keyboard.D) {
-            this.canThrow = true;
-        }
+        // Den "canThrow = true" Block außerhalb des If-Statements habe ich entfernt,
+        // da er den Wurf sofort wieder erlauben würde, auch wenn D noch gedrückt ist.
     }
 
     checkcollision() {
         
         // 💥 BOTTLE VS ENEMY KOLLISION 💥
         this.throwableObjects.forEach(bottle => {
+            // Nur prüfen, wenn Flasche fliegt (noch nicht getroffen/am Boden)
             if (!bottle.hasHitGround && !bottle.hasHitEnemy) {
                 
                 this.level.enemies.forEach(enemy => {
+                    // Nur prüfen, wenn Gegner lebt und Kollision stattfindet
                     if (!enemy.isDead() && bottle.isColliding(enemy)) {
 
-                        // 1. Gegner stirbt
-                        enemy.energy = 0; 
-
-                        // 2. Flasche stoppt Bewegung sofort und startet Splash
-                        bottle.hasHitEnemy = true;
-                        
-                        // 🔥 WICHTIG: Stoppt den Wurf-Interval (gegen Glitches)
-                        if (bottle.movementIntervalId) {
-                            clearInterval(bottle.movementIntervalId); 
+                        // --- KORRIGIERTE LOGIK ---
+                        if (enemy instanceof Endboss) {
+                            // Wenn Endboss: Schaden abziehen (20) und Hurt-Animation starten
+                            enemy.hit(); 
+                            console.log(`Endboss getroffen! Energie: ${enemy.energy}`);
+                        } else {
+                            // Wenn normaler Gegner (Huhn): Sofort töten
+                            enemy.energy = 0; 
                         }
-                        
-                        // ❌❌ DIESE ZEILEN SIND ENTSCHEIDEND ❌❌
-                        bottle.currentImage = 0;        // Setzt Animation auf Frame 0 (Start Splash)
-                        bottle.speedY = 0;              // Stoppt Fall/Hochgeschwindigkeit
-                        bottle.acceleration = 0;        // Schaltet Gravitation aus
-                        bottle.isFalling = false;       // Wichtig für MovableObject
+
+                        // Stoppe die Flasche und starte die Splash-Animation (Deine neue Methode)
+                        bottle.onHitEnemy();
+                        // -------------------------
 
                         // Optionale Log-Ausgabe
-                        console.log("💥 Bottle trifft Huhn! Splash gestartet."); 
+                        console.log("💥 Bottle trifft Gegner! Splash gestartet."); 
                     }
                 });
             }
