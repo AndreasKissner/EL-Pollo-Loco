@@ -63,8 +63,11 @@ class MovableObject extends DrawableObject {
             this.energy = 0;
         }
 
-        // 🔥 Der SOUND-Aufruf für "HURT" ist hier (wurde vorher besprochen)
-        SoundManager.play('hurtPepe', 1); 
+      if (this instanceof Endboss) {
+             SoundManager.play('hurtEndboss', 0.6); 
+        } else {
+             SoundManager.play('hurtPepe', 1); 
+        }
 
         // Die Zeilen für den Rückstoß/Kickback sind hier:
         this.lastHit = new Date().getTime();

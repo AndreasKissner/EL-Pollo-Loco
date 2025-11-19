@@ -13,6 +13,8 @@ const ALL_GAME_SOUNDS = {
   "coinSelect" : "audio/coinSelect.mp3",
   'bottleCollect' : 'audio/bottleCollect.mp3',
     'chickKill' : 'audio/chickKill.mp3',
+	  'extraBottle' : 'audio/extraBottle.mp3',
+	  "hurtEndboss" : 'audio/hurtEndboss.mp3',
 	'music': 'audio/musik.mp3' // ⬅️ HIER IST DEINE HINTERGRUNDMUSIK
 };
 
