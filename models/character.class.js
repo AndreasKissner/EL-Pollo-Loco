@@ -98,6 +98,12 @@ class Character extends MovableObject {
         this.animate();
     }
 
+      jump() {
+        super.jump();
+        SoundManager.play('jump', 1);
+    }
+
+
     animate() {
         setInterval(() => {
             // Knockback (wenn verletzt)
@@ -139,7 +145,15 @@ class Character extends MovableObject {
         // Animationen
         setInterval(() => {
             if (this.isDead()) {
-                this.speed = 0;
+                this.speed = 0; 
+               if (!this.deadPlayed) {
+    this.deadPlayed = true;
+
+    setTimeout(() => {
+        SoundManager.play('deadPepe', 1);
+    }, 500); // 0,5 Sekunden
+}
+
                 const now = Date.now();
                 if (!this.deadFinished) {
                     if (now - this.lastDeadFrameTime >= this.deadAnimationSpeed) {
@@ -157,6 +171,7 @@ class Character extends MovableObject {
 
             if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
+                
                 this.idleTimer = 0;
                 return;
             }
@@ -168,7 +183,8 @@ class Character extends MovableObject {
 
             // --- JUMPING
             if (isJumping) {
-                this.playAnimation(this.IMAGES_JUMPING);
+                // Beispiel, in Character.jump()
+                 this.playAnimation(this.IMAGES_JUMPING);
                 this.idleTimer = 0;
                 return;
             }

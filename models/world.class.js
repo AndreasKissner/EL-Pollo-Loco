@@ -109,6 +109,7 @@ class World {
 
                         } else {
                             // Normale Hühner sterben sofort
+                            SoundManager.play('chickKill', 1);
                             enemy.energy = 0; 
                             console.log("💥 Bottle trifft Huhn! Splash gestartet."); 
                         }
@@ -163,6 +164,7 @@ class World {
                 
                 // Normale Hühner werden durch Springen getötet
                 if (this.character.isAboveGround() && this.character.speedY < 0 && !this.character.hitBlocked) {
+                    SoundManager.play('chickKill', 1);
                     enemy.energy = 0;
                     this.character.speedY = 15;
                 } else {
@@ -175,6 +177,7 @@ class World {
         // ... (Coins, Bottles, Plattformen Code) ...
         this.level.coins.forEach((coin, index) => {
             if (this.character.isColliding(coin)) {
+                SoundManager.play('coinSelect', 0.8);
                 this.level.coins.splice(index, 1);
                 this.character.coins++;
                 this.statusBarCoins.percentage++;
@@ -193,6 +196,7 @@ class World {
         this.level.bottles.forEach((bottle, index) => {
             if (this.character.isColliding(bottle)) {
                 if (this.character.bottles < 10) {
+                 SoundManager.play('bottleCollect', 0.8);
                     this.character.bottles++;
                     this.level.bottles.splice(index, 1);
                     this.statusBarBottle.setPercentage(this.character.bottles);

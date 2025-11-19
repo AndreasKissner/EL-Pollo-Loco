@@ -58,6 +58,7 @@ class ThrowableObject extends MovableObject {
         this.speedY = 16;
         this.applyGravity();
         this.animate();
+        SoundManager.play('bottleThrow', 0.7) ;
 
         // ❗ Speichere die ID in der Klasse (movementIntervalId)
         this.movementIntervalId = setInterval(() => {
