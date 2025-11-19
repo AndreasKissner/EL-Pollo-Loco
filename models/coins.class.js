@@ -1,9 +1,9 @@
 class Coin extends MovableObject {
     offset = {
-        top: 50,
-        bottom: 50,
-        left: 35,
-        right: 35
+        top: 35,
+        bottom: 35,
+        left: 50,
+        right: 50
     }
 
     IMAGES_COIN = [
@@ -24,7 +24,7 @@ class Coin extends MovableObject {
     animate() {
         setInterval(() => {
             this.playAnimation(this.IMAGES_COIN);
-        }, 300); // alle 300ms wechseln
+        }, 300); 
     }
 
 }

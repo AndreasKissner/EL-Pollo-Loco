@@ -29,12 +29,11 @@ class World {
     }
 
     run() {
-        // Interval for collision and logic checks
         setInterval(() => {
             this.checkcollision();
             this.checkThrowObjects();
             this.checkRespawn();
-        }, 1000 / 60); // WICHTIG: Sollte schneller sein (z.B. 1000/60 oder 1000/30) für bessere Kollisionsprüfung
+        }, 200); 
     }
 
     checkRespawn() {
@@ -42,19 +41,18 @@ class World {
         let maxPosition = 720;
         
         this.level.enemies.forEach(enemy => {
-            if (enemy.x > maxPosition) {
+            if (!(enemy instanceof Endboss) && enemy.x > maxPosition) {
                 maxPosition = enemy.x;
             }
         });
 
         this.level.enemies.forEach(enemy => {
-            if (enemy.x < -200) { 
+            if (!(enemy instanceof Endboss) && enemy.x < -200) { 
                 enemy.x = maxPosition + 300 + Math.random() * 500;
                 maxPosition = enemy.x;
 
                 if(enemy.isDead()) {
-                    // NEU: Setze Energie auf den initialen Wert (100) zurück, nicht nur 100
-                    enemy.energy = enemy.initialEnergy; 
+                    enemy.energy = 100;
                     enemy.speed = 0.15 + Math.random() * 0.25;
                 }
             }
@@ -75,54 +73,91 @@ class World {
             this.throwableObjects.push(bottle);
             this.character.bottles--;
             this.statusBarBottle.setPercentage(this.character.bottles);
-
-            // Setze Wurfverzögerung (z.B. 500ms)
-            setTimeout(() => {
-                this.canThrow = true;
-            }, 500); 
         }
-        // Den "canThrow = true" Block außerhalb des If-Statements habe ich entfernt,
-        // da er den Wurf sofort wieder erlauben würde, auch wenn D noch gedrückt ist.
+        if (!this.keyboard.D) {
+            this.canThrow = true;
+        }
     }
 
     checkcollision() {
         
-        // 💥 BOTTLE VS ENEMY KOLLISION 💥
+        // 💥 BOTTLE VS ENEMY / BOSSBOSS KOLLISION 💥
         this.throwableObjects.forEach(bottle => {
-            // Nur prüfen, wenn Flasche fliegt (noch nicht getroffen/am Boden)
             if (!bottle.hasHitGround && !bottle.hasHitEnemy) {
                 
                 this.level.enemies.forEach(enemy => {
-                    // Nur prüfen, wenn Gegner lebt und Kollision stattfindet
                     if (!enemy.isDead() && bottle.isColliding(enemy)) {
 
-                        // --- KORRIGIERTE LOGIK ---
                         if (enemy instanceof Endboss) {
-                            // Wenn Endboss: Schaden abziehen (20) und Hurt-Animation starten
-                            enemy.hit(); 
-                            console.log(`Endboss getroffen! Energie: ${enemy.energy}`);
+                            
+                            // ENDBOSS wird nur verletzt
+                            if (!enemy.isHurt()) { // Verhindert Treffer während der Hurt-Animation
+                                enemy.hit(); // Nimmt 20 Schaden (5 Treffer)
+                                console.log(`💥 Bottle trifft BOSS! Restenergie: ${enemy.energy}`);
+                            }
+
                         } else {
-                            // Wenn normaler Gegner (Huhn): Sofort töten
+                            // Normale Hühner sterben sofort
                             enemy.energy = 0; 
+                            console.log("💥 Bottle trifft Huhn! Splash gestartet."); 
                         }
-
-                        // Stoppe die Flasche und starte die Splash-Animation (Deine neue Methode)
-                        bottle.onHitEnemy();
-                        // -------------------------
-
-                        // Optionale Log-Ausgabe
-                        console.log("💥 Bottle trifft Gegner! Splash gestartet."); 
+                        
+                        // Flasche stoppt Bewegung sofort und startet Splash
+                        bottle.hasHitEnemy = true;
+                        if (bottle.movementIntervalId) clearInterval(bottle.movementIntervalId); 
+                        bottle.currentImage = 0;        
+                        bottle.speedY = 0;              
+                        bottle.acceleration = 0;        
+                        bottle.isFalling = false;       
                     }
                 });
             }
         });
+        
+        // 🔥 NEU: BOTTLE VS PLATFORMS KOLLISION
+        this.throwableObjects.forEach(bottle => {
+            if (bottle.hasHitGround || bottle.hasHitEnemy) return; // Schon kaputt
+
+            this.level.platforms.forEach(platform => {
+                // Flasche muss fallen (speedY < 0) und die Plattform berühren
+                let isFalling = bottle.speedY <= 0;
+                
+                // Wir nutzen die einfache Kollision, aber nur für den Zeitpunkt des Aufpralls (von oben nach unten)
+                let touchesPlatform = 
+                    bottle.isColliding(platform) && 
+                    isFalling &&
+                    (bottle.y + bottle.height) > platform.y; 
+
+                if (touchesPlatform) {
+                    // Flasche hat die Plattform getroffen, wird als "am Boden" markiert,
+                    // was den Splash auslöst und die Bewegung stoppt.
+                    bottle.hasHitGround = true;
+                    bottle.currentImage = 0;
+                    bottle.speedY = 0;
+                    bottle.acceleration = 0;
+                    bottle.isFalling = false;
+                    if (bottle.movementIntervalId) clearInterval(bottle.movementIntervalId); 
+                    
+                    console.log("💥 Flasche trifft Plattform und zerbricht.");
+                }
+            });
+        });
 
 
-        // === Enemies vs Character === (Dein alter Code)
+        // === Character vs Enemies (Springen) ===
         this.level.enemies.forEach((enemy) => {
             if (enemy.isDead()) return;
 
             if (this.character.isColliding(enemy)) {
+                
+                // Endboss kann NICHT durch Springen besiegt werden
+                if (enemy instanceof Endboss) {
+                    this.character.hit();
+                    this.statusBar.setPercentage(this.character.energy);
+                    return;
+                }
+                
+                // Normale Hühner werden durch Springen getötet
                 if (this.character.isAboveGround() && this.character.speedY < 0 && !this.character.hitBlocked) {
                     enemy.energy = 0;
                     this.character.speedY = 15;
@@ -187,7 +222,7 @@ class World {
         this.addObjectsToMap(this.level.clouds);
         this.addObjectsToMap(this.level.coins);
         this.addObjectsToMap(this.level.bottles);
-        this.addObjectsToMap(this.level.enemies);
+        this.addObjectsToMap(this.level.enemies); 
         this.addObjectsToMap(this.throwableObjects);
 
         this.throwableObjects = this.throwableObjects.filter(b => !b.markForDeletion);

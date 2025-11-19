@@ -4,8 +4,8 @@ class Character extends MovableObject {
     y = 50;             // Startet etwas höher (fällt sanft herunter)
     speed = 7;
     
-    // 🔥 FIX: Wir setzen den Boden auf die sichtbare Bodenlinie des Spiels (ca. 420).
-    groundLevel = 420; 
+    // 🔥 FIX: Wir setzen den Boden auf die finale Bodenlinie des Bosses (440).
+    groundLevel = 440; 
 
     world;
     deadPlayed = false;
@@ -161,22 +161,27 @@ class Character extends MovableObject {
                 return;
             }
 
-            let isWalking = this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
+            // --- STATUS ERMITTELN ---
+            // 🔥 KORREKTUR: Jetzt zählt auch die D-Taste (Werfen) als Aktivität!
+            let isActive = this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.D;
             let isJumping = this.isAboveGround();
 
+            // --- JUMPING
             if (isJumping) {
                 this.playAnimation(this.IMAGES_JUMPING);
                 this.idleTimer = 0;
                 return;
             }
 
-            if (isWalking) {
-                this.playAnimation(this.IMAGES_WALKING);
+            // --- WALKING / THROWING (Aktiv)
+            if (isActive) {
+                this.playAnimation(this.IMAGES_WALKING); // Nutzt Walk-Animation als Platzhalter für Aktivität
                 this.idleTimer = 0;
                 return;
             }
 
-            if (!isWalking && !isJumping) {
+            // --- IDLE / LONG-IDLE (Letzte Priorität) ---
+            if (!isActive && !isJumping) {
                 this.idleTimer++;
             } else {
                 this.idleTimer = 0;

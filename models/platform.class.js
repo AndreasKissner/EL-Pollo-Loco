@@ -1,4 +1,5 @@
 class Platform extends MovableObject {
+    
     constructor(x, y) {
         super().loadImage('img/11_jumping_platforms/jumping_platf_1.png');
         this.x = x;
@@ -8,9 +9,9 @@ class Platform extends MovableObject {
 
         this.offset = {
             top: 20,   // ⬅️ Plattformoberfläche 20px tiefer setzen
-            bottom: 0,
-            left:   70,
-            right: 80 
+            bottom: 60,
+            left:   20,
+            right: 20  
         }
     }
 }

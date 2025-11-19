@@ -12,9 +12,8 @@ class StatusbarBottle extends Statusbar {
         super();
         this.loadImages(this.IMAGES);
         this.x = 10;
-        this.y = 110;
-        this.width = 170;
-        this.height = 60;
+        this.y = 85 ;
+     
         // Start: 0 Flaschen
         this.setPercentage(0);
     }

@@ -24,7 +24,7 @@ class DrawableObject {
    }
 
  drawFrame(ctx) {
-        if (this instanceof Character  || this instanceof Chicken || this instanceof MiniChicken || this instanceof ThrowableObject || this instanceof Endboss) {
+        if (this instanceof Character  || this instanceof Chicken || this instanceof MiniChicken || this instanceof ThrowableObject || this instanceof Endboss || this instanceof Bottle || this instanceof Coin || this instanceof Platform) {
             
             // BLAU = Das Bild (Das siehst du jetzt schon)
             ctx.beginPath();

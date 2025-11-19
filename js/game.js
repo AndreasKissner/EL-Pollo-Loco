@@ -3,12 +3,6 @@ let world;
 let keyboard = new Keyboard();
 
 
-
-//Reload for Test
-function reload() {
-    location.reload();
-}
-
 function init() {
     canvas = document.getElementById("canvas");
     world = new World(canvas,keyboard);

@@ -28,6 +28,10 @@ class MovableObject extends DrawableObject {
                 this.y -= this.speedY;
                 this.speedY -= this.acceleration;
             }
+             if (!(this instanceof ThrowableObject) && (this.y + this.height) > this.groundLevel) {
+                 this.y = this.groundLevel - this.height;
+                 this.speedY = 0;
+            }
         }, 1000 / 25);
     }
 
@@ -102,7 +106,7 @@ class MovableObject extends DrawableObject {
         this.hitBlocked = true;
 
         const jumpStrength = 10;
-        const knockback = 1;
+        const knockback = 2;
 
         if (this.otherDirection) {
             this.speedX = knockback;
