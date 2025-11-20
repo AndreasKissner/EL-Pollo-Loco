@@ -178,7 +178,7 @@ class Character extends MovableObject {
 
             // --- STATUS ERMITTELN ---
             // 🔥 KORREKTUR: Jetzt zählt auch die D-Taste (Werfen) als Aktivität!
-            let isActive = this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.D;
+            let isActive = this.world.keyboard.RIGHT || this.world.keyboard.LEFT ;
             let isJumping = this.isAboveGround();
 
             // --- JUMPING

@@ -123,6 +123,6 @@ class MovableObject extends DrawableObject {
         setTimeout(() => {
             this.hitBlocked = false;
             this.speedX = 0;
-        }, 1000);
+        }, 1300);
     }
 }

@@ -333,34 +333,42 @@ class World {
         this.ctx.fillText(this.character.bottles, 145, 122);
     }
 
-    checkVictory() {
-        if (this.victoryPlayed) return;
+   checkVictory() {
+    if (this.victoryPlayed) return;
 
-        // Endboss suchen
-        const endboss = this.level.enemies.find(e => e instanceof Endboss);
+    const endboss = this.level.enemies.find(e => e instanceof Endboss);
 
-        if (endboss && endboss.isDead()) {
-            this.victoryPlayed = true;
+    if (endboss && endboss.isDead()) {
+        this.victoryPlayed = true;
 
-            // Bossmusik aus
-            SoundManager.stopBackgroundMusic();
+        SoundManager.stopBackgroundMusic();
 
-            // 1 Sekunde Pause für Effekt
+        // kleine Pause
+        setTimeout(() => {
+
+            SoundManager.startBackgroundMusic('victory', 0.6);
+
+            // 1️⃣ YOU WIN → für 3 Sekunden (mit Fade)
+            winText.showFor(3000);
+
+            // 2️⃣ Victory-Musik läuft 10 Sekunden
             setTimeout(() => {
 
-                // 🔥 Victory-Sound 10 Sekunden lang
-                SoundManager.startBackgroundMusic('victory', 0.6);
+                SoundManager.stopBackgroundMusic();
 
-                // Nach 10 Sekunden → Musik stoppen oder weiterspielen lassen
+                // 3️⃣ 2 HOURS LATER → 2 Sekunden (mit Fade)
+                laterText.showFor(2000);
+
+                // 4️⃣ Nach Text → Cutscene Video starten
                 setTimeout(() => {
-                    SoundManager.stopBackgroundMusic();
-                    console.log("Victory-Musik beendet.");
-                }, 10000);
+                    victoryVideo.play(1);
+                }, 2500);
 
-            }, 1000);
+            }, 10000); // Dauer der Victory-Musik
 
-            console.log("🎉 PEPE GEWINNT!");
-        }
+        }, 1000);
     }
+}
+ 
 
 }
