@@ -1,0 +1,62 @@
+/* Der Video-Container liegt ÜBER ALLEM */
+#cutscene-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: black;
+    z-index: 999999; /* Über Canvas + Text */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1s ease;
+}
+
+#cutscene-container video {
+    width: 90vw;
+    max-width: 900px;
+    border-radius: 20px;
+    box-shadow: 0 0 40px black;
+}
+
+/* Mobile optimiert */
+@media (max-width: 600px) {
+    #cutscene-container video {
+        width: 98vw;
+        border-radius: 10px;
+    }
+}
+
+
+/* Cutscene Texte – auch über allem */
+.cutscene-text {
+    position: fixed;
+    top: 20%;
+    width: 100%;
+    text-align: center;
+
+    font-size: 38px;                /* 🔥 kleiner */
+    font-family: 'mexican';
+    color: white;
+    text-shadow: 2px 2px 10px black;
+
+    opacity: 0;
+    display: none;
+    transition: opacity 1.5s ease;
+
+    z-index: 99999999; /* 🔥 ÜBER Video und Canvas */
+}
+
+@media (max-width: 600px) {
+    .cutscene-text {
+        font-size: 26px; /* 🔥 noch kleiner auf Smartphones */
+    }
+    #cutscene-container video {
+        width: 98vw;
+    }
+}
