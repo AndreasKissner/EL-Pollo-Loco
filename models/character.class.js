@@ -3,9 +3,9 @@ class Character extends MovableObject {
     width = 120;
     y = 50;             // Startet etwas höher (fällt sanft herunter)
     speed = 5;
-    
+
     // 🔥 FIX: Wir setzen den Boden auf die finale Bodenlinie des Bosses (440).
-    groundLevel = 440; 
+    groundLevel = 440;
 
     world;
     deadPlayed = false;
@@ -19,10 +19,10 @@ class Character extends MovableObject {
 
     // 🔥 HITBOX OPTIMIERUNG 🔥
     offset = {
-        top: 100,    
-        bottom: 0,   
-        left: 10,    
-        right: 30    
+        top: 100,
+        bottom: 0,
+        left: 10,
+        right: 30
     };
 
     IMAGES_WALKING = [
@@ -98,7 +98,7 @@ class Character extends MovableObject {
         this.animate();
     }
 
-      jump() {
+    jump() {
         super.jump();
         SoundManager.play('jump', 1);
     }
@@ -107,11 +107,15 @@ class Character extends MovableObject {
     animate() {
         setInterval(() => {
             // Knockback (wenn verletzt)
-            if (this.hitBlocked) {
-                this.x += this.speedX;
-                if(this.x < 0) { this.x = 0; }
-            }
+          if (this.world && this.world.gameOver) {
+        return;
+    }
 
+    // Knockback (wenn verletzt)
+    if (this.hitBlocked) {
+        this.x += this.speedX;
+        if(this.x < 0) { this.x = 0; }
+    }
             // Bewegung nur wenn nicht verletzt
             if (!this.hitBlocked && this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
                 this.moveRight();
@@ -144,15 +148,18 @@ class Character extends MovableObject {
 
         // Animationen
         setInterval(() => {
-            if (this.isDead()) {
-                this.speed = 0; 
-               if (!this.deadPlayed) {
-    this.deadPlayed = true;
-
-    setTimeout(() => {
-        SoundManager.play('deadPepe', 1);
-    }, 500); // 0,5 Sekunden
+            if (this.world && this.world.gameOver) {
+    return;
 }
+
+            if (this.isDead()) {
+                this.speed = 0;
+                if (!this.deadPlayed) {
+                    this.deadPlayed = true;
+                    setTimeout(() => {
+                        SoundManager.play('deadPepe', 1);
+                    }, 500); // 0,5 Sekunden
+                }
 
                 const now = Date.now();
                 if (!this.deadFinished) {
@@ -171,20 +178,20 @@ class Character extends MovableObject {
 
             if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
-                
+
                 this.idleTimer = 0;
                 return;
             }
 
             // --- STATUS ERMITTELN ---
             // 🔥 KORREKTUR: Jetzt zählt auch die D-Taste (Werfen) als Aktivität!
-            let isActive = this.world.keyboard.RIGHT || this.world.keyboard.LEFT ;
+            let isActive = this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
             let isJumping = this.isAboveGround();
 
             // --- JUMPING
             if (isJumping) {
                 // Beispiel, in Character.jump()
-                 this.playAnimation(this.IMAGES_JUMPING);
+                this.playAnimation(this.IMAGES_JUMPING);
                 this.idleTimer = 0;
                 return;
             }
@@ -193,10 +200,10 @@ class Character extends MovableObject {
             if (isActive) {
                 this.playAnimation(this.IMAGES_WALKING); // Nutzt Walk-Animation als Platzhalter für Aktivität
                 this.idleTimer = 0;
-             if (!this.lastWalkSound || Date.now() - this.lastWalkSound > 300) {
-    SoundManager.play("walkingPepe", 0.9);
-    this.lastWalkSound = Date.now();
-}
+                if (!this.lastWalkSound || Date.now() - this.lastWalkSound > 300) {
+                    SoundManager.play("walkingPepe", 0.9);
+                    this.lastWalkSound = Date.now();
+                }
                 return;
             }
 
@@ -226,7 +233,7 @@ class Character extends MovableObject {
                 let p = platforms[i];
                 let platformTop = p.y + (p.offset?.top || 0);
                 let overlapsX = this.x + this.width > p.x + p.offset.left &&
-                                this.x < p.x + p.width - p.offset.right;
+                    this.x < p.x + p.width - p.offset.right;
                 let nextBottom = bottomNow - this.speedY;
                 let falling = this.speedY <= 0;
                 if (overlapsX && falling && bottomNow <= platformTop && nextBottom >= platformTop) {

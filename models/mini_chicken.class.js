@@ -38,6 +38,10 @@ class MiniChicken extends MovableObject {
 
     animate() {
         setInterval(() => {
+            if (this.world && this.world.gameOver) {
+    return;
+}   // Methode mache für alles
+
             if (!this.isDead()) {
                 this.moveLeft();
             }

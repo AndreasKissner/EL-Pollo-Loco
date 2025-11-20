@@ -15,6 +15,8 @@ class World {
     floatingTexts = [];
     victoryPlayed = false;
     lossPlayed = false;
+    gameOver = false;
+
 
 
 
@@ -42,10 +44,28 @@ class World {
 
     run() {
         setInterval(() => {
+
+            // 🔥 Wenn Spiel vorbei → hier sofort raus!
+            if (this.gameOver) {
+                return;
+            }
+
             this.checkcollision();
             this.checkThrowObjects();
             this.checkRespawn();
-            this.checkVictory();
+
+            
+        // ✅ NEU: Sieg prüfen (Endboss tot?)
+        this.checkVictory();
+
+            // 🔥 HIER prüfen wir, ob jemand „Game Over“ auslöst:
+            const endboss = this.level.enemies.find(e => e instanceof Endboss);
+
+            if (this.character.isDead() || (endboss && endboss.isDead())) {
+                this.gameOver = true;
+                console.log("GAME OVER: Pepe oder Endboss ist tot → alles stoppen.");
+            }
+
         }, 1000 / 30);
     }
 
@@ -73,6 +93,7 @@ class World {
     }
 
     checkThrowObjects() {
+        if (this.gameOver) return;   // 🔥 Nach Game Over keine Würfe mehr
         const now = Date.now();
         const cooldown = 1500; // 1 Sekunde Cooldown
 
@@ -333,42 +354,42 @@ class World {
         this.ctx.fillText(this.character.bottles, 145, 122);
     }
 
-   checkVictory() {
-    if (this.victoryPlayed) return;
+    checkVictory() {
+        if (this.victoryPlayed) return;
 
-    const endboss = this.level.enemies.find(e => e instanceof Endboss);
+        const endboss = this.level.enemies.find(e => e instanceof Endboss);
 
-    if (endboss && endboss.isDead()) {
-        this.victoryPlayed = true;
+        if (endboss && endboss.isDead()) {
+            this.victoryPlayed = true;
 
-        SoundManager.stopBackgroundMusic();
+            SoundManager.stopBackgroundMusic();
 
-        // kleine Pause
-        setTimeout(() => {
-
-            SoundManager.startBackgroundMusic('victory', 0.6);
-
-            // 1️⃣ YOU WIN → für 3 Sekunden (mit Fade)
-            winText.showFor(3000);
-
-            // 2️⃣ Victory-Musik läuft 10 Sekunden
+            // kleine Pause
             setTimeout(() => {
 
-                SoundManager.stopBackgroundMusic();
+                SoundManager.startBackgroundMusic('victory', 0.6);
 
-                // 3️⃣ 2 HOURS LATER → 2 Sekunden (mit Fade)
-                laterText.showFor(2000);
+                // 1️⃣ YOU WIN → für 3 Sekunden (mit Fade)
+                winText.showFor(4000);
 
-                // 4️⃣ Nach Text → Cutscene Video starten
+                // 2️⃣ Victory-Musik läuft 10 Sekunden
                 setTimeout(() => {
-                    victoryVideo.play(1);
-                }, 2500);
 
-            }, 10000); // Dauer der Victory-Musik
+                    SoundManager.stopBackgroundMusic();
 
-        }, 1000);
+                    // 3️⃣ 2 HOURS LATER → 2 Sekunden (mit Fade)
+                    laterText.showFor(2000);
+
+                    // 4️⃣ Nach Text → Cutscene Video starten
+                    setTimeout(() => {
+                        victoryVideo.play(1);
+                    }, 2500);
+
+                }, 6000 ); // Dauer der Victory-Musik
+
+            }, 1000);
+        }
     }
-}
- 
+
 
 }
