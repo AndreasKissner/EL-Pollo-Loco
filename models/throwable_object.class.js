@@ -1,8 +1,8 @@
 class ThrowableObject extends MovableObject {
 
-    hasHitEnemy = false; 
+    hasHitEnemy = false;
     movementIntervalId; // Speichert die ID des Wurf-Intervals (wichtig zum Stoppen)
-        offset = { top: 0, left: 0, right: 0, bottom: 0 };
+    offset = { top: 0, left: 0, right: 0, bottom: 0 };
 
     constructor(x, y, direction) {
         super();
@@ -58,27 +58,29 @@ class ThrowableObject extends MovableObject {
         this.speedY = 16;
         this.applyGravity();
         this.animate();
-        SoundManager.play('bottleThrow', 0.7) ;
+        SoundManager.play('bottleThrow', 0.7);
 
         // ❗ Speichere die ID in der Klasse (movementIntervalId)
         this.movementIntervalId = setInterval(() => {
             this.x += 9 * this.direction;
 
-            // Prüfen ob Bottle den BODEN erreicht hat
-            // 🔥 WICHTIG: 370 ist 10px tiefer als 360
-            if (this.y >= 370 && this.hasHitGround !== true) {
+            const groundY = 445 - this.height;
+     
+
+            if (this.y >= groundY && !this.hasHitGround) {
 
                 this.hasHitGround = true;
+                SoundManager.play("bottleBreak", 1);
                 this.currentImage = 0;
                 this.speedY = 0;
                 this.acceleration = 0;
                 this.isFalling = false;
 
-                // Stoppt die horizontale Bewegung!
                 clearInterval(this.movementIntervalId);
                 console.log("Bottle am Boden – Bewegung gestoppt.");
             }
         }, 25);
+
     }
 
     /**

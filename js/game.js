@@ -9,12 +9,20 @@ const ALL_GAME_SOUNDS = {
 	'jump': 'audio/jump.mp3',
 	'hurtPepe': 'audio/hurt.mp3',  /////// Anedern
 	'deadPepe': 'audio/deadPepe.mp3',
-  "bottleThrow": "audio/bottleThrow.mp3",
-  "coinSelect" : "audio/coinSelect.mp3",
-  'bottleCollect' : 'audio/bottleCollect.mp3',
-    'chickKill' : 'audio/chickKill.mp3',
-	  'extraBottle' : 'audio/extraBottle.mp3',
-	  "hurtEndboss" : 'audio/hurtEndboss.mp3',
+	"bottleThrow": "audio/bottleThrow.mp3",
+	"coinSelect": "audio/coinSelect.mp3",
+	'bottleCollect': 'audio/bottleCollect.mp3',
+	'chickKill': 'audio/chickKill.mp3',
+	'extraBottle': 'audio/extraBottle.mp3',
+	"hurtEndboss": 'audio/hurtEndboss.mp3',
+	"walkingPepe": 'audio/walking_pepe.mp3',
+	"bottleBreak": "audio/brokenBottle.mp3",
+	'bossMusic': 'audio/endbossMusic.mp3',
+	'youLose': 'audio/youLose.mp3',
+
+	'victory': 'audio/win.mp3',
+
+
 	'music': 'audio/musik.mp3' // ⬅️ HIER IST DEINE HINTERGRUNDMUSIK
 };
 

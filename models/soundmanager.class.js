@@ -1,42 +1,41 @@
 class SoundManager {
-    // Statische Map zum Speichern der geladenen Audio-Objekte
+
+    // Alle geladenen Sounds
     static audioCache = {};
+
+    // Mute Status
     static isMuted = false;
+
+    // 🔥 NEU: Aktuell laufende Hintergrundmusik
+    static backgroundMusic = null;
+    static currentMusicName = null;
 
     /**
      * Lädt alle Sounddateien einmalig vor.
-     * @param {Object} soundPaths - Ein Objekt mit {name: path} Paaren.
      */
     static loadSounds(soundPaths) {
         for (const name in soundPaths) {
             const path = soundPaths[name];
             const audio = new Audio(path);
-            // Empfohlen: Sounds leiser stellen, da Browser-Defaults oft zu laut sind
-            audio.volume = 0.5; 
+            audio.volume = 0.5; // Grundlautstärke
             SoundManager.audioCache[name] = audio;
         }
         console.log("AudioManager: Sounds erfolgreich vorgeladen.");
     }
 
     /**
-     * Spielt einen Sound ab und startet ihn ggf. neu, wenn er bereits läuft.
-     * @param {string} name - Der eindeutige Name des Sounds (z.B. 'jump').
-     * @param {number} [volume=1] - Optionale Lautstärke (0 bis 1).
+     * Spielt einen Einzelsound ab (z.B. jump, hurt).
      */
     static play(name, volume = 1) {
-        if (SoundManager.isMuted) {
-            return;
-        }
+        if (SoundManager.isMuted) return;
 
         const audio = SoundManager.audioCache[name];
         if (audio) {
-            // Stoppt und setzt den Sound zurück, falls er noch läuft (verhindert Verzögerungen)
             audio.pause();
             audio.currentTime = 0;
-            
             audio.volume = SoundManager.audioCache[name].volume * volume;
+
             audio.play().catch(error => {
-                // Dies kann bei Autoplay-Regeln im Browser passieren.
                 console.warn(`Fehler beim Abspielen von ${name}:`, error);
             });
         } else {
@@ -45,31 +44,52 @@ class SoundManager {
     }
 
     /**
-     * 🔥 NEUE FUNKTION: Startet die Hintergrundmusik im Loop.
-     * @param {string} name - Der Name der Musikdatei.
-     * @param {number} [volume=0.3] - Die Lautstärke.
+     * 🔥 Jetzt mit sauberem Wechsel der Hintergrundmusik
      */
     static startBackgroundMusic(name, volume = 0.3) {
         if (SoundManager.isMuted) return;
 
         const audio = SoundManager.audioCache[name];
-        if (audio) {
-            audio.loop = true; // Wichtig: Endlosschleife aktivieren
-            audio.volume = volume;
-            audio.play().catch(error => {
-                // Dies ist normal, wenn der Browser noch keine Interaktion hatte
-                console.warn(`Fehler beim Starten der Musik:`, error);
-            });
-        } else {
+        if (!audio) {
             console.warn(`Musik-Sound '${name}' nicht gefunden.`);
+            return;
+        }
+
+        // Wenn bereits Musik läuft → stoppen
+        if (SoundManager.backgroundMusic) {
+            SoundManager.backgroundMusic.pause();
+            SoundManager.backgroundMusic.currentTime = 0;
+        }
+
+        // Neue Musik starten
+        audio.loop = true;
+        audio.volume = volume;
+
+        audio.play().catch(error => {
+            console.warn("Fehler beim Starten der Musik:", error);
+        });
+
+        SoundManager.backgroundMusic = audio;
+        SoundManager.currentMusicName = name;
+    }
+
+    /**
+     * 🔥 NEU: Stoppt die Hintergrundmusik sauber
+     */
+    static stopBackgroundMusic() {
+        if (SoundManager.backgroundMusic) {
+            SoundManager.backgroundMusic.pause();
+            SoundManager.backgroundMusic.currentTime = 0;
+            SoundManager.backgroundMusic = null;
+            SoundManager.currentMusicName = null;
         }
     }
 
     /**
-     * Ändert den Mute-Status.
+     * Mute ein/aus
      */
     static toggleMute() {
         SoundManager.isMuted = !SoundManager.isMuted;
         console.log(`SoundManager Mute: ${SoundManager.isMuted}`);
     }
-}  
+}

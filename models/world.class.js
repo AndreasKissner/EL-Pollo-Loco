@@ -13,6 +13,10 @@ class World {
     statusBarBottle = new StatusbarBottle();
     throwableObjects = [];
     floatingTexts = [];
+    victoryPlayed = false;
+    lossPlayed = false;
+
+
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext("2d");
@@ -41,6 +45,7 @@ class World {
             this.checkcollision();
             this.checkThrowObjects();
             this.checkRespawn();
+            this.checkVictory();
         }, 1000 / 30);
     }
 
@@ -118,6 +123,7 @@ class World {
                             enemy.energy = 0;
                             console.log("💥 Bottle trifft Huhn! Splash gestartet.");
                         }
+                        SoundManager.play("bottleBreak", 1);  // 🔥 HIER EINFÜGEN
 
                         bottle.hasHitEnemy = true;
                         if (bottle.movementIntervalId)
@@ -132,25 +138,25 @@ class World {
         });
 
         // 🔥 NEU: BOTTLE VS PLATFORMS KOLLISION
-        this.throwableObjects.forEach((bottle) => {
-            if (bottle.hasHitGround || bottle.hasHitEnemy) return;
-
-            this.level.platforms.forEach((platform) => {
-                let isFalling = bottle.speedY <= 0;
-
-                let touchesPlatform = bottle.isColliding(platform) && isFalling;
-
-                if (touchesPlatform) {
-                    bottle.hasHitGround = true;
-                    bottle.currentImage = 0;
-                    bottle.speedY = 0;
-                    if (bottle.movementIntervalId)
-                        clearInterval(bottle.movementIntervalId);
-
-                    console.log("💥 Flasche trifft Plattform und zerbricht.");
-                }
-            });
-        });
+        /*       this.throwableObjects.forEach((bottle) => {
+                  if (bottle.hasHitGround || bottle.hasHitEnemy) return;
+      
+                  this.level.platforms.forEach((platform) => {
+                      let isFalling = bottle.speedY <= 0;
+      
+                      let touchesPlatform = bottle.isColliding(platform) && isFalling;
+      
+                      if (touchesPlatform) {
+                          bottle.hasHitGround = true;
+                          bottle.currentImage = 0;
+                          bottle.speedY = 0;
+                          if (bottle.movementIntervalId)
+                              clearInterval(bottle.movementIntervalId);
+      
+                          console.log("💥 Flasche trifft Plattform und zerbricht.");
+                      }
+                  });
+              }); */
 
         // === Character vs Enemies (Springen) ===
         this.level.enemies.forEach((enemy) => {
@@ -160,8 +166,23 @@ class World {
                 if (enemy instanceof Endboss) {
                     this.character.hit();
                     this.statusBar.setPercentage(this.character.energy);
+
+                    // 🎵 Prüfen ob Pepe durch Endboss gestorben ist
+                    if (this.character.energy <= 0 && !this.lossPlayed) {
+                        this.lossPlayed = true;
+
+                        // Normale Musik stoppen
+                        SoundManager.stopBackgroundMusic();
+
+                        // 1 Sekunde Pause für Effekt
+                        setTimeout(() => {
+                            SoundManager.startBackgroundMusic('youLose', 0.6);
+                        }, 1000);
+                    }
+
                     return;
                 }
+
 
                 if (
                     this.character.isAboveGround() &&
@@ -181,7 +202,7 @@ class World {
         // === COINS EINSAMMELN ===
         this.level.coins.forEach((coin, index) => {
             if (this.character.isColliding(coin)) {
-                SoundManager.play("coinSelect", 0.8);
+                SoundManager.play("coinSelect", 0.6);
                 this.level.coins.splice(index, 1);
                 this.character.coins++;
 
@@ -194,7 +215,7 @@ class World {
                     this.statusBarCoins.setPercentage(0);
 
                     if (this.character.bottles < 10) {
-                        SoundManager.play("extraBottle", 0.9);
+                        SoundManager.play("extraBottle", 0.7);
 
                         //FloatingText NUR hier sichtbar
                         this.floatingTexts.push(
@@ -213,7 +234,7 @@ class World {
         this.level.bottles.forEach((bottle, index) => {
             if (this.character.isColliding(bottle)) {
                 if (this.character.bottles < 10) {
-                    SoundManager.play("bottleCollect", 0.8);
+                    SoundManager.play("bottleCollect", 0.6);
 
                     // ❌ FloatingText wurde ENTFERNT (war falsch hier!)
 
@@ -311,4 +332,35 @@ class World {
         this.ctx.fillText(this.character.coins, 145, 83);
         this.ctx.fillText(this.character.bottles, 145, 122);
     }
+
+    checkVictory() {
+        if (this.victoryPlayed) return;
+
+        // Endboss suchen
+        const endboss = this.level.enemies.find(e => e instanceof Endboss);
+
+        if (endboss && endboss.isDead()) {
+            this.victoryPlayed = true;
+
+            // Bossmusik aus
+            SoundManager.stopBackgroundMusic();
+
+            // 1 Sekunde Pause für Effekt
+            setTimeout(() => {
+
+                // 🔥 Victory-Sound 10 Sekunden lang
+                SoundManager.startBackgroundMusic('victory', 0.6);
+
+                // Nach 10 Sekunden → Musik stoppen oder weiterspielen lassen
+                setTimeout(() => {
+                    SoundManager.stopBackgroundMusic();
+                    console.log("Victory-Musik beendet.");
+                }, 10000);
+
+            }, 1000);
+
+            console.log("🎉 PEPE GEWINNT!");
+        }
+    }
+
 }

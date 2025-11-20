@@ -27,7 +27,7 @@ class Endboss extends MovableObject {
     lastDeathFrameTime = 0;   // Timer für den Todes-Loop
 
     deathLoopCount = 0;
-    maxDeathLoops = 3;
+    maxDeathLoops = 2;
 
     IMAGES_WALK = [
         'img/4_enemie_boss_chicken/1_walk/G1.png',
@@ -93,16 +93,30 @@ class Endboss extends MovableObject {
     }
 
 
-    checkAlert() {
-        if (!this.world || this.isDead()) return;
+checkAlert() {
+    if (!this.world || this.isDead()) return;
 
-        let playerX = this.world.character.x;
+    let playerX = this.world.character.x;
 
-        if (!this.isAlert && playerX >= this.alertZone) {
-            this.isAlert = true;
-            this.alertStartTime = Date.now();
+    if (!this.isAlert && playerX >= this.alertZone) {
+        this.isAlert = true;
+        this.alertStartTime = Date.now();
+
+        // 🔥 BOSSMUSIK STARTEN (nur 1x)
+        if (!this.bossMusicStarted) {
+            this.bossMusicStarted = true;
+
+            // Normale Musik stoppen
+            SoundManager.stopBackgroundMusic();
+
+            // 1 Sekunde warten → dann Bossmusik
+            setTimeout(() => {
+                SoundManager.startBackgroundMusic('bossMusic', 0.4);
+            }, 1000);
         }
     }
+}
+
 
     updateAnimation() {
         const now = Date.now();

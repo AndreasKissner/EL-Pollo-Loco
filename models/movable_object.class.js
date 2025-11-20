@@ -109,8 +109,8 @@ class MovableObject extends DrawableObject {
         if (this.hitBlocked) return;
         this.hitBlocked = true;
 
-        const jumpStrength = 10;
-        const knockback = 2;
+        const jumpStrength = 6;
+        const knockback = 1;
 
         if (this.otherDirection) {
             this.speedX = knockback;

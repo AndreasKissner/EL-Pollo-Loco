@@ -193,6 +193,10 @@ class Character extends MovableObject {
             if (isActive) {
                 this.playAnimation(this.IMAGES_WALKING); // Nutzt Walk-Animation als Platzhalter für Aktivität
                 this.idleTimer = 0;
+             if (!this.lastWalkSound || Date.now() - this.lastWalkSound > 300) {
+    SoundManager.play("walkingPepe", 0.9);
+    this.lastWalkSound = Date.now();
+}
                 return;
             }
 
