@@ -63,6 +63,7 @@ class World {
 
             if (this.character.isDead() || (endboss && endboss.isDead())) {
                 this.gameOver = true;
+                SoundManager.stopBackgroundMusic();
                 console.log("GAME OVER: Pepe oder Endboss ist tot → alles stoppen.");
             }
 

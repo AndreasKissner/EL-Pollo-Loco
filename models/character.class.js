@@ -107,7 +107,7 @@ class Character extends MovableObject {
     animate() {
         setInterval(() => {
             // Knockback (wenn verletzt)
-          if (this.world && this.world.gameOver) {
+          if ( this.world.gameOver) {
         return;
     }
 
@@ -148,9 +148,7 @@ class Character extends MovableObject {
 
         // Animationen
         setInterval(() => {
-            if (this.world && this.world.gameOver) {
-    return;
-}
+
 
             if (this.isDead()) {
                 this.speed = 0;
