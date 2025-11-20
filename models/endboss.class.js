@@ -83,14 +83,20 @@ class Endboss extends MovableObject {
         this.animate();
         this.applyGravity();
     }
+animate() {
+    setInterval(() => {
 
-    animate() {
-        setInterval(() => {
-            this.checkAlert();
-            this.updateAnimation();
-            this.updateMovement();
-        }, 1000 / 30);
-    }
+        // ❗ Nur blockieren, wenn Spiel vorbei UND Boss noch lebt
+        if (this.world && this.world.gameOver && !this.isDead()) {
+            return;
+        }
+
+        this.checkAlert();
+        this.updateAnimation();
+        this.updateMovement();
+    }, 1000 / 30);
+}
+
 
 
 checkAlert() {
