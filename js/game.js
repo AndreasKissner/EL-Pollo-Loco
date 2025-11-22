@@ -101,14 +101,101 @@ window.addEventListener('keyup', (event) => {
 
 //start game
 function startGame() {
-	// 1. Startscreen ausblenden
-	const startScreen = document.getElementById("start-screen");
-	startScreen.style.display = "none";
-	// 2. Canvas einblenden
-	const canvas = document.getElementById("canvas");
-	canvas.style.display = "block";
-	// 3. Spiel starten
-	init();
+    // 1. Startscreen ausblenden
+    const startScreen = document.getElementById("start-screen");
+    startScreen.style.display = "none";
+
+    // 2. Canvas einblenden
+    const canvas = document.getElementById("canvas");
+    canvas.style.display = "block";
+
+    // 3. Spiel starten
+    init();
+
+    // 4. Touch-Buttons aktivieren (kommt aus js/button.js)
+    if (typeof initTouchButtons === 'function') {
+        initTouchButtons();
+    } else {
+        console.warn('initTouchButtons() nicht gefunden – ist js/button.js eingebunden?');
+    }
 }
 
 
+
+// js/button.js
+// Initialisiert die Touch-/Maus-Buttons für Mobile & Desktop
+
+function initTouchButtons() {
+    const btnLeft  = document.getElementById('btn-left');
+    const btnRight = document.getElementById('btn-right');
+    const btnJump  = document.getElementById('btn-jump');
+    const btnThrow = document.getElementById('btn-throw');
+
+    if (!btnLeft || !btnRight || !btnJump || !btnThrow) {
+        console.warn('Touch-Buttons nicht gefunden – prüfe IDs in index.html');
+        return;
+    }
+
+    function safePrevent(e) {
+        if (e && e.cancelable) {
+            e.preventDefault();
+        }
+    }
+
+    // --- Aktionen ---
+    function pressLeft(e) {
+        safePrevent(e);
+        keyboard.LEFT = true;
+    }
+    function releaseLeft(e) {
+        safePrevent(e);
+        keyboard.LEFT = false;
+    }
+
+    function pressRight(e) {
+        safePrevent(e);
+        keyboard.RIGHT = true;
+    }
+    function releaseRight(e) {
+        safePrevent(e);
+        keyboard.RIGHT = false;
+    }
+
+    function pressJump(e) {
+        safePrevent(e);
+        keyboard.SPACE = true;
+    }
+    function releaseJump(e) {
+        safePrevent(e);
+        keyboard.SPACE = false;
+    }
+
+    function pressThrow(e) {
+        safePrevent(e);
+        keyboard.D = true;
+    }
+    function releaseThrow(e) {
+        safePrevent(e);
+        keyboard.D = false;
+    }
+
+    // Helper zum Anhängen
+    function attachButton(btn, pressFn, releaseFn) {
+        // Touch
+        btn.addEventListener('touchstart', pressFn,  { passive: false });
+        btn.addEventListener('touchend',   releaseFn, { passive: false });
+        btn.addEventListener('touchcancel',releaseFn, { passive: false });
+
+        // Maus (zum Testen am PC)
+        btn.addEventListener('mousedown',  pressFn);
+        btn.addEventListener('mouseup',    releaseFn);
+        btn.addEventListener('mouseleave', releaseFn);
+    }
+
+    attachButton(btnLeft,  pressLeft,  releaseLeft);
+    attachButton(btnRight, pressRight, releaseRight);
+    attachButton(btnJump,  pressJump,  releaseJump);
+    attachButton(btnThrow, pressThrow, releaseThrow);
+
+    console.log('Touch-Buttons initialisiert.');
+}
