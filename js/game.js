@@ -5,8 +5,6 @@ window.addEventListener("keydown", (e) => {
     }
 });
 
-window.addEventListener("touchmove", e => e.preventDefault(), { passive: false });
-
 
 let canvas;
 let world;
@@ -103,47 +101,14 @@ window.addEventListener('keyup', (event) => {
 
 //start game
 function startGame() {
-    document.getElementById("start-screen").style.display = "none";
-    document.getElementById("canvas").style.display = "block";
-
-    setupMobileControls();  // ← HIER
-
-    init();
-}
-
-
-function setupMobileControls() {
-    // LEFT
-    document.getElementById('btn-left').addEventListener('touchstart', () => {
-        keyboard.LEFT = true;
-    });
-    document.getElementById('btn-left').addEventListener('touchend', () => {
-        keyboard.LEFT = false;
-    });
-
-    // RIGHT
-    document.getElementById('btn-right').addEventListener('touchstart', () => {
-        keyboard.RIGHT = true;
-    });
-    document.getElementById('btn-right').addEventListener('touchend', () => {
-        keyboard.RIGHT = false;
-    });
-
-    // JUMP → ***SPACE***, NICHT UP!
-    document.getElementById('btn-jump').addEventListener('touchstart', () => {
-        keyboard.SPACE = true;
-    });
-    document.getElementById('btn-jump').addEventListener('touchend', () => {
-        keyboard.SPACE = false;
-    });
-
-    // THROW → D
-    document.getElementById('btn-throw').addEventListener('touchstart', () => {
-        keyboard.D = true;
-    });
-    document.getElementById('btn-throw').addEventListener('touchend', () => {
-        keyboard.D = false;
-    });
+	// 1. Startscreen ausblenden
+	const startScreen = document.getElementById("start-screen");
+	startScreen.style.display = "none";
+	// 2. Canvas einblenden
+	const canvas = document.getElementById("canvas");
+	canvas.style.display = "block";
+	// 3. Spiel starten
+	init();
 }
 
 

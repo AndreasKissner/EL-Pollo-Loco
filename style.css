@@ -183,3 +183,55 @@ canvas {
         bottom: 20px;
     }
 }
+/* ===================================== */
+/*    OVERLAY "BITTE BILDSCHIRM DREHEN"  */
+/* ===================================== */
+ 
+#rotate-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: none;              /* Standard: versteckt */
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    padding: 20px;
+    z-index: 200000;
+    pointer-events: auto;
+} 
+
+.rotate-box {
+    max-width: 320px;
+    border-radius: 16px;
+    padding: 20px 24px;
+    background: rgba(30, 30, 30, 0.95);
+    border: 3px solid rgb(255, 181, 55);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+.rotate-box h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.rotate-box p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.9;
+}
+
+/* Handy hochkant, schmaler Screen → Overlay an */
+@media only screen and (max-width: 480px) and (orientation: portrait) {
+    #rotate-overlay {
+        display: flex;
+    }
+
+    #fullscreen,
+    #start-screen,
+    #game-hud {
+        pointer-events: none;
+        filter: blur(3px);
+    }
+}
