@@ -1,95 +1,108 @@
 class SoundManager {
 
-    // Alle geladenen Sounds
     static audioCache = {};
-
-    // Mute Status
     static isMuted = false;
-
-    // 🔥 NEU: Aktuell laufende Hintergrundmusik
+    static masterVolume = 1; 
     static backgroundMusic = null;
     static currentMusicName = null;
+    static currentMusicVolume = 0.3;
 
-    /**
-     * Lädt alle Sounddateien einmalig vor.
-     */
     static loadSounds(soundPaths) {
         for (const name in soundPaths) {
-            const path = soundPaths[name];
-            const audio = new Audio(path);
-            audio.volume = 0.5; // Grundlautstärke
+            const audio = new Audio(soundPaths[name]);
+            audio.volume = 0.5;
+            audio.preload = "auto";
+            audio.autoplay = false;
             SoundManager.audioCache[name] = audio;
         }
         console.log("AudioManager: Sounds erfolgreich vorgeladen.");
     }
 
     /**
-     * Spielt einen Einzelsound ab (z.B. jump, hurt).
+     * SICHERES SOUND-PLAY:
+     * - Keine Unterbrechungen mehr
+     * - Keine play/pause Konflikte
+     * - Chrome wirft keine Fehler mehr
      */
     static play(name, volume = 1) {
-        if (SoundManager.isMuted) return;
+
+        if (SoundManager.masterVolume === 0) return;
 
         const audio = SoundManager.audioCache[name];
-        if (audio) {
-            audio.pause();
-            audio.currentTime = 0;
-            audio.volume = SoundManager.audioCache[name].volume * volume;
+        if (!audio) return;
 
-            audio.play().catch(error => {
-                console.warn(`Fehler beim Abspielen von ${name}:`, error);
-            });
-        } else {
-            console.warn(`Sound '${name}' nicht gefunden.`);
-        }
+        // WICHTIG: Wenn Sound gerade spielt → NICHT erneut starten
+        if (!audio.paused) return;
+
+        // Zeit nur zurücksetzen wenn pausiert
+        audio.currentTime = 0;
+
+        audio.volume = 0.5 * volume * SoundManager.masterVolume;
+
+        audio.play().catch(err => {
+            console.warn(`Play-Fehler bei ${name}:`, err);
+        });
     }
 
-    /**
-     * 🔥 Jetzt mit sauberem Wechsel der Hintergrundmusik
-     */
+
     static startBackgroundMusic(name, volume = 0.3) {
+
+        SoundManager.currentMusicVolume = volume;
+
         if (SoundManager.isMuted) return;
 
         const audio = SoundManager.audioCache[name];
         if (!audio) {
-            console.warn(`Musik-Sound '${name}' nicht gefunden.`);
+            console.warn(`Musik '${name}' nicht gefunden.`);
             return;
         }
 
-        // Wenn bereits Musik läuft → stoppen
-        if (SoundManager.backgroundMusic) {
-            SoundManager.backgroundMusic.pause();
-            SoundManager.backgroundMusic.currentTime = 0;
+        // Falls andere Musik läuft → stoppen
+        if (SoundManager.backgroundMusic && SoundManager.backgroundMusic !== audio) {
+            SoundManager.stopBackgroundMusic();
         }
 
-        // Neue Musik starten
-        audio.loop = true;
-        audio.volume = volume;
+        // Wenn Musik schon spielt → nichts tun
+        if (SoundManager.backgroundMusic === audio && !audio.paused) return;
 
-        audio.play().catch(error => {
-            console.warn("Fehler beim Starten der Musik:", error);
-        });
+        audio.loop = true;
+        audio.volume = volume * SoundManager.masterVolume;
+
+        audio.play().catch(e => console.warn("Musik-Start Fehler:", e));
 
         SoundManager.backgroundMusic = audio;
         SoundManager.currentMusicName = name;
     }
 
-    /**
-     * 🔥 NEU: Stoppt die Hintergrundmusik sauber
-     */
+
     static stopBackgroundMusic() {
         if (SoundManager.backgroundMusic) {
             SoundManager.backgroundMusic.pause();
             SoundManager.backgroundMusic.currentTime = 0;
-            SoundManager.backgroundMusic = null;
-            SoundManager.currentMusicName = null;
         }
+        SoundManager.backgroundMusic = null;
+        SoundManager.currentMusicName = null;
     }
 
+
     /**
-     * Mute ein/aus
+     * Toggle-Mute – nur Volume ändern!  
+     * KEIN pause() mehr → KEINE Chrome-Bugs!
      */
     static toggleMute() {
         SoundManager.isMuted = !SoundManager.isMuted;
-        console.log(`SoundManager Mute: ${SoundManager.isMuted}`);
+        SoundManager.masterVolume = SoundManager.isMuted ? 0 : 1;
+
+        console.log("Mute:", SoundManager.isMuted);
+
+        // Musik nur leiser/höher stellen
+        if (SoundManager.backgroundMusic) {
+            SoundManager.backgroundMusic.volume =
+                SoundManager.currentMusicVolume * SoundManager.masterVolume;
+
+            if (!SoundManager.isMuted && SoundManager.backgroundMusic.paused) {
+                SoundManager.backgroundMusic.play().catch(e => console.warn(e));
+            }
+        }
     }
 }

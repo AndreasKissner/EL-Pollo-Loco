@@ -2,7 +2,7 @@ class Chicken extends MovableObject {
     y = 380; // Y-Position auf Bodenhöhe angepasst
     height = 60;
     width = 60;
-    
+
     offset = {
         top: -10,      // Hitbox optimiert
         bottom: 5,
@@ -32,7 +32,7 @@ class Chicken extends MovableObject {
         } else {
             this.x = 400 + Math.random() * 4200;
         }
-        
+
         this.speed = 0.20 + Math.random() * 0.25;
         this.animate();
     }
@@ -40,8 +40,8 @@ class Chicken extends MovableObject {
     animate() {
         setInterval(() => {
             if (this.world && this.world.gameOver) {
-    return;
-}
+                return;
+            }
 
             if (!this.isDead()) {
                 this.moveLeft();
@@ -54,8 +54,6 @@ class Chicken extends MovableObject {
             } else {
                 this.playAnimation(this.IMAGES_WALKING);
             }
-            // ❌ HIER WURDE DIE FEHLERHAFTE ZEILE ENTFERNT! 
-            // Der Respawn läuft jetzt korrekt über die World-Klasse.
         }, 200);
     }
 }

@@ -98,11 +98,14 @@ class Character extends MovableObject {
         this.animate();
     }
 
-    jump() {
-        super.jump();
-        SoundManager.play('jump', 1);
-    }
 
+jump() {
+    super.jump();
+    if (!SoundManager.isMuted) {
+       SoundManager.play('jump');
+
+    }
+}
 
     animate() {
         setInterval(() => {

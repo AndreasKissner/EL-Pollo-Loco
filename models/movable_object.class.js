@@ -28,9 +28,9 @@ class MovableObject extends DrawableObject {
                 this.y -= this.speedY;
                 this.speedY -= this.acceleration;
             }
-             if (!(this instanceof ThrowableObject) && (this.y + this.height) > this.groundLevel) {
-                 this.y = this.groundLevel - this.height;
-                 this.speedY = 0;
+            if (!(this instanceof ThrowableObject) && (this.y + this.height) > this.groundLevel) {
+                this.y = this.groundLevel - this.height;
+                this.speedY = 0;
             }
         }, 1000 / 25);
     }
@@ -53,8 +53,10 @@ class MovableObject extends DrawableObject {
         );
     }
 
-// movable-object.class.js
+    // movable-object.class.js
 
+    // movable-object.class.js
+    // ...
     hit() {
         if (this.hitBlocked) return;
         this.energy -= 20; // 20 Schaden pro Treffer
@@ -63,16 +65,20 @@ class MovableObject extends DrawableObject {
             this.energy = 0;
         }
 
-      if (this instanceof Endboss) {
-             SoundManager.play('hurtEndboss', 0.6); 
-        } else {
-             SoundManager.play('hurtPepe', 1); 
+        // ✅ KORRIGIERTE LOGIK: Sounds nur abspielen, wenn NICHT gemutet
+        if (!SoundManager.isMuted) {
+            if (this instanceof Endboss) {
+                SoundManager.play('hurtEndboss', 0.6);
+            } else {
+                SoundManager.play('hurtPepe', 1);
+            }
         }
 
         // Die Zeilen für den Rückstoß/Kickback sind hier:
         this.lastHit = new Date().getTime();
         this.hitOutTime(); // <--- DIESE FUNKTION LÖST DEN SPRUNG AUS
     }
+    // ...
 
     isHurt() {
         let timepassed = new Date().getTime() - this.lastHit;

@@ -13,7 +13,6 @@ class ThrowableObject extends MovableObject {
         this.width = 50;
         this.height = 60;
         this.direction = direction;
-
         this.rotation = 0;
         this.rotationSpeed = 0.25;// brauc ich?
         this.throw();
@@ -48,7 +47,7 @@ class ThrowableObject extends MovableObject {
                     this.markForDeletion = true;
                 }
             } else {
-                // Wenn Bottle noch fliegt → Rotation
+                // Wenn Bottle noch fliegt Rotation laufen lassen
                 this.playAnimation(this.IMAGES_BOTTLE_ROTATE);
             }
         }, 100);
@@ -65,7 +64,7 @@ class ThrowableObject extends MovableObject {
             this.x += 9 * this.direction;
 
             const groundY = 445 - this.height;
-     
+
 
             if (this.y >= groundY && !this.hasHitGround) {
 
@@ -80,7 +79,6 @@ class ThrowableObject extends MovableObject {
                 console.log("Bottle am Boden – Bewegung gestoppt.");
             }
         }, 25);
-
     }
 
     /**

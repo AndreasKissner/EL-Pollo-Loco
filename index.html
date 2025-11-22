@@ -1,62 +1,123 @@
 <!DOCTYPE html>
 <html translate="no">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>El Pollo Loco</title>
-    <link rel="icon" type="img/png" href="./img/favicon.png" />
 
-    <link rel="stylesheet" href="./style.css" />
-    <link rel="stylesheet" href="./styles/cutscene.css">
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>El Pollo Loco</title>
+  <link rel="icon" type="img/png" href="./img/favicon.png" />
 
-  <body onload="init()">
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./styles/start-menue.css" />
+  <link rel="stylesheet" href="./styles/cutscene.css" />
+</head>
 
-    <!-- Victory Video -->
-<div id="cutscene-container">
-    <video id="victoryVideo">
-        <source src="video/pepe_chicken.mp4" type="video/mp4">
-    </video>
-</div>
+<body>
+  <div id="start-screen" class="start-screen">
+    <div id="startMenu" class="start-menu">
+      <img src="./img/startimg.png" id="startImage" class="start-image" alt="Startscreen" />
+      <!-- PLAY BUTTON auf dem Bild -->
+      <button onclick="startGame()" class="start-btn">PLAY</button>
+    </div>
+  </div>
 
-<!-- Cutscene Texte -->
-<div id="winText" class="cutscene-text">YOU WIN – CONGRATULATIONS!</div>
-<div id="laterText" class="cutscene-text">2 HOURS <br>LATER…</div>
+  <!-- POPUP für Anweisungen -->
+  <div id="keyboardInstructions" class="keyboard-info hidden">
+    <div class="instruction-row">
+      <img src="img/arrow_left.png" />
+      <span>run left</span>
+    </div>
+    <div class="instruction-row">
+      <img src="img/arrow_right.png" />
+      <span>run right</span>
+    </div>
+    <div class="instruction-row">
+      <img src="img/key_jump.png" />
+      <span>jump</span>
+    </div>
+    <div class="instruction-row">
+      <img src="img/key_d.png" />
+      <span>throw bottle</span>
+    </div>
+  </div>
 
-    <button onclick="toggleFullscreen(document.getElementById('canvas'))">
-      Fullscreen
-    </button>
 
-  
-    <div id="fullscreen">
-      <canvas id="canvas" width="720" height="480"></canvas>
+  <!-- ============================== -->
+  <!-- GAME HUD (immer sichtbar)     -->
+  <!-- ============================== -->
+  <div id="game-hud">
+    <!-- OBEN RECHTS: Settings -->
+    <div class="hud-top-right">
+
+ <button id="hud-sound" onclick="toggleSound()" class="hud-btn" tabindex="-1">
+
+  <img id="sound-icon" src="img/volume_on.png" />
+</button>
+
+      <button id="hud-keyboard" class="hud-btn" onclick="toggleKeyboardInfo()">
+        <img src="img/key_space.png" />
+      </button>
     </div>
 
-    <script src="./models/drawable_object.class.js"></script>
-    <script src="./models/movable_object.class.js"></script>
-    <script src="./models/video.class.js"></script>
-    <script src="./models/floating_text.class.js"></script>
-    <script src="./models/character.class.js"></script>
-    <script src="./models/chicken.class.js"></script>
-    <script src="./models/cloud.class.js"></script>
-    <script src="./models/status_bar.class.js"></script>
-    <script src="./models/status_bar_bottle.class.js"></script>
-    <script src="./models/status_bar_coins.class.js"></script>
-    <script src="./models/coins.class.js"></script>
-    <script src="./models/bottle.class.js"></script>
-    <script src="./models/world.class.js"></script>
-    <script src="./models/cutscene-text.class.js"></script>
-    <script src="./models/background_object.class.js"></script>
-    <script src="./models/keyboard.class.js"></script>
-    <script src="./models/endboss.class.js"></script>
-    <script src="./models/mini_chicken.class.js"></script>
-    <script src="./models/platform.class.js"></script>
-    <script src="./models/throwable_object.class.js"></script>
-    <script src="./models/soundmanager.class.js"></script>
-    <script src="./models/level.class.js"></script>
-    <script src="./levels/level1.js"></script>
-    <script src="./js/game.js"></script>
-    <script src="./script.js"></script>
-  </body>
+    <!-- UNTEN LINKS: Mobile Move -->
+    <div class="hud-bottom-left">
+      <button class="hud-move-btn" id="btn-left">←</button>
+      <button class="hud-move-btn" id="btn-right">→</button>
+    </div>
+
+    <!-- UNTEN RECHTS: Mobile Actions -->
+    <div class="hud-bottom-right">
+      <button class="hud-action-btn" id="btn-jump">JUMP</button>
+      <button class="hud-action-btn" id="btn-throw">BOTTLE</button>
+    </div>
+  </div>
+
+  <!-- Victory Video -->
+  <div id="cutscene-container">
+    <video id="victoryVideo">
+      <source src="video/pepe_chicken.mp4" type="video/mp4" />
+    </video>
+  </div>
+
+  <!-- Cutscene Texte -->
+  <div id="winText" class="cutscene-text">YOU WIN – CONGRATULATIONS!</div>
+  <div id="laterText" class="cutscene-text">2 HOURS <br />LATER…</div>
+
+  <button onclick="toggleFullscreen(document.getElementById('canvas'))" class="d-none">
+    Fullscreen
+  </button>
+
+  <div id="fullscreen">
+    <canvas id="canvas" width="720" height="480" class="d-none"></canvas>
+  </div>
+
+  <script src="./models/drawable_object.class.js"></script>
+  <script src="./models/movable_object.class.js"></script>
+  <script src="./models/video.class.js"></script>
+  <script src="./models/floating_text.class.js"></script>
+  <script src="./models/character.class.js"></script>
+  <script src="./models/chicken.class.js"></script>
+  <script src="./models/cloud.class.js"></script>
+  <script src="./models/status_bar.class.js"></script>
+  <script src="./models/status_bar_bottle.class.js"></script>
+  <script src="./models/status_bar_coins.class.js"></script>
+  <script src="./models/coins.class.js"></script>
+  <script src="./models/bottle.class.js"></script>
+  <script src="./models/world.class.js"></script>
+  <script src="./models/cutscene-text.class.js"></script>
+  <script src="./models/background_object.class.js"></script>
+  <script src="./models/keyboard.class.js"></script>
+  <script src="./models/endboss.class.js"></script>
+  <script src="./models/mini_chicken.class.js"></script>
+  <script src="./models/platform.class.js"></script>
+  <script src="./models/throwable_object.class.js"></script>
+  <script src="./models/soundmanager.class.js"></script>
+  <script src="./models/level.class.js"></script>
+  <script src="./levels/level1.js"></script>
+  <script src="./js/game.js"></script>
+  <script src="./script.js"></script>
+  <script src="./js/button.js"></script>
+</body>
+
 </html>
