@@ -51,12 +51,12 @@ canvas {
 
 #game-hud {
     position: fixed;
-    top: -80px;
+    top: -80;
     left: 0;
     width: 100%;
     height: 100%;
     pointer-events: none; 
-    z-index: 40; 
+    z-index: 100000; 
 }
 
 /* ---------- HUD Status Icons (oben links) ---------- */
@@ -182,60 +182,4 @@ canvas {
         right: 20px;
         bottom: 20px;
     }
-}
-
-@media (min-width: 761px) {
-    .hud-bottom-left,
-    .hud-bottom-right {
-        display: none !important;
-    }
-}
-
-
-/* ===== Handy-Dreh-Hinweis ===== */
-
-.rotate-message {
-  position: fixed;
-  top: 0;
-  left: -20px;
-  width: 100vw;
-  height: 100vh;
-
-  display: flex !important;   /* Wichtig */
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-
-  background: rgba(0, 0, 0, 0.85);
-  z-index: 999999999;
-  padding: 20px;
-
-  pointer-events: none; /* Overlay blockiert nichts außer Klicks */
-  visibility: hidden;   /* Default AUS */
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.rotate-message p {
-color: #fff;
-    font-family: mexican;
-    font-size: 18px;
-    margin: 0;
-    line-height: 2.7;
-}
-
-/* Hochformat → Hinweis Sichtbar */
-@media screen and (orientation: portrait) and (max-width: 900px) {
-  #rotate-device {
-    visibility: visible;
-    opacity: 1;
-  }
-}
-
-/* Querformat → Hinweis unsichtbar */
-@media screen and (orientation: landscape) {
-  #rotate-device {
-    visibility: hidden;
-    opacity: 0;
-  }
 }
