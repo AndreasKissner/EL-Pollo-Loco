@@ -50,13 +50,13 @@ canvas {
 /* ======================================================= */
 
 #game-hud {
-    position: fixed;
-    top: -80;
-    left: 0;
-    width: 100%;
+       position: fixed;
+    top: -91px;
+    left: 115px;
+    width: 73%;
     height: 100%;
-    pointer-events: none; 
-    z-index: 100000; 
+    pointer-events: none;
+    z-index: 100000;
 }
 
 /* ---------- HUD Status Icons (oben links) ---------- */
@@ -121,8 +121,8 @@ canvas {
 }
 
 .hud-move-btn {
-    width: 75px;
-    height: 75px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     background-color: rgba(243, 128, 5, 0.85);
     border: 3px solid rgb(255, 181, 55);
@@ -148,8 +148,8 @@ canvas {
 }
 
 .hud-action-btn {
-    width: 85px;
-    height: 85px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     background-color: rgba(243, 128, 5, 0.85);
     border: 3px solid rgb(255, 181, 55);
