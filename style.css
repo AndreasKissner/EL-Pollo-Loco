@@ -199,7 +199,8 @@ canvas {
     padding: 20px;
     z-index: 200000;
     pointer-events: auto;
-}
+} 
+
 
 .rotate-box {
     max-width: 320px;
