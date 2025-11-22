@@ -45,7 +45,7 @@ class World {
     run() {
         setInterval(() => {
 
-            // 🔥 Wenn Spiel vorbei → hier sofort raus!
+            // gAME OVER NOCH ALS Methode machen für alle aufrufe
             if (this.gameOver) {
                 return;
             }
@@ -64,7 +64,7 @@ class World {
             if (this.character.isDead() || (endboss && endboss.isDead())) {
                 this.gameOver = true;
                 SoundManager.stopBackgroundMusic();
-                console.log("GAME OVER: Pepe oder Endboss ist tot → alles stoppen.");
+                console.log("GAME OVER: Pepe oder Endboss ist tot alles stoppen.");
             }
 
         }, 1000 / 30);

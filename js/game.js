@@ -1,4 +1,10 @@
 // VOR init() darf nur Code stehen, der keine DOM-Elemente oder Funktionen braucht
+window.addEventListener("keydown", (e) => {
+    if (e.code === "Space") {
+        e.preventDefault();   // ← verhindert Button-Klick
+    }
+});
+
 
 let canvas;
 let world;
@@ -20,10 +26,7 @@ const ALL_GAME_SOUNDS = {
 	"bottleBreak": "audio/brokenBottle.mp3",
 	'bossMusic': 'audio/endbossMusic.mp3',
 	'youLose': 'audio/youLose.mp3',
-
 	'victory': 'audio/win.mp3',
-
-
 	'music': 'audio/musik.mp3' // ⬅️ HIER IST DEINE HINTERGRUNDMUSIK
 };
 
@@ -35,12 +38,12 @@ function init() {
 	SoundManager.loadSounds(ALL_GAME_SOUNDS);
 
 	world = new World(canvas, keyboard);
-	  // Victory & Later Text initialisieren
-    winText = new CutsceneText("winText");
-    laterText = new CutsceneText("laterText");
+	// Victory & Later Text initialisieren
+	winText = new CutsceneText("winText");
+	laterText = new CutsceneText("laterText");
 
-    // Video-Klasse
-    victoryVideo = new GameVideo("victoryVideo");
+	// Video-Klasse
+	victoryVideo = new GameVideo("victoryVideo");
 
 	// 🔥 HIER MUSST DU DIE MUSIK STARTEN (mit reduzierter Lautstärke 0.4)
 	SoundManager.startBackgroundMusic('music', 0.1);
@@ -94,4 +97,18 @@ window.addEventListener('keyup', (event) => {
 	if (event.keyCode == 68) {
 		keyboard.D = false;
 	}
-}); 
+});
+
+//start game
+function startGame() {
+	// 1. Startscreen ausblenden
+	const startScreen = document.getElementById("start-screen");
+	startScreen.style.display = "none";
+	// 2. Canvas einblenden
+	const canvas = document.getElementById("canvas");
+	canvas.style.display = "block";
+	// 3. Spiel starten
+	init();
+}
+
+

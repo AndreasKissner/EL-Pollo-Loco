@@ -11,6 +11,9 @@ class GameVideo {
             if (this.onFinishCallback) {
                 this.onFinishCallback();
             }
+        window.location.reload();  
+       window.location.href = "index.html";
+
         };
     }
 

@@ -1,47 +1,185 @@
- @font-face{
-  font-family: mexican;
-  src : url("fonts/mexican.ttf");
+@font-face {
+   font-family: mexican;
+   src: url("fonts/mexican.ttf");
 }
 
 body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-image: url('img/background.webp');
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  font-family: 'mexican', Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-image: url('img/background.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    font-family: 'mexican', Arial, Helvetica, sans-serif;
 }
 
-button{
-  position: relative;
-  background: greenyellow;
-  top: 100px;
-  padding: 5px 20px;
-  border: none;
-  border-radius: 25px;
+.d-none {
+    display: none;
 }
-button:hover{
-  background-color: rgb(231, 134, 7);
-}
-
 
 canvas {
-    display: block;
+  
+   border: 10px solid rgb(219, 92, 2);
+   border-radius: 10px;
 }
+
+
+
 /* Smartphones ----------- */
 @media only screen and (max-width: 760px) {
-  canvas {
-    width: 100%;
-  }
+   canvas {
+     width: 100%;
+   }
 }
 
 /* Smartphones ----------- */
 @media only screen and (max-height: 480px) {
-  canvas {
-    height: 100vh;
-  }
+   canvas {
+     height: 100vh;
+   }
 }
 
+/* ======================================================= */
+/* ======================  GAME HUD  ====================== */
+/* ======================================================= */
 
+#game-hud {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; 
+    z-index: 40; 
+}
+
+/* ---------- HUD Status Icons (oben links) ---------- */
+.hud-top-left {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    pointer-events: auto;
+}
+
+.hud-icon {
+    width: 48px;
+    height: 48px;
+    margin-right: 10px;
+    image-rendering: pixelated;
+}
+
+/* ---------- HUD Settings (oben rechts) ---------- */
+.hud-top-right {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 12px;
+    pointer-events: auto;
+}
+
+.hud-btn {
+    width: 58px;
+    height: 58px;
+    border-radius: 14px;
+    background-color: rgba(243, 128, 5, 0.85);
+    border: 3px solid rgb(255, 181, 55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: transform 0.15s;
+}
+
+.hud-btn img {
+    width: 32px;
+    height: 32px;
+}
+
+.hud-btn:active {
+    transform: scale(0.88);
+}
+
+/* ---------- Mobile Buttons (unten links) ---------- */
+.hud-bottom-left {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    display: flex;
+    gap: 20px;
+    pointer-events: auto;
+}
+
+.hud-move-btn {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    background-color: rgba(243, 128, 5, 0.85);
+    border: 3px solid rgb(255, 181, 55);
+    font-size: 34px;
+    color: white;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: transform 0.15s;
+}
+
+.hud-move-btn:active {
+    transform: scale(0.85);
+}
+
+/* ---------- Mobile Buttons (unten rechts) ---------- */
+.hud-bottom-right {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    gap: 20px;
+    pointer-events: auto;
+}
+
+.hud-action-btn {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    background-color: rgba(243, 128, 5, 0.85);
+    border: 3px solid rgb(255, 181, 55);
+    font-size: 18px;
+    color: white;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: transform 0.15s;
+}
+
+.hud-action-btn:active {
+    transform: scale(0.85);
+}
+
+/* ---------- HUD Mobile Scaling ---------- */
+@media (max-width: 760px) {
+    .hud-move-btn,
+    .hud-action-btn {
+        width: 90px;
+        height: 90px;
+        font-size: 26px;
+    }
+
+    .hud-bottom-left {
+        left: 20px;
+        bottom: 20px;
+    }
+
+    .hud-bottom-right {
+        right: 20px;
+        bottom: 20px;
+    }
+}
