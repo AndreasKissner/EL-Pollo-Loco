@@ -7,7 +7,7 @@
     <title>El Pollo Loco</title>
     <link rel="icon" type="img/png" href="./img/favicon.png" />
 
-  <link rel="stylesheet" href="./style.css?v=4">
+    <link rel="stylesheet" href="./style.css?v=4" />
 
     <link rel="stylesheet" href="./styles/start-menue.css" />
     <link rel="stylesheet" href="./styles/cutscene.css" />
@@ -87,7 +87,7 @@
         <!-- UNTEN LINKS: Touch Move -->
         <div class="hud-bottom-left">
           <button class="hud-move-btn" id="btn-left">
-            <img src="./img/arrow_left.png"  alt="" />
+            <img src="./img/arrow_left.png" alt="" />
           </button>
 
           <button class="hud-move-btn" id="btn-right">
@@ -98,14 +98,11 @@
         <!-- UNTEN RECHTS: Touch Actions -->
         <div class="hud-bottom-right">
           <button class="hud-action-btn" id="btn-jump">
-            <img src="./img/pepejump.png"  alt="Jump" />
+            <img src="./img/pepejump.png" alt="Jump" />
           </button>
 
           <button class="hud-action-btn" id="btn-throw">
-            <img
-              src="./img/6_salsa_bottle/salsa_bottle.png"
-              alt="Throw"
-            />
+            <img src="./img/6_salsa_bottle/salsa_bottle.png" alt="Throw" />
           </button>
         </div>
       </div>
@@ -118,8 +115,15 @@
       </div>
 
       <!-- Cutscene Texte -->
-      <div id="winText" class="cutscene-text">YOU WIN – CONGRATULATIONS!</div>
+      <div id="winText" class="cutscene-text cutscene-img">
+        <img src="./img/You won, you lost/You Win A.png" alt="" />
+      </div>
       <div id="laterText" class="cutscene-text">2 HOURS <br />LATER…</div>
+
+      <div id="loseText" class="you-loose d-none">
+        <img src="img/You won, you lost/You lost.png" alt=""/>
+        <button onlclick="backToStart()">Back to Start</button>
+      </div>
 
       <!-- Fullscreen Button -->
       <button
