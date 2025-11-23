@@ -7,11 +7,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
     background-size: cover;
     background-position: center;
     z-index: 100;
+    pointer-events: none; /* Startscreen blockiert NICHTS mehr */
 }
+
+.start-screen button {
+    pointer-events: auto; /* Nur der Play-Button bleibt klickbar */
+}
+
+
 
 .start-screen.hidden {
     display: none !important;
@@ -89,7 +95,7 @@
  button {
    position: relative;
    background: rgb(242, 175, 5);
-   top: 100px;
+/*    top: 100px; */
    padding: 5px 20px;
    border: none;
    border-radius: 25px;
@@ -102,18 +108,19 @@
 /* KEYBOARD INSTRUCTIONS POPUP  */
 
 .keyboard-info {
-    position: absolute;
+position: absolute;
     top: 15%;
     right: 50%;
     transform: translateX(50%);
     background-color: rgba(0, 0, 0, 0.7);
-    padding: 25px 30px;
+    padding: 5px 6px;
     border-radius: 15px;
     color: rgb(235, 111, 3);
-    font-size: 20px;
+    font-size: 16px;
     text-align: left;
     backdrop-filter: blur(6px);
     z-index: 99;
+
 }
 
 .keyboard-info.hidden {

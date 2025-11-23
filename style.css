@@ -1,8 +1,9 @@
 @font-face {
-   font-family: mexican;
-   src: url("fonts/mexican.ttf");
+    font-family: mexican;
+    src: url("fonts/mexican.ttf");
 }
 
+/* Grundlayout */
 body {
     margin: 0;
     padding: 0;
@@ -23,26 +24,31 @@ body {
     display: none;
 }
 
+/* Container für Canvas + HUD */
+#game-container {
+    position: relative;
+    width: 720px;
+    max-width: 100vw;
+}
+
+/* Canvas-Styling */
 canvas {
-  
-   border: 10px solid rgb(219, 92, 2);
-   border-radius: 10px;
+    border: 5px solid orange;
+    border-radius: 5px;
+    display: block;
+   
 }
 
-
-
-/* Smartphones ----------- */
 @media only screen and (max-width: 760px) {
-   canvas {
-     width: 100%;
-   }
+    canvas {
+        width: 100%;
+    }
 }
 
-/* Smartphones ----------- */
 @media only screen and (max-height: 480px) {
-   canvas {
-     height: 100vh;
-   }
+    canvas {
+        height: 100vh;
+    }
 }
 
 /* ======================================================= */
@@ -50,14 +56,25 @@ canvas {
 /* ======================================================= */
 
 #game-hud {
-       position: fixed;
-    top: -91px;
-    left: 115px;
-    width: 73%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 100000;
+    position: absolute;
+    inset: 0;
+    pointer-events: auto;
+    z-index: 200 !important;
 }
+
+/* HUD-Bereiche deaktivieren */
+.hud-top-left,
+.hud-bottom-left,
+.hud-bottom-right {
+    pointer-events: none;
+}
+
+/* Buttons oben rechts aktiv */
+.hud-top-right,
+.hud-top-right .hud-btn {
+    pointer-events: auto;
+}
+
 
 /* ---------- HUD Status Icons (oben links) ---------- */
 .hud-top-left {
@@ -109,68 +126,63 @@ canvas {
 .hud-btn:active {
     transform: scale(0.88);
 }
-
-/* ---------- Mobile Buttons (unten links) ---------- */
-.hud-bottom-left {
-    position: absolute;
-    bottom: 30px;
-    left: 30px;
-    display: flex;
-    gap: 20px;
-    pointer-events: auto;
-}
-
-.hud-move-btn {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background-color: rgba(243, 128, 5, 0.85);
-    border: 3px solid rgb(255, 181, 55);
-    font-size: 34px;
-    color: white;
-    cursor: pointer;
-    pointer-events: auto;
-    transition: transform 0.15s;
-}
-
-.hud-move-btn:active {
-    transform: scale(0.85);
-}
-
-/* ---------- Mobile Buttons (unten rechts) ---------- */
+/* ---------- Touch-Buttons STANDARD: versteckt ---------- */
+.hud-bottom-left,
 .hud-bottom-right {
     position: absolute;
     bottom: 30px;
-    right: 30px;
-    display: flex;
     gap: 20px;
     pointer-events: auto;
+    display: none; /* <- Standard: ausgeblendet */
 }
 
+/* links */
+.hud-bottom-left {
+    left: 30px;
+}
+
+/* rechts */
+.hud-bottom-right {
+    right: 30px;
+}
+
+/* ---------- Buttons (Move + Action) ---------- */
+.hud-move-btn,
 .hud-action-btn {
     width: 60px;
     height: 60px;
     border-radius: 50%;
     background-color: rgba(243, 128, 5, 0.85);
     border: 3px solid rgb(255, 181, 55);
-    font-size: 18px;
-    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
-    pointer-events: auto;
     transition: transform 0.15s;
+    pointer-events: auto;
 }
 
+/* Drück-Animation */
+.hud-move-btn:active,
 .hud-action-btn:active {
     transform: scale(0.85);
 }
 
-/* ---------- HUD Mobile Scaling ---------- */
+/* ---------- Bilder IM Button (HTML bleibt!) ---------- */
+.hud-move-btn img,
+.hud-action-btn img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+/* ---------- Mobile Scaling ---------- */
 @media (max-width: 760px) {
     .hud-move-btn,
     .hud-action-btn {
-        width: 90px;
-        height: 90px;
-        font-size: 26px;
+        width: 55px;
+        height: 55px;
     }
 
     .hud-bottom-left {
@@ -183,15 +195,24 @@ canvas {
         bottom: 20px;
     }
 }
+
+/* ---------- Handy Landscape: Buttons anzeigen ---------- */
+@media (min-width: 480px) and (max-width: 760px) {
+    .hud-bottom-left,
+    .hud-bottom-right {
+        display: flex; /* <-- HIER sichtbar */
+    }
+}
+
 /* ===================================== */
 /*    OVERLAY "BITTE BILDSCHIRM DREHEN"  */
 /* ===================================== */
- 
+
 #rotate-overlay {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.9);
-    display: none;              /* Standard: versteckt */
+    display: none;
     align-items: center;
     justify-content: center;
     text-align: center;
@@ -199,7 +220,7 @@ canvas {
     padding: 20px;
     z-index: 200000;
     pointer-events: auto;
-} 
+}
 
 .rotate-box {
     max-width: 320px;
@@ -222,7 +243,7 @@ canvas {
     line-height: 1.9;
 }
 
-/* Handy hochkant, schmaler Screen → Overlay an */
+/* Handy hochkant → Overlay */
 @media only screen and (max-width: 480px) and (orientation: portrait) {
     #rotate-overlay {
         display: flex;
@@ -235,3 +256,36 @@ canvas {
         filter: blur(3px);
     }
 }
+
+/* Handy / kleines Tablet LANDSCAPE ab 480px */
+@media (min-width: 480px) and (max-width: 760px) {
+
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+
+    #game-container {
+        width: 100vw;
+        height: 100vh;
+    }
+
+    #fullscreen {
+        width: 100%;
+        height: 100%;
+    }
+
+    canvas {
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Touch-Buttons NUR in diesem Bereich */
+    .hud-bottom-left,
+    .hud-bottom-right {
+        display: flex;
+    }
+}
+
