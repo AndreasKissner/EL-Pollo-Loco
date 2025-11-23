@@ -259,7 +259,7 @@ canvas {
 }
 
 /* Handy / kleines Tablet LANDSCAPE ab 480px */
-@media (min-width: 480px) and (max-width: 479px) {
+@media (min-width: 480px) and (max-width: 1200px) {
 
     html,
     body {
