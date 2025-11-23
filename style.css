@@ -36,7 +36,6 @@ canvas {
     border: 5px solid orange;
     border-radius: 5px;
     display: block;
-   
 }
 
 @media only screen and (max-width: 760px) {
@@ -51,9 +50,7 @@ canvas {
     }
 }
 
-/* ======================================================= */
 /* ======================  GAME HUD  ====================== */
-/* ======================================================= */
 
 #game-hud {
     position: absolute;
@@ -177,6 +174,14 @@ canvas {
     object-fit: contain;
     pointer-events: none;
 }
+@media (max-width: 1200px){
+    canvas{
+        border: none;
+    }
+}
+  
+
+
 
 /* ---------- Mobile Scaling ---------- */
 @media (max-width: 760px) {
@@ -232,16 +237,12 @@ canvas {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
 }
 
-.rotate-box h2 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 18px;
-}
 
 .rotate-box p {
     margin: 0;
-    font-size: 14px;
-    line-height: 1.9;
+    font-size: 16px;
+    line-height: 2.2;
+     color:  rgb(255, 181, 55);
 }
 
 /* Handy hochkant → Overlay */
@@ -290,4 +291,3 @@ canvas {
         flex-direction: column;
     }
 }
-

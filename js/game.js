@@ -118,9 +118,8 @@ function startGame() {
     } else {
         console.warn('initTouchButtons() nicht gefunden – ist js/button.js eingebunden?');
     }
+
 }
-
-
 
 // js/button.js
 // Initialisiert die Touch-/Maus-Buttons für Mobile & Desktop
@@ -198,4 +197,10 @@ function initTouchButtons() {
     attachButton(btnThrow, pressThrow, releaseThrow);
 
     console.log('Touch-Buttons initialisiert.');
+}
+
+
+
+function backToStart() {
+    window.location.href = "index.html";
 }

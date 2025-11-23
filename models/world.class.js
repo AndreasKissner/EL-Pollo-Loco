@@ -190,7 +190,7 @@ class World {
                     this.statusBar.setPercentage(this.character.energy);
 
                     // 🎵 Prüfen ob Pepe durch Endboss gestorben ist
-                    if (this.character.energy <= 0 && !this.lossPlayed) {
+                  /*   if (this.character.energy <= 0 && !this.lossPlayed) {
                         this.lossPlayed = true;
 
                         // Normale Musik stoppen
@@ -200,7 +200,7 @@ class World {
                         setTimeout(() => {
                             SoundManager.startBackgroundMusic('youLose', 0.6);
                         }, 1000);
-                    }
+                    } */
 
                     return;
                 }
@@ -391,6 +391,30 @@ class World {
             }, 1000);
         }
     }
+
+  triggerLoss() {
+
+    // ❌ Canvas NICHT ausblenden – rausgenommen
+    // document.getElementById("canvas").classList.add("hidden");
+
+    if (this.lossPlayed) return;
+    this.lossPlayed = true;
+
+    SoundManager.stopBackgroundMusic();
+
+    setTimeout(() => {
+
+        SoundManager.startBackgroundMusic("youLose", 0.6);
+
+        const loseDiv = document.getElementById("loseText");
+        loseDiv.classList.remove("d-none");
+        loseDiv.style.display = "flex";   // 🔥 wichtig, weil du display:none gesetzt hast
+        loseDiv.classList.add("fade-in");
+
+        this.gameOver = true;
+
+    }, 500);
+}
 
 
 }

@@ -17,7 +17,8 @@
     <!-- Overlay: Bitte Bildschirm drehen -->
     <div id="rotate-overlay">
       <div class="rotate-box">
-        <h2>Bildschirm drehen</h2>
+        <img src="./img/rotate.png" width="200px" alt="" />
+
         <p>Bitte drehe dein Handy ins Querformat.</p>
       </div>
     </div>
@@ -114,6 +115,12 @@
         </video>
       </div>
 
+      <div id="videoEndMenu" class="cutscene-text d-none">
+        <button class="btn-base lose-btn" onclick="backToStart()">
+          Back to Menu
+        </button>
+      </div>
+
       <!-- Cutscene Texte -->
       <div id="winText" class="cutscene-text cutscene-img">
         <img src="./img/You won, you lost/You Win A.png" alt="" />
@@ -121,8 +128,10 @@
       <div id="laterText" class="cutscene-text">2 HOURS <br />LATER…</div>
 
       <div id="loseText" class="you-loose d-none">
-        <img src="img/You won, you lost/You lost.png" alt=""/>
-        <button onlclick="backToStart()">Back to Start</button>
+        <img src="img/You won, you lost/You lost.png" alt="" />
+        <button class="btn-base lose-btn" onclick="backToStart()">
+          Back to Menu
+        </button>
       </div>
 
       <!-- Fullscreen Button -->

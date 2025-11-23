@@ -96,29 +96,30 @@ class Character extends MovableObject {
         this.idleTimer = 0;
         this.applyGravity();
         this.animate();
+        this.energy = 100;
     }
 
 
-jump() {
-    super.jump();
-    if (!SoundManager.isMuted) {
-       SoundManager.play('jump');
+    jump() {
+        super.jump();
+        if (!SoundManager.isMuted) {
+            SoundManager.play('jump');
 
+        }
     }
-}
 
     animate() {
         setInterval(() => {
             // Knockback (wenn verletzt)
-          if ( this.world.gameOver) {
-        return;
-    }
+            if (this.world.gameOver) {
+                return;
+            }
 
-    // Knockback (wenn verletzt)
-    if (this.hitBlocked) {
-        this.x += this.speedX;
-        if(this.x < 0) { this.x = 0; }
-    }
+            // Knockback (wenn verletzt)
+            if (this.hitBlocked) {
+                this.x += this.speedX;
+                if (this.x < 0) { this.x = 0; }
+            }
             // Bewegung nur wenn nicht verletzt
             if (!this.hitBlocked && this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
                 this.moveRight();
@@ -155,27 +156,40 @@ jump() {
 
             if (this.isDead()) {
                 this.speed = 0;
+
+                // Dead-Sound nur einmal
                 if (!this.deadPlayed) {
                     this.deadPlayed = true;
                     setTimeout(() => {
                         SoundManager.play('deadPepe', 1);
-                    }, 500); // 0,5 Sekunden
+                    }, 500);
                 }
 
                 const now = Date.now();
+
+                // Dead-Animation abspielen
                 if (!this.deadFinished) {
                     if (now - this.lastDeadFrameTime >= this.deadAnimationSpeed) {
                         this.lastDeadFrameTime = now;
                         this.img = this.imageCache[this.IMAGES_DEAD[this.deadIndex]];
                         this.deadIndex++;
+
+                        // ⭐ Animation fertig?
                         if (this.deadIndex >= this.IMAGES_DEAD.length) {
                             this.deadFinished = true;
                             this.deadIndex = this.IMAGES_DEAD.length - 1;
+
+                            // ⭐ Jetzt Loss starten – aber nur EINMAL
+                            if (!this.world.lossPlayed) {
+                                this.world.triggerLoss();
+                            }
                         }
                     }
                 }
-                return;
+
+                return;  // Dead block.
             }
+
 
             if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);

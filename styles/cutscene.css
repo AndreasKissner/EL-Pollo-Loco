@@ -72,3 +72,87 @@
         width: 90vw;
     }
 }
+
+/* YOU LOSE OVERLAY */
+#loseText {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: none; 
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999999;
+    pointer-events: auto;
+}
+
+
+/* Bildgröße */
+#loseText img {
+    width: 70vw;
+    max-width: 600px;
+}
+
+/* Canvas unsichtbar machen */
+.hidden {
+    display: none !important;
+}
+
+/* Fade-In Effekt für das You-Lose DIV */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1.2s forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Grundstil für alle Buttons */
+.btn-base {
+    margin-top: 20px;
+    padding: 12px 28px;
+
+    font-size: 22px;
+    font-family: 'mexican';
+    color: rgb(10, 10, 10);
+
+    background: #ffc100;
+    border: none;
+    border-radius: 10px;
+
+    cursor: pointer;
+    transition: 0.2s;
+    box-shadow: 0 0 15px black;
+}
+
+.btn-base:hover {
+    background: rgb(230, 188, 4);
+    transform: scale(1.05);
+    box-shadow: 0 0 25px black;
+}
+
+.btn-base:active {
+    transform: scale(0.95);
+}
+
+
+#videoEndMenu {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: none; /* wird im JS zu flex */
+    opacity: 1 !important; /* überschreibt .cutscene-text */
+
+    z-index: 999999999; /* höchste Ebene */
+    pointer-events: auto;
+
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
