@@ -7,12 +7,16 @@ class GameVideo {
 
         // Beim Ende des Videos automatisch verstecken
         this.videoElement.onended = () => {
-            this.stop();
+
             if (this.onFinishCallback) {
                 this.onFinishCallback();
             }
-        window.location.reload();  
-       window.location.href = "index.html";
+
+            const menu = document.getElementById("videoEndMenu");
+            menu.classList.remove("d-none");
+            menu.style.display = "flex";
+            /*     window.location.reload();   */
+            /*      window.location.href = "index.html"; */
 
         };
     }

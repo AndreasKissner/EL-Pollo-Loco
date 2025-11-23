@@ -53,8 +53,6 @@ class MiniChicken extends MovableObject {
             } else {
                 this.playAnimation(this.IMAGES_WALKIN);
             }
-            // ❌ FEHLERHAFTE ZEILE ENTFERNT! 
-            // checkEnemyRespawn wird nicht mehr von hier aufgerufen.
         }, 200);
     }
 } 
