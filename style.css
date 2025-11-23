@@ -58,9 +58,10 @@ canvas {
 #game-hud {
     position: absolute;
     inset: 0;
-    pointer-events: auto;
+    pointer-events: none;  /* BLOCKIERT NICHT MEHR */
     z-index: 200 !important;
 }
+
 
 /* HUD-Bereiche deaktivieren */
 .hud-top-left,
@@ -258,7 +259,7 @@ canvas {
 }
 
 /* Handy / kleines Tablet LANDSCAPE ab 480px */
-@media (min-width: 480px) and (max-width: 760px) {
+@media (min-width: 480px) and (max-width: 1020px) {
 
     html,
     body {
