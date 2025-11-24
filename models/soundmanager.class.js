@@ -24,25 +24,28 @@ class SoundManager {
      * - Keine play/pause Konflikte
      * - Chrome wirft keine Fehler mehr
      */
-    static play(name, volume = 1) {
+  static play(name, volume = 1) {
 
-        if (SoundManager.masterVolume === 0) return;
+    if (SoundManager.masterVolume === 0) return;
 
-        const audio = SoundManager.audioCache[name];
-        if (!audio) return;
+    const audio = SoundManager.audioCache[name];
+    if (!audio) return;
 
-        // WICHTIG: Wenn Sound gerade spielt → NICHT erneut starten
-        if (!audio.paused) return;
-
-        // Zeit nur zurücksetzen wenn pausiert
-        audio.currentTime = 0;
-
-        audio.volume = 0.5 * volume * SoundManager.masterVolume;
-
-        audio.play().catch(err => {
-            console.warn(`Play-Fehler bei ${name}:`, err);
-        });
+    // 🔥 Wenn der Sound gerade läuft → sofort stoppen
+    if (!audio.paused) {
+        audio.pause();
     }
+
+    // Immer zum Anfang spulen
+    audio.currentTime = 0;
+
+    audio.volume = 0.5 * volume * SoundManager.masterVolume;
+
+    audio.play().catch(err => {
+        console.warn(`Play-Fehler bei ${name}:`, err);
+    });
+}
+
 
 
     static startBackgroundMusic(name, volume = 0.3) {

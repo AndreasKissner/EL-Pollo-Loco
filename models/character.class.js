@@ -1,10 +1,10 @@
 class Character extends MovableObject {
     height = 270;
     width = 120;
-    y = 50;             // Startet etwas höher (fällt sanft herunter)
+    y = 220;
     speed = 5;
 
-    // 🔥 FIX: Wir setzen den Boden auf die finale Bodenlinie des Bosses (440).
+    //  FIX:  Boden auf die finale Bodenlinie des Bosses (440 hat boss).
     groundLevel = 440;
 
     world;
@@ -17,7 +17,6 @@ class Character extends MovableObject {
     bottles = 0;
     maxBottleLimit = 5;
 
-    // 🔥 HITBOX OPTIMIERUNG 🔥
     offset = {
         top: 100,
         bottom: 0,
@@ -104,7 +103,6 @@ class Character extends MovableObject {
         super.jump();
         if (!SoundManager.isMuted) {
             SoundManager.play('jump');
-
         }
     }
 
@@ -152,7 +150,11 @@ class Character extends MovableObject {
 
         // Animationen
         setInterval(() => {
-
+            // ⭐ Victory → Pepe bleibt stehen ohne zu schlafen
+            if (this.world.victoryPlayed) {
+                this.img = this.imageCache[this.IMAGES_IDLE[0]];
+                return;
+            }
 
             if (this.isDead()) {
                 this.speed = 0;
