@@ -27,7 +27,7 @@ class DrawableObject {
         if (this instanceof Character  || this instanceof Chicken || this instanceof MiniChicken || this instanceof ThrowableObject || this instanceof Endboss || this instanceof Bottle || this instanceof Coin || this instanceof Platform) {
             
             // BLAU = Das Bild (Das siehst du jetzt schon)
-            ctx.beginPath();
+          /*   ctx.beginPath();
             ctx.lineWidth = "5";
             ctx.strokeStyle = "blue";
             ctx.rect(this.x, this.y, this.width, this.height);
@@ -42,7 +42,7 @@ class DrawableObject {
                 this.y + this.offset.top, 
                 this.width - this.offset.right - this.offset.left, 
                 this.height - this.offset.bottom - this.offset.top
-            );
+            ); */
             ctx.stroke();
         }
     }
