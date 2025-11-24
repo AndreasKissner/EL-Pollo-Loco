@@ -259,7 +259,7 @@ canvas {
     }
 }
 
-@media (min-width: 480px) and (max-width: 1200px) {
+@media (min-width: 480px) and (max-width: 1000px) {
 
     html,
     body {

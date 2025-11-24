@@ -1,7 +1,5 @@
-
 const level1 = new Level(
     [
-
         new Chicken(1000),
         new Chicken(1457),
         new Chicken(1914),

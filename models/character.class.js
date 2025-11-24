@@ -3,8 +3,6 @@ class Character extends MovableObject {
     width = 120;
     y = 220;
     speed = 5;
-
-    //  FIX:  Boden auf die finale Bodenlinie des Bosses (440 hat boss).
     groundLevel = 440;
 
     world;
