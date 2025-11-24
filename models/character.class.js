@@ -4,7 +4,6 @@ class Character extends MovableObject {
     y = 220;
     speed = 5;
     groundLevel = 440;
-
     world;
     deadPlayed = false;
     deadIndex = 0;
@@ -96,7 +95,7 @@ class Character extends MovableObject {
         this.energy = 100;
     }
 
-
+    /** Makes the character jump and plays the jump sound if sound is enabled. */
     jump() {
         super.jump();
         if (!SoundManager.isMuted) {
@@ -104,161 +103,225 @@ class Character extends MovableObject {
         }
     }
 
+    /** Starts all character movement and animation update intervals. */
     animate() {
+        this.startMovementInterval();
+        this.startAnimationInterval();
+    }
+
+    /** Runs the movement logic on a 60 FPS interval. */
+    startMovementInterval() {
         setInterval(() => {
-            // Knockback (wenn verletzt)
-            if (this.world.gameOver) {
-                return;
-            }
-
-            // Knockback (wenn verletzt)
-            if (this.hitBlocked) {
-                this.x += this.speedX;
-                if (this.x < 0) { this.x = 0; }
-            }
-            // Bewegung nur wenn nicht verletzt
-            if (!this.hitBlocked && this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-                this.moveRight();
-                this.otherDirection = false;
-            }
-
-            if (!this.hitBlocked && this.world.keyboard.LEFT && this.x > 0) {
-                this.moveLeft();
-                this.otherDirection = true;
-            }
-
-            if (!this.hitBlocked && this.world.keyboard.SPACE && !this.isAboveGround()) {
-                this.jump();
-                this.idleTimer = 0;
-                this.currentPlatform = null;
-            }
-
-            // Plattform-Check
-            if (this.currentPlatform) {
-                let p = this.currentPlatform;
-                let isLeftOfPlatform = this.x + this.width <= p.x + p.offset.left;
-                let isRightOfPlatform = this.x >= p.x + p.width - p.offset.right;
-                if (isLeftOfPlatform || isRightOfPlatform) {
-                    this.currentPlatform = null;
-                }
-            }
-
-            this.world.camera_x = - this.x + 100;
+            if (this.world.gameOver) return;
+            this.handleKnockback();
+            this.handleMovementRight();
+            this.handleMovementLeft();
+            this.handleJumpingInput();
+            this.handlePlatformExit();
+            this.updateCamera();
         }, 1000 / 60);
+    }
 
-        // Animationen
+    /** Applies knockback movement when the character is hit. */
+    handleKnockback() {
+        if (!this.hitBlocked) return;
+        this.x += this.speedX;
+        if (this.x < 0) this.x = 0;
+    }
+
+    /** Handles rightward movement when the right key is pressed. */
+    handleMovementRight() {
+        if (this.hitBlocked) return;
+        if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+            this.moveRight();
+            this.otherDirection = false;
+        }
+    }
+
+    /** Handles leftward movement when the left key is pressed. */
+    handleMovementLeft() {
+        if (this.hitBlocked) return;
+        if (this.world.keyboard.LEFT && this.x > 0) {
+            this.moveLeft();
+            this.otherDirection = true;
+        }
+    }
+
+    /** Handles jump input and triggers a jump when conditions are met. */
+    handleJumpingInput() {
+        if (this.hitBlocked) return;
+        if (this.world.keyboard.SPACE && !this.isAboveGround()) {
+            this.jump();
+            this.idleTimer = 0;
+            this.currentPlatform = null;
+        }
+    }
+
+    /** Detects when the character leaves a platform and clears the reference. */
+    handlePlatformExit() {
+        if (!this.currentPlatform) return;
+        let p = this.currentPlatform;
+        let left = this.x + this.width <= p.x + p.offset.left;
+        let right = this.x >= p.x + p.width - p.offset.right;
+        if (left || right) {
+            this.currentPlatform = null;
+        }
+    }
+
+    /** Updates the camera position to follow the character. */
+    updateCamera() {
+        this.world.camera_x = -this.x + 100;
+    }
+
+    /** Runs animation logic on a timed interval. */
+    startAnimationInterval() {
         setInterval(() => {
-            // ⭐ Victory → Pepe bleibt stehen ohne zu schlafen
-            if (this.world.victoryPlayed) {
-                this.img = this.imageCache[this.IMAGES_IDLE[0]];
-                return;
-            }
-
-            if (this.isDead()) {
-                this.speed = 0;
-
-                // Dead-Sound nur einmal
-                if (!this.deadPlayed) {
-                    this.deadPlayed = true;
-                    setTimeout(() => {
-                        SoundManager.play('deadPepe', 1);
-                    }, 500);
-                }
-
-                const now = Date.now();
-
-                // Dead-Animation abspielen
-                if (!this.deadFinished) {
-                    if (now - this.lastDeadFrameTime >= this.deadAnimationSpeed) {
-                        this.lastDeadFrameTime = now;
-                        this.img = this.imageCache[this.IMAGES_DEAD[this.deadIndex]];
-                        this.deadIndex++;
-
-                        // ⭐ Animation fertig?
-                        if (this.deadIndex >= this.IMAGES_DEAD.length) {
-                            this.deadFinished = true;
-                            this.deadIndex = this.IMAGES_DEAD.length - 1;
-
-                            // ⭐ Jetzt Loss starten – aber nur EINMAL
-                            if (!this.world.lossPlayed) {
-                                this.world.triggerLoss();
-                            }
-                        }
-                    }
-                }
-
-                return;  // Dead block.
-            }
-
-
-            if (this.isHurt()) {
-                this.playAnimation(this.IMAGES_HURT);
-
-                this.idleTimer = 0;
-                return;
-            }
-
-            // --- STATUS ERMITTELN ---
-            // 🔥 KORREKTUR: Jetzt zählt auch die D-Taste (Werfen) als Aktivität!
-            let isActive = this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
-            let isJumping = this.isAboveGround();
-
-            // --- JUMPING
-            if (isJumping) {
-                // Beispiel, in Character.jump()
-                this.playAnimation(this.IMAGES_JUMPING);
-                this.idleTimer = 0;
-                return;
-            }
-
-            // --- WALKING / THROWING (Aktiv)
-            if (isActive) {
-                this.playAnimation(this.IMAGES_WALKING); // Nutzt Walk-Animation als Platzhalter für Aktivität
-                this.idleTimer = 0;
-                if (!this.lastWalkSound || Date.now() - this.lastWalkSound > 300) {
-                    SoundManager.play("walkingPepe", 0.9);
-                    this.lastWalkSound = Date.now();
-                }
-                return;
-            }
-
-            // --- IDLE / LONG-IDLE (Letzte Priorität) ---
-            if (!isActive && !isJumping) {
-                this.idleTimer++;
-            } else {
-                this.idleTimer = 0;
-            }
-
-            if (this.idleTimer > 50) {
-                this.playAnimation(this.IMAGES_LONG_IDLE);
-                return;
-            }
-
-            this.playAnimation(this.IMAGES_IDLE);
+            if (this.world.victoryPlayed) return this.showVictoryIdle();
+            if (this.isDead()) return this.handleDeadAnimation();
+            if (this.isHurt()) return this.handleHurtAnimation();
+            this.handleNormalAnimation();
 
         }, 100);
     }
 
+    /** Displays the idle frame during victory state. */
+    showVictoryIdle() {
+        this.img = this.imageCache[this.IMAGES_IDLE[0]];
+    }
+
+    /** Handles the character’s full death animation sequence. */
+    handleDeadAnimation() {
+        this.speed = 0;
+        this.playDeadSoundOnce();
+        this.updateDeadAnimationFrame();
+    }
+
+    /** Plays the death sound once when the character dies. */
+    playDeadSoundOnce() {
+        if (this.deadPlayed) return;
+
+        this.deadPlayed = true;
+        setTimeout(() => SoundManager.play('deadPepe', 1), 500);
+    }
+
+    /** Advances the death animation frame and checks if it is completed. */
+    updateDeadAnimationFrame() {
+        let now = Date.now();
+        if (this.deadFinished) return;
+        if (now - this.lastDeadFrameTime < this.deadAnimationSpeed) return;
+        this.lastDeadFrameTime = now;
+        this.img = this.imageCache[this.IMAGES_DEAD[this.deadIndex]];
+        this.deadIndex++;
+        if (this.deadIndex >= this.IMAGES_DEAD.length) {
+            this.finishDeadAnimation();
+        }
+    }
+
+    /** Finalizes the death animation and triggers the loss state once. */
+    finishDeadAnimation() {
+        this.deadFinished = true;
+        this.deadIndex = this.IMAGES_DEAD.length - 1;
+
+        if (!this.world.lossPlayed) {
+            this.world.triggerLoss();
+        }
+    }
+
+    /** Plays the hurt animation and resets the idle timer. */
+    handleHurtAnimation() {
+        this.playAnimation(this.IMAGES_HURT);
+        this.idleTimer = 0;
+    }
+
+    /** Determines and plays the appropriate default animation state. */
+    handleNormalAnimation() {
+        let isActive = this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
+        let isJumping = this.isAboveGround();
+        if (isJumping) return this.handleJumpingAnimation();
+        if (isActive) return this.handleWalkingAnimation();
+        this.handleIdleAnimation();
+    }
+
+    /** Plays the jumping animation and resets the idle timer. */
+    handleJumpingAnimation() {
+        this.playAnimation(this.IMAGES_JUMPING);
+        this.idleTimer = 0;
+    }
+
+    /** Plays the walking animation and triggers footstep sounds. */
+    handleWalkingAnimation() {
+        this.playAnimation(this.IMAGES_WALKING);
+        this.idleTimer = 0;
+        if (!this.lastWalkSound || Date.now() - this.lastWalkSound > 300) {
+            SoundManager.play("walkingPepe", 0.9);
+            this.lastWalkSound = Date.now();
+        }
+    }
+
+    /** Updates idle timing and plays idle or long-idle animations. */
+    handleIdleAnimation() {
+        this.idleTimer++;
+        if (this.idleTimer > 50) {
+            this.playAnimation(this.IMAGES_LONG_IDLE);
+            return;
+        }
+        this.playAnimation(this.IMAGES_IDLE);
+    }
+
+    /** Checks if the character is above the ground or a platform. */
     isAboveGround() {
-        // Plattform Logik
-        if (this.world && this.world.level && this.world.level.platforms) {
-            let platforms = this.world.level.platforms;
-            let bottomNow = this.y + this.height;
-            for (let i = 0; i < platforms.length; i++) {
-                let p = platforms[i];
-                let platformTop = p.y + (p.offset?.top || 0);
-                let overlapsX = this.x + this.width > p.x + p.offset.left &&
-                    this.x < p.x + p.width - p.offset.right;
-                let nextBottom = bottomNow - this.speedY;
-                let falling = this.speedY <= 0;
-                if (overlapsX && falling && bottomNow <= platformTop && nextBottom >= platformTop) {
-                    this.y = platformTop - this.height;
-                    this.speedY = 0;
-                    this.currentPlatform = p;
-                    return false;
-                }
+        if (this.hasPlatforms()) {
+            return this.checkPlatformCollision();
+        }
+        return super.isAboveGround();
+    }
+
+    /** Determines whether the level contains any platforms. */
+    hasPlatforms() {
+        return (
+            this.world &&
+            this.world.level &&
+            this.world.level.platforms &&
+            this.world.level.platforms.length > 0
+        );
+    }
+
+    /** Checks for collisions with platforms and handles landing. */
+    checkPlatformCollision() {
+        let platforms = this.world.level.platforms;
+        let bottomNow = this.y + this.height;
+        for (let i = 0; i < platforms.length; i++) {
+            let p = platforms[i];
+            if (this.isLandingOnPlatform(p, bottomNow)) {
+                this.landOnPlatform(p);
+                return false;
             }
         }
         return super.isAboveGround();
     }
+
+    /** Checks whether the character is landing on the given platform. */
+    isLandingOnPlatform(p, bottomNow) {
+        let platformTop = p.y + (p.offset?.top || 0);
+        let overlapsX =
+            this.x + this.width > p.x + p.offset.left &&
+            this.x < p.x + p.width - p.offset.right;
+        let nextBottom = bottomNow - this.speedY;
+        let falling = this.speedY <= 0;
+        return (
+            overlapsX &&
+            falling &&
+            bottomNow <= platformTop &&
+            nextBottom >= platformTop
+        );
+    }
+
+    /** Positions the character on top of the platform and stops vertical movement. */
+    landOnPlatform(platform) {
+        let platformTop = platform.y + (platform.offset?.top || 0);
+        this.y = platformTop - this.height;
+        this.speedY = 0;
+        this.currentPlatform = platform;
+    }
+
 }
