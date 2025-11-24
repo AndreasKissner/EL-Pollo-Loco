@@ -5,8 +5,7 @@ class World {
     ctx;
     keyboard;
     camera_x = 0;
-    // ❌ canThrow wurde entfernt und durch lastThrowTime ersetzt.
-    lastThrowTime = 0; // 🔥 NEU: Timer für Cooldown (Timestamp des letzten Wurfs)
+    lastThrowTime = 0;
     respawnStopped = false;
     statusBar = new Statusbar();
     statusBarCoins = new StatusbarCoins();
@@ -18,68 +17,37 @@ class World {
     gameOver = false;
     gameStarted = false;
 
-
-
-
-
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext("2d");
         this.canvas = canvas;
         this.keyboard = keyboard;
-
-        // 1. Level-Objekte initialisieren (MUSS ZUERST passieren!)
         this.setWorld();
-
-        // 2. Spiel-Logik starten
         this.run();
-
-        // 3. Zeichnen starten (MUSS ZULETZT passieren, nachdem alles gesetzt ist!)
         this.draw();
     }
 
     setWorld() {
-    this.character.world = this;
-
-    // Alle Level-Arrays, die world brauchen
-    const allObjects = [
-        ...this.level.enemies,
-        ...this.level.coins,
-        ...this.level.bottles,
-        ...this.level.clouds
-    ];
-
-    // Jedem Objekt die World zuweisen
-    allObjects.forEach(obj => obj.world = this);
-}
-
-/* 
-    setWorld() {
         this.character.world = this;
-        this.level.enemies.forEach((enemy) => {
-            enemy.world = this;
-        });
-        this.level.coins.forEach(coin => {
-    coin.world = this;
-});
-
-    } */
+        const allObjects = [
+            ...this.level.enemies,
+            ...this.level.coins,
+            ...this.level.bottles,
+            ...this.level.clouds
+        ];
+        allObjects.forEach(obj => obj.world = this);
+    }
 
     run() {
         setInterval(() => {
-
             // gAME OVER NOCH ALS Methode machen für alle aufrufe
             if (this.gameOver) {
                 return;
             }
-
             this.checkcollision();
             this.checkThrowObjects();
             this.checkRespawn();
-
-            
-        // ✅ NEU: Sieg prüfen (Endboss tot?)
-        this.checkVictory();
-
+            // ✅ NEU: Sieg prüfen (Endboss tot?)
+            this.checkVictory();
             // 🔥 HIER prüfen wir, ob jemand „Game Over“ auslöst:
             const endboss = this.level.enemies.find(e => e instanceof Endboss);
 
@@ -121,9 +89,6 @@ class World {
         const cooldown = 1500; // 1 Sekunde Cooldown
 
         // Flasche werfen NUR wenn:
-        // 1. D gedrückt ist
-        // 2. Cooldown ist abgelaufen (mindestens 1000ms seit dem letzten Wurf)
-        // 3. mindestens 1 Bottle vorhanden
         if (
             this.keyboard.D &&
             now - this.lastThrowTime >= cooldown &&
@@ -145,7 +110,6 @@ class World {
             this.statusBarBottle.setPercentage(this.character.bottles);
             console.log("Bottle geworfen! Cooldown aktiv.");
         }
-        // ❌ Entfernt die alte canThrow Logik (die hier unten stand)
     }
 
     checkcollision() {
@@ -181,27 +145,6 @@ class World {
             }
         });
 
-        // 🔥 NEU: BOTTLE VS PLATFORMS KOLLISION
-        /*       this.throwableObjects.forEach((bottle) => {
-                  if (bottle.hasHitGround || bottle.hasHitEnemy) return;
-      
-                  this.level.platforms.forEach((platform) => {
-                      let isFalling = bottle.speedY <= 0;
-      
-                      let touchesPlatform = bottle.isColliding(platform) && isFalling;
-      
-                      if (touchesPlatform) {
-                          bottle.hasHitGround = true;
-                          bottle.currentImage = 0;
-                          bottle.speedY = 0;
-                          if (bottle.movementIntervalId)
-                              clearInterval(bottle.movementIntervalId);
-      
-                          console.log("💥 Flasche trifft Plattform und zerbricht.");
-                      }
-                  });
-              }); */
-
         // === Character vs Enemies (Springen) ===
         this.level.enemies.forEach((enemy) => {
             if (enemy.isDead()) return;
@@ -210,23 +153,8 @@ class World {
                 if (enemy instanceof Endboss) {
                     this.character.hit();
                     this.statusBar.setPercentage(this.character.energy);
-
-                    // 🎵 Prüfen ob Pepe durch Endboss gestorben ist
-                  /*   if (this.character.energy <= 0 && !this.lossPlayed) {
-                        this.lossPlayed = true;
-
-                        // Normale Musik stoppen
-                        SoundManager.stopBackgroundMusic();
-
-                        // 1 Sekunde Pause für Effekt
-                        setTimeout(() => {
-                            SoundManager.startBackgroundMusic('youLose', 0.6);
-                        }, 1000);
-                    } */
-
                     return;
                 }
-
 
                 if (
                     this.character.isAboveGround() &&
@@ -246,7 +174,7 @@ class World {
         // === COINS EINSAMMELN ===
         this.level.coins.forEach((coin, index) => {
             if (this.character.isColliding(coin)) {
-                SoundManager.play("coinSelect", 0.6);
+                SoundManager.play("coinSelect", 0.3);
                 this.level.coins.splice(index, 1);
                 this.character.coins++;
 
@@ -257,18 +185,13 @@ class World {
                 if (this.statusBarCoins.percentage >= 5) {
                     this.statusBarCoins.percentage = 0;
                     this.statusBarCoins.setPercentage(0);
-
                     if (this.character.bottles < 10) {
-                        SoundManager.play("extraBottle", 0.7);
-
-                        //FloatingText NUR hier sichtbar
+                        SoundManager.play("extraBottle", 0.4);
                         this.floatingTexts.push(
                             new FloatingText(this.character.x + 250, this.character.y + 200)
                         );
-
                         this.character.bottles++;
                     }
-
                     this.statusBarBottle.setPercentage(this.character.bottles);
                 }
             }
@@ -278,10 +201,7 @@ class World {
         this.level.bottles.forEach((bottle, index) => {
             if (this.character.isColliding(bottle)) {
                 if (this.character.bottles < 10) {
-                    SoundManager.play("bottleCollect", 0.6);
-
-                    // ❌ FloatingText wurde ENTFERNT (war falsch hier!)
-
+                    SoundManager.play("bottleCollect", 0.4);
                     this.character.bottles++;
                     this.level.bottles.splice(index, 1);
                     this.statusBarBottle.setPercentage(this.character.bottles);
@@ -295,12 +215,10 @@ class World {
             let horizontal =
                 this.character.x + this.character.width > p.x + p.offset.left &&
                 this.character.x < p.x + p.width - p.offset.right;
-
             let vertical =
                 this.character.y + this.character.height > p.y - p.offset.top &&
                 this.character.y + this.character.height < p.y + 30 &&
                 this.character.speedY <= 0;
-
             if (horizontal && vertical) {
                 this.character.y = p.y - this.character.height + p.offset.top;
                 this.character.speedY = 0;
@@ -314,19 +232,16 @@ class World {
         this.ctx.save();
         this.ctx.translate(this.camera_x, 0);
 
-        // Reihenfolge der Ebenen (von hinten nach vorne):
         this.addObjectsToMap(this.level.backgroundObjects);
         this.addObjectsToMap(this.level.platforms);
         this.addObjectsToMap(this.level.clouds);
         this.addObjectsToMap(this.level.coins);
         this.addObjectsToMap(this.level.bottles);
-
         this.addObjectsToMap(this.floatingTexts);
-
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.throwableObjects);
 
-        // Aufräum-Logik
+        // Aufräum-Logik  was????
         this.throwableObjects = this.throwableObjects.filter(
             (b) => !b.markForDeletion
         );
@@ -337,12 +252,10 @@ class World {
         this.addToMap(this.character);
         this.ctx.restore();
 
-        // HUD (bleibt fix)
         this.addToMap(this.statusBar);
         this.addToMap(this.statusBarCoins);
         this.addToMap(this.statusBarBottle);
         this.drawHudCounters();
-
         requestAnimationFrame(() => this.draw());
     }
 
@@ -379,90 +292,65 @@ class World {
 
     checkVictory() {
         if (this.victoryPlayed) return;
-
         const endboss = this.level.enemies.find(e => e instanceof Endboss);
-
         if (endboss && endboss.isDead()) {
             this.victoryPlayed = true;
-
             SoundManager.stopBackgroundMusic();
 
             // kleine Pause
             setTimeout(() => {
-
                 SoundManager.startBackgroundMusic('victory', 0.6);
-
                 // 1️⃣ YOU WIN → für 3 Sekunden (mit Fade)
                 winText.showFor(4000);
-
                 // 2️⃣ Victory-Musik läuft 10 Sekunden
                 setTimeout(() => {
-
                     SoundManager.stopBackgroundMusic();
-
                     // 3️⃣ 2 HOURS LATER → 2 Sekunden (mit Fade)
                     laterText.showFor(2000);
-
                     // 4️⃣ Nach Text → Cutscene Video starten
                     setTimeout(() => {
                         victoryVideo.play(1);
                     }, 2500);
-
-                }, 6000 ); // Dauer der Victory-Musik
-
+                }, 6000); // Dauer der Victory-Musik
             }, 1000);
         }
     }
 
-  triggerLoss() {
-
-    // ❌ Canvas NICHT ausblenden – rausgenommen
-    // document.getElementById("canvas").classList.add("hidden");
-
-    if (this.lossPlayed) return;
-    this.lossPlayed = true;
-
-    SoundManager.stopBackgroundMusic();
-
-    setTimeout(() => {
-
-        SoundManager.startBackgroundMusic("youLose", 0.6);
-
-        const loseDiv = document.getElementById("loseText");
-        loseDiv.classList.remove("d-none");
-        loseDiv.style.display = "flex";   // 🔥 wichtig, weil du display:none gesetzt hast
-        loseDiv.classList.add("fade-in");
-
-        this.gameOver = true;
-
-    }, 500);
-}
-
-generateMinimumDistanceX(enemy, maxPosition) {
-    const MIN_DISTANCE = 200;
-    let newX;
-    let valid = false;
-
-    while (!valid) {
-        newX = maxPosition + 300 + Math.random() * 500;
-        valid = true;
-
-        this.level.enemies.forEach(other => {
-            if (other !== enemy && !(other instanceof Endboss)) {
-
-                let tooClose =
-                    newX < other.x + other.width + MIN_DISTANCE &&
-                    newX + enemy.width > other.x - MIN_DISTANCE;
-
-                if (tooClose) {
-                    valid = false;
-                }
-            }
-        });
+    triggerLoss() {
+        // ❌ Canvas NICHT ausblenden – rausgenommen
+        if (this.lossPlayed) return;
+        this.lossPlayed = true;
+        SoundManager.stopBackgroundMusic();
+        setTimeout(() => {
+            SoundManager.startBackgroundMusic("youLose", 0.6);
+            const loseDiv = document.getElementById("loseText");
+            loseDiv.classList.remove("d-none");
+            loseDiv.style.display = "flex";   // 🔥 wichtig, weil du display:none gesetzt hast
+            loseDiv.classList.add("fade-in");
+            this.gameOver = true;
+        }, 500);
     }
 
-    return newX;
-}
+    generateMinimumDistanceX(enemy, maxPosition) {
+        const MIN_DISTANCE = 200;
+        let newX;
+        let valid = false;
+        while (!valid) {
+            newX = maxPosition + 300 + Math.random() * 500;
+            valid = true;
+            this.level.enemies.forEach(other => {
+                if (other !== enemy && !(other instanceof Endboss)) {
+                    let tooClose =
+                        newX < other.x + other.width + MIN_DISTANCE &&
+                        newX + enemy.width > other.x - MIN_DISTANCE;
+                    if (tooClose) {
+                        valid = false;
+                    }
+                }
+            });
+        }
+        return newX;
+    }
 
 
 
