@@ -33,22 +33,16 @@ const ALL_GAME_SOUNDS = {
 
 function init() {
 	canvas = document.getElementById("canvas");
-
 	// 1. SOUNDS HIER LADEN (Nachdem init() aufgerufen wurde)
 	SoundManager.loadSounds(ALL_GAME_SOUNDS);
-
 	world = new World(canvas, keyboard);
 	// Victory & Later Text initialisieren
 	winText = new CutsceneText("winText");
 	laterText = new CutsceneText("laterText");
-
 	// Video-Klasse
 	victoryVideo = new GameVideo("victoryVideo");
-
 	// 🔥 HIER MUSST DU DIE MUSIK STARTEN (mit reduzierter Lautstärke 0.4)
 	SoundManager.startBackgroundMusic('music', 0.1);
-
-
 
 	// OPTIONAL: Eine Taste drücken, um Sounds freizugeben
 	console.log("Spiel gestartet. Drücke eine Taste (z.B. SPACE), um Sounds freizugeben.");

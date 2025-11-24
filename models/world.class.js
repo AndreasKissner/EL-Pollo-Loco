@@ -26,16 +26,25 @@ class World {
         this.draw();
     }
 
-    setWorld() {
-        this.character.world = this;
-        const allObjects = [
-            ...this.level.enemies,
-            ...this.level.coins,
-            ...this.level.bottles,
-            ...this.level.clouds
-        ];
-        allObjects.forEach(obj => obj.world = this);
-    }
+setWorld() {
+    this.character.world = this;
+
+    const allObjects = [
+        ...this.level.enemies,
+        ...this.level.coins,
+        ...this.level.bottles,
+        ...this.level.clouds
+    ];
+
+    allObjects.forEach(obj => {
+        obj.world = this;
+
+        // ✔️ Jetzt erst animieren!
+        if (obj.animate) {
+            obj.animate();
+        }
+    });
+}
 
     run() {
         setInterval(() => {
