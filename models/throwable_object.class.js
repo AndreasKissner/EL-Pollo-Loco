@@ -2,12 +2,11 @@ class ThrowableObject extends MovableObject {
 
     hasHitEnemy = false;
     movementIntervalId; // Speichert die ID des Wurf-Intervals (wichtig zum Stoppen)
-    offset = { top: 0, left: 0, right: 0, bottom: 0 };
+    offset = { top: 10, left: 10, right: 10, bottom: 10 };
 
     constructor(x, y, direction) {
         super();
         this.loadImage('img/6_salsa_bottle/salsa_bottle.png');
-
         this.x = x;
         this.y = y;
         this.width = 50;
