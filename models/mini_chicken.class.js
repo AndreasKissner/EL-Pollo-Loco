@@ -32,7 +32,7 @@ class MiniChicken extends MovableObject {
             this.x = 200 + Math.random() * 4500;
         }
 
-        this.speed = 2.25;
+        this.speed = 0.25;
    
     }
 
