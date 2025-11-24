@@ -10,39 +10,35 @@
     background-size: cover;
     background-position: center;
     z-index: 100;
-    pointer-events: none; /* Startscreen blockiert NICHTS mehr */
+    pointer-events: none;
 }
 
 .start-screen button {
-    pointer-events: auto; /* Nur der Play-Button bleibt klickbar */
+    pointer-events: auto;
 }
-
-
 
 .start-screen.hidden {
     display: none !important;
 }
 
-
 .start-menu {
     position: relative;
     width: 100%;
-    max-width: 720px;      
-    aspect-ratio: 720 / 480; 
+    max-width: 720px;
+    aspect-ratio: 720 / 480;
 }
-
 
 .start-image {
     width: 100%;
     height: 100%;
-    object-fit: contain; 
+    object-fit: contain;
     display: block;
 }
 
 .start-btn {
     position: absolute;
     top: 76%;
-    width:100%;
+    width: 100%;
     left: 50%;
     width: 172px;
     height: 71px;
@@ -60,14 +56,13 @@
     transform: translateX(-50%) scale(1.06);
 }
 
-
 .settings-menu {
     position: absolute;
-    top: calc(35% - 240px + 25px);     
-    left: 50%;                           
-    transform: translateX(-50%);         
+    top: calc(35% - 240px + 25px);
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
-    flex-direction: row;                
+    flex-direction: row;
     gap: 15px;
 }
 
@@ -87,28 +82,24 @@
     height: 32px;
 }
 
-
 .settings-btn:hover {
     transform: scale(1.07);
 }
 
- button {
-   position: relative;
-   background: rgb(242, 175, 5);
-/*    top: 100px; */
-   padding: 5px 20px;
-   border: none;
-   border-radius: 25px;
- }
+button {
+    position: relative;
+    background: rgb(242, 175, 5);
+    padding: 5px 20px;
+    border: none;
+    border-radius: 25px;
+}
 
- button:hover {
-   background-color: rgb(231, 134, 7);
- }
-
-/* KEYBOARD INSTRUCTIONS POPUP  */
+button:hover {
+    background-color: rgb(231, 134, 7);
+}
 
 .keyboard-info {
-position: absolute;
+    position: absolute;
     top: 15%;
     right: 50%;
     transform: translateX(50%);
@@ -120,7 +111,6 @@ position: absolute;
     text-align: left;
     backdrop-filter: blur(6px);
     z-index: 99;
-
 }
 
 .keyboard-info.hidden {
@@ -139,10 +129,13 @@ position: absolute;
     height: 38px;
 }
 
+.start-menu .settings-menu {
+    display: none !important;
+}
 
+/* ========================================================== */
 /* Handy Hochformat */
 @media (max-width: 480px) {
-
     .start-btn {
         font-size: 20px;
         padding: 10px 22px;
@@ -164,14 +157,3 @@ position: absolute;
         height: 30px;
     }
 }
-
-/* =============================== */
-/*  Startscreen auf HUD vorbereiten */
-/* =============================== */
-
-/* Settings-Buttons im Startscreen vollständig ausblenden */
-.start-menu .settings-menu {
-    display: none !important;
-}
-
-

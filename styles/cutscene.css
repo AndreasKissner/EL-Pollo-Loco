@@ -1,15 +1,12 @@
-/* Der Video-Container liegt ÜBER ALLEM */
 #cutscene-container {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     background: black;
     z-index: 999999;
     opacity: 0;
@@ -24,7 +21,6 @@
     box-shadow: 0 0 40px black;
 }
 
-/* Mobile optimiert */
 @media (max-width: 600px) {
     #cutscene-container video {
         width: 98vw;
@@ -32,55 +28,36 @@
     }
 }
 
-/* Cutscene-Texte – perfekt zentriert über dem Canvas oder Video */
 .cutscene-text {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-
     text-align: center;
     width: max-content;
     max-width: 90%;
-
     font-size: 38px;
     font-family: 'mexican';
     color: rgb(230, 188, 4);
     text-shadow: 2px 2px 10px black;
-
     opacity: 0;
     display: none;
     transition: opacity 1.5s ease;
-
-    z-index: 99999999; /* über Video + Canvas */
+    z-index: 99999999;
 }
 
-/* Speziell für Bild-Varianten wie "YOU WIN" */
 .cutscene-img img {
     width: 70vw;
     max-width: 600px;
 }
 
-/* Mobile optimiert */
-@media (max-width: 600px) {
-    .cutscene-text {
-        font-size: 26px;
-        color: orangered;
-    }
-
-    .cutscene-img img {
-        width: 90vw;
-    }
-}
-
-/* YOU LOSE OVERLAY */
 #loseText {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    display: none; 
+    display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -88,30 +65,30 @@
     pointer-events: auto;
 }
 
-
-/* Bildgröße */
 #loseText img {
     width: 70vw;
     max-width: 600px;
 }
 
-/* Canvas unsichtbar machen */
 .hidden {
     display: none !important;
 }
 
-/* Fade-In Effekt für das You-Lose DIV */
 .fade-in {
-  opacity: 0;
-  animation: fadeIn 1.2s forwards;
+    opacity: 0;
+    animation: fadeIn 1.2s forwards;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
-/* Grundstil für alle Buttons */
 .btn-base {
     margin-top: 20px;
     padding: 12px 28px;
@@ -139,20 +116,28 @@
     transform: scale(0.95);
 }
 
-
 #videoEndMenu {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-
-    display: none; /* wird im JS zu flex */
-    opacity: 1 !important; /* überschreibt .cutscene-text */
-
-    z-index: 999999999; /* höchste Ebene */
+    display: none;
+    opacity: 1 !important;
+    z-index: 999999999;
     pointer-events: auto;
-
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+/* ============================================================== */
+@media (max-width: 600px) {
+    .cutscene-text {
+        font-size: 26px;
+        color: orangered;
+    }
+
+    .cutscene-img img {
+        width: 90vw;
+    }
 }
