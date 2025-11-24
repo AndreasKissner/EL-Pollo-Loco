@@ -16,6 +16,8 @@ class World {
     victoryPlayed = false;
     lossPlayed = false;
     gameOver = false;
+    gameStarted = false;
+
 
 
 
@@ -36,11 +38,31 @@ class World {
     }
 
     setWorld() {
+    this.character.world = this;
+
+    // Alle Level-Arrays, die world brauchen
+    const allObjects = [
+        ...this.level.enemies,
+        ...this.level.coins,
+        ...this.level.bottles,
+        ...this.level.clouds
+    ];
+
+    // Jedem Objekt die World zuweisen
+    allObjects.forEach(obj => obj.world = this);
+}
+
+/* 
+    setWorld() {
         this.character.world = this;
         this.level.enemies.forEach((enemy) => {
             enemy.world = this;
         });
-    }
+        this.level.coins.forEach(coin => {
+    coin.world = this;
+});
+
+    } */
 
     run() {
         setInterval(() => {
@@ -415,6 +437,34 @@ class World {
 
     }, 500);
 }
+
+generateMinimumDistanceX(enemy, maxPosition) {
+    const MIN_DISTANCE = 200;
+    let newX;
+    let valid = false;
+
+    while (!valid) {
+        newX = maxPosition + 300 + Math.random() * 500;
+        valid = true;
+
+        this.level.enemies.forEach(other => {
+            if (other !== enemy && !(other instanceof Endboss)) {
+
+                let tooClose =
+                    newX < other.x + other.width + MIN_DISTANCE &&
+                    newX + enemy.width > other.x - MIN_DISTANCE;
+
+                if (tooClose) {
+                    valid = false;
+                }
+            }
+        });
+    }
+
+    return newX;
+}
+
+
 
 
 }

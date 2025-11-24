@@ -101,6 +101,7 @@ window.addEventListener('keyup', (event) => {
 
 //start game
 function startGame() {
+     document.querySelector('.impressum-link').classList.add('hidden');
     // 1. Startscreen ausblenden
     const startScreen = document.getElementById("start-screen");
     startScreen.style.display = "none";
@@ -111,6 +112,8 @@ function startGame() {
 
     // 3. Spiel starten
     init();
+    world.gameStarted = true;
+
 
     // 4. Touch-Buttons aktivieren (kommt aus js/button.js)
     if (typeof initTouchButtons === 'function') {

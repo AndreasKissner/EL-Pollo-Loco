@@ -21,10 +21,18 @@ class Coin extends MovableObject {
         this.animate();
     }
 
-    animate() {
-        setInterval(() => {
-            this.playAnimation(this.IMAGES_COIN);
-        }, 300); 
-    }
+ animate() {
+    setInterval(() => {
+
+        // ⬅️ GENAU DAS MUSS REIN
+        if (this.world && this.world.gameOver) {
+            return;
+        } 
+
+        this.playAnimation(this.IMAGES_COIN);
+
+    }, 300);
+}
+
 
 }

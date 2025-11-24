@@ -6,9 +6,9 @@ class MiniChicken extends MovableObject {
 
     offset = {
         top: -10,
-        bottom: 0, 
-        left: -20,
-        right: -25
+        bottom: 0,
+        left: -10,
+        right: -10
     };
 
     IMAGES_WALKIN = [
@@ -25,34 +25,47 @@ class MiniChicken extends MovableObject {
         super().loadImage(this.IMAGES_WALKIN[0]);
         this.loadImages(this.IMAGES_WALKIN);
         this.loadImages(this.IMAGES_DEAD);
-        
+
         if (x) {
             this.x = x;
         } else {
-            this.x = 200 + Math.random() * 4200;
+            this.x = 200 + Math.random() * 4500;
         }
-        
-        this.speed = 0.35;
+
+        this.speed = 0.25;
         this.animate();
     }
 
-    animate() {
-        setInterval(() => {
-            if (this.world && this.world.gameOver) {
-    return;
-}   // Methode mache für alles
+animate() {
 
-            if (!this.isDead()) {
-                this.moveLeft();
-            }
-        }, 1000 / 60);
-        
-        setInterval(() => {
-            if (this.isDead()) {
-                this.playAnimation(this.IMAGES_DEAD);
-            } else {
-                this.playAnimation(this.IMAGES_WALKIN);
-            }
-        }, 200);
+    // Bewegung
+    setInterval(() => {
+        if (this.world && this.world.gameOver) {
+            return;
+        }
+
+        if (!this.isDead()) {
+            this.moveLeft();
+        }
+    }, 1000 / 60);
+
+
+    // Animation
+  setInterval(() => {
+
+    // ⬅️ HIER einfügen:
+    if (!this.world || !this.world.gameStarted) return;
+
+    if (this.world && this.world.gameOver) {
+        return; 
     }
+
+    if (this.isDead()) {
+        this.playAnimation(this.IMAGES_DEAD);
+    } else {
+        this.playAnimation(this.IMAGES_WALKIN);
+    }
+}, 200);
+}
+
 } 
