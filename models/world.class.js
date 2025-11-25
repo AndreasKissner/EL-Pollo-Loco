@@ -95,14 +95,19 @@ class World {
         if (enemy instanceof Endboss || enemy.x >= -200) {
             return maxPosition;
         }
-        enemy.x = maxPosition + 300 + Math.random() * 500;
-        maxPosition = enemy.x;
+        const newX = enemy.generateMinimumDistanceX(
+            maxPosition,
+            this.level.enemies
+        );
+        enemy.x = newX;
+        maxPosition = newX;
         if (enemy.isDead()) {
             enemy.energy = 100;
             enemy.speed = 0.15 + Math.random() * 0.25;
         }
         return maxPosition;
     }
+
 
     checkThrowObjects() {
         if (this.gameOver) {
@@ -394,34 +399,5 @@ class World {
         this.gameOver = true;
     }
 
-    generateMinimumDistanceX(enemy, maxPosition) {
-        const MIN_DISTANCE = 200;
-        let newX;
-        let valid = false;
-        while (!valid) {
-            newX = maxPosition + 300 + Math.random() * 500;
-            valid = this.isValidSpawnPosition(enemy, newX, MIN_DISTANCE);
-        }
-        return newX;
-    }
 
-    isValidSpawnPosition(enemy, newX, minDistance) {
-        let valid = true;
-        this.level.enemies.forEach(other => {
-            if (this.isTooClose(enemy, other, newX, minDistance)) {
-                valid = false;
-            }
-        });
-        return valid;
-    }
-
-    isTooClose(enemy, other, newX, minDistance) {
-        if (other === enemy || other instanceof Endboss) {
-            return false;
-        }
-        return (
-            newX < other.x + other.width + minDistance &&
-            newX + enemy.width > other.x - minDistance
-        );
-    }
 }
