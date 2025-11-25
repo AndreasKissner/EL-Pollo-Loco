@@ -6,44 +6,57 @@ class MovableObject extends DrawableObject {
     speedY = 0;
     speedX = 0;
     acceleration = 2.5;
-    energy = 100; // Standardenergie
+    energy = 100;
     lastHit = 0;
     hitBlocked = false;
     groundLevel = 190;
 
-    offset = {
-        top: 0, 
-        left: 0,
-        right: 0,
-        bottom: 0
-    };
+    offset = { top: 0, left: 0, right: 0, bottom: 0 };
 
-
+    /**
+     * Applies gravity on every frame.
+     */
     applyGravity() {
         setInterval(() => {
-            if (this.isFalling === false) {
-                return;
-            }
             if (this.isAboveGround() || this.speedY > 0) {
-                this.y -= this.speedY;
-                this.speedY -= this.acceleration;
+                this.applyGravityMovement();
             }
-            if (!(this instanceof ThrowableObject) && (this.y + this.height) > this.groundLevel) {
-                this.y = this.groundLevel - this.height;
-                this.speedY = 0;
-            }
+            this.preventGroundPenetration();
         }, 1000 / 25);
     }
 
+    /**
+     * Vertical movement when jumping/falling.
+     */
+    applyGravityMovement() {
+        this.y -= this.speedY;
+        this.speedY -= this.acceleration;
+    }
 
-    isAboveGround() {
-        if (this instanceof ThrowableObject) {
-            return true;
-        } else {
-            return (this.y + this.height) < this.groundLevel;
+    /**
+     * Prevents sinking below ground level.
+     */
+    preventGroundPenetration() {
+        const bottom = this.y + this.height;
+        if (!(this instanceof ThrowableObject) && bottom > this.groundLevel) {
+            this.y = this.groundLevel - this.height;
+            this.speedY = 0;
         }
     }
 
+    /**
+     * Returns true if above the ground level.
+     */
+    isAboveGround() {
+        if (this instanceof ThrowableObject) return true;
+        return (this.y + this.height) < this.groundLevel;
+    }
+
+    /**
+     * Checks if this object collides with another movable object.
+     * @param {MovableObject} mo - The other object to check against.
+     * @returns {boolean} True if a collision is detected.
+     */
     isColliding(mo) {
         return (
             this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
@@ -53,19 +66,13 @@ class MovableObject extends DrawableObject {
         );
     }
 
-    // movable-object.class.js
-
-    // movable-object.class.js
-    // ...
+    /**
+     * Applies damage to the object and triggers knockback.
+     */
     hit() {
         if (this.hitBlocked) return;
-        this.energy -= 20; // 20 Schaden pro Treffer
-
-        if (this.energy < 0) {
-            this.energy = 0;
-        }
-
-        // ✅ KORRIGIERTE LOGIK: Sounds nur abspielen, wenn NICHT gemutet
+        this.energy -= 20;
+        if (this.energy < 0) this.energy = 0;
         if (!SoundManager.isMuted) {
             if (this instanceof Endboss) {
                 SoundManager.play('hurtEndboss', 0.6);
@@ -73,62 +80,70 @@ class MovableObject extends DrawableObject {
                 SoundManager.play('hurtPepe', 1);
             }
         }
-
-        // Die Zeilen für den Rückstoß/Kickback sind hier:
-        this.lastHit = new Date().getTime();
-        this.hitOutTime(); // <--- DIESE FUNKTION LÖST DEN SPRUNG AUS
+        this.lastHit = Date.now();
+        this.hitOutTime();
     }
-    // ...
 
+    /**
+    * Returns true if the object was hit within the last second.
+    */
     isHurt() {
-        let timepassed = new Date().getTime() - this.lastHit;
-        timepassed = timepassed / 1000;
-        return timepassed < 1;
+        return (Date.now() - this.lastHit) / 1000 < 1;
     }
 
+    /**
+     * Returns true if the object's energy has reached zero.
+     */
     isDead() {
-        return this.energy == 0;
+        return this.energy === 0;
     }
 
-
+    /**
+     * Plays animation frames from an image array.
+     * @param {string[]} images
+     */
     playAnimation(images) {
         if (!images || images.length === 0) return;
         let i = this.currentImage % images.length;
-        let path = images[i];
-        this.img = this.imageCache[path];
+        this.img = this.imageCache[images[i]];
         this.currentImage++;
     }
 
+    /**
+     * Moves the object to the right.
+     */
     moveRight() {
         this.x += this.speed;
     }
 
+    /**
+     * Moves the object to the left.
+     */
     moveLeft() {
         this.x -= this.speed;
     }
 
+    /**
+     * Makes the object jump upward.
+     */
     jump() {
         this.speedY = 25;
     }
 
+    /**
+  * Applies knockback and a short jump after the object is hit.
+  */
     hitOutTime() {
         if (this.hitBlocked) return;
         this.hitBlocked = true;
-
         const jumpStrength = 6;
-        const knockback = 1;
-
-        if (this.otherDirection) {
-            this.speedX = knockback;
-        } else {
-            this.speedX = -knockback;
-        }
-
+        const knockback = this.otherDirection ? 1 : -1;
+        this.speedX = knockback;
         this.speedY = jumpStrength;
-
         setTimeout(() => {
             this.hitBlocked = false;
             this.speedX = 0;
         }, 1300);
     }
+
 }
