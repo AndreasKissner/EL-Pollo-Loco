@@ -4,7 +4,7 @@ class Level {
     platforms;
     backgroundObjects;
     coins;
-    bottles;   // ✨ Array, auch wenn nur eine Flasche drin ist
+    bottles;   
 
     level_end_x = 4300;
 
@@ -14,6 +14,6 @@ class Level {
         this.platforms = platforms;
         this.backgroundObjects = backgroundObjects;
         this.coins = coins;
-        this.bottles = bottles;   // Übergabe
+        this.bottles = bottles;   
     }
 }
