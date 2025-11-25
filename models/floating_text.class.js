@@ -1,11 +1,18 @@
+/**
+ * Floating text animation that moves upward and disappears.
+ */
 class FloatingText extends DrawableObject {
+
     speedY = 3;
-    lifeTime = 50; // Anzahl der Frames, die der Text sichtbar ist
+    lifeTime = 50;
     markForDeletion = false;
     text = "EXTRA BOTTLE!!";
     font = "30px mexican";
     color = "yellow";
 
+    /**
+     * Creates a floating text at a given position.
+     */
     constructor(x, y) {
         super();
         this.x = x;
@@ -13,23 +20,47 @@ class FloatingText extends DrawableObject {
         this.startAnimation();
     }
 
+    /**
+     * Starts upward movement + lifetime countdown.
+     */
     startAnimation() {
-        // Bewegung und Lebensdauer
         const interval = setInterval(() => {
-            this.y -= this.speedY; // Text bewegt sich nach oben
-            this.lifeTime--;
+            this.moveUp();
+            this.reduceLife();
 
-            if (this.lifeTime <= 0) {
-                this.markForDeletion = true; // Markiert zum Entfernen
+            if (this.lifeOver()) {
+                this.markForDeletion = true;
                 clearInterval(interval);
             }
-        }, 1000 / 60); 
+        }, 1000 / 60);
     }
 
+    /**
+     * Moves the text upward.
+     */
+    moveUp() {
+        this.y -= this.speedY;
+        if (this.y < 30) this.y = 30;
+    }
+
+    /**
+     * Reduces lifetime.
+     */
+    reduceLife() {
+        this.lifeTime--;
+    }
+
+    /**
+     * Returns true when text should disappear.
+     */
+    lifeOver() {
+        return this.lifeTime <= 0;
+    }
+
+    /**
+     * Renders the floating text.
+     */
     draw(ctx) {
-        if (this.y < 30) {
-            this.y = 30;
-        }
         ctx.font = this.font;
         ctx.fillStyle = this.color;
         ctx.strokeStyle = "black";
