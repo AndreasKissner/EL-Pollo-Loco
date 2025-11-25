@@ -108,11 +108,8 @@ class World {
         return maxPosition;
     }
 
-
     checkThrowObjects() {
-        if (this.gameOver) {
-            return;
-        }
+        if (this.gameOver) { return; }
         const now = Date.now();
         const cooldown = 1500;
         if (this.canThrowBottle(now, cooldown)) {
@@ -143,68 +140,16 @@ class World {
     }
 
     checkcollision() {
-        this.checkBottleEnemyCollisions();
-        MovableObject.handleCharacterEnemyCollisions(
-            this.character,
+        this.throwableObjects.forEach(bottle => {
+            bottle.checkEnemyCollisions(this.level.enemies);
+        });
+        this.character.checkEnemyCollisions(
             this.level.enemies,
             this.statusBar
         );
-
         this.checkCoinCollisions();
         this.checkGroundBottleCollisions();
         this.character.checkPlatformCollisions(this.level.platforms);
-
-    }
-
-    checkBottleEnemyCollisions() {
-        this.throwableObjects.forEach(bottle => {
-            this.checkSingleBottleCollision(bottle);
-        });
-    }
-
-    checkSingleBottleCollision(bottle) {
-        if (bottle.hasHitGround || bottle.hasHitEnemy) {
-            return;
-        }
-        this.level.enemies.forEach(enemy => {
-            this.handleBottleVsEnemy(bottle, enemy);
-        });
-    }
-
-    handleBottleVsEnemy(bottle, enemy) {
-        if (enemy.isDead() || !bottle.isColliding(enemy)) {
-            return;
-        }
-        if (enemy instanceof Endboss) {
-            this.handleBottleHitEndboss(enemy);
-        } else {
-            this.handleBottleHitChicken(enemy);
-        }
-        this.applyBottleHitEffects(bottle);
-    }
-
-    handleBottleHitEndboss(enemy) {
-        if (enemy.isHurt()) {
-            return;
-        }
-        enemy.hit();
-    }
-
-    handleBottleHitChicken(enemy) {
-        SoundManager.play("chickKill", 1);
-        enemy.energy = 0;
-    }
-
-    applyBottleHitEffects(bottle) {
-        SoundManager.play("bottleBreak", 1);
-        bottle.hasHitEnemy = true;
-        if (bottle.movementIntervalId) {
-            clearInterval(bottle.movementIntervalId);
-        }
-        bottle.currentImage = 0;
-        bottle.speedY = 0;
-        bottle.acceleration = 0;
-        bottle.isFalling = false;
     }
 
     checkCoinCollisions() {
@@ -299,12 +244,8 @@ class World {
     }
 
     cleanupDeletableObjects() {
-        this.throwableObjects = this.throwableObjects.filter(
-            b => !b.markForDeletion
-        );
-        this.floatingTexts = this.floatingTexts.filter(
-            t => !t.markForDeletion
-        );
+        this.throwableObjects = this.throwableObjects.filter(b => !b.markForDeletion);
+        this.floatingTexts = this.floatingTexts.filter(t => !t.markForDeletion);
     }
 
     drawUI() {
@@ -382,9 +323,7 @@ class World {
     }
 
     triggerLoss() {
-        if (this.lossPlayed) {
-            return;
-        }
+        if (this.lossPlayed) { return; }
         this.lossPlayed = true;
         SoundManager.stopBackgroundMusic();
         setTimeout(() => this.showLossScreen(), 500);
@@ -398,6 +337,4 @@ class World {
         loseDiv.classList.add("fade-in");
         this.gameOver = true;
     }
-
-
 }

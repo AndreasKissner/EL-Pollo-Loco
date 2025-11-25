@@ -146,16 +146,6 @@ class MovableObject extends DrawableObject {
         }, 1300);
     }
 
-    static handleCharacterEnemyCollisions(character, enemies, statusBar) {
-        enemies.forEach(enemy => {
-            MovableObject.handleSingleCharacterEnemyCollision(
-                character,
-                enemy,
-                statusBar
-            );
-        });
-    }
-
     static handleSingleCharacterEnemyCollision(character, enemy, statusBar) {
         if (enemy.isDead() || !character.isColliding(enemy)) {
             return;
@@ -218,6 +208,49 @@ isTooClose(other, newX, minDistance) {
     );
 }
 
+checkEnemyCollisions(enemies, statusBar) {
+    enemies.forEach(enemy => {
+        this.handleEnemyCollision(enemy, statusBar);
+    });
+}
 
+handleEnemyCollision(enemy, statusBar) {
+    if (enemy.isDead() || !this.isColliding(enemy)) {
+        return;
+    }
+    if (enemy instanceof Endboss) {
+        this.handleEndbossHits(statusBar);
+        return;
+    }
+    if (this.isStompingEnemy()) {
+        this.handleStompOnEnemy(enemy);
+    } else {
+        this.handleEnemyHits(statusBar);
+    }
+}
+
+handleEndbossHits(statusBar) {
+    this.hit();
+    statusBar.setPercentage(this.energy);
+}
+
+isStompingEnemy() {
+    return (
+        this.isAboveGround() &&
+        this.speedY < 0 &&
+        !this.hitBlocked
+    );
+}
+
+handleStompOnEnemy(enemy) {
+    SoundManager.play("chickKill", 1);
+    enemy.energy = 0;
+    this.speedY = 15;
+}
+
+handleEnemyHits(statusBar) {
+    this.hit();
+    statusBar.setPercentage(this.energy);
+}
 
 }

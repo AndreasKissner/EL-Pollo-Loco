@@ -133,4 +133,50 @@ class ThrowableObject extends MovableObject {
         this.isFalling = false;
         clearInterval(this.movementIntervalId);
     }
+
+    checkEnemyCollisions(enemies) {
+    if (this.hasHitGround || this.hasHitEnemy) {
+        return;
+    }
+    enemies.forEach(enemy => {
+        this.handleCollisionWithEnemy(enemy);
+    });
+}
+
+handleCollisionWithEnemy(enemy) {
+    if (enemy.isDead() || !this.isColliding(enemy)) {
+        return;
+    }
+    if (enemy instanceof Endboss) {
+        this.handleHitEndboss(enemy);
+    } else {
+        this.handleHitChicken(enemy);
+    }
+    this.applyHitEffects();
+}
+
+handleHitEndboss(enemy) {
+    if (enemy.isHurt()) {
+        return;
+    }
+    enemy.hit();
+}
+
+handleHitChicken(enemy) {
+    SoundManager.play("chickKill", 1);
+    enemy.energy = 0;
+}
+
+applyHitEffects() {
+    SoundManager.play("bottleBreak", 1);
+    this.hasHitEnemy = true;
+    if (this.movementIntervalId) {
+        clearInterval(this.movementIntervalId);
+    }
+    this.currentImage = 0;
+    this.speedY = 0;
+    this.acceleration = 0;
+    this.isFalling = false;
+}
+
 }
