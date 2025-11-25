@@ -146,4 +146,46 @@ class MovableObject extends DrawableObject {
         }, 1300);
     }
 
+    static handleCharacterEnemyCollisions(character, enemies, statusBar) {
+        enemies.forEach(enemy => {
+            MovableObject.handleSingleCharacterEnemyCollision(
+                character,
+                enemy,
+                statusBar
+            );
+        });
+    }
+
+    static handleSingleCharacterEnemyCollision(character, enemy, statusBar) {
+        if (enemy.isDead() || !character.isColliding(enemy)) {
+            return;
+        }
+        if (enemy instanceof Endboss) {
+            MovableObject.characterHitByEndboss(character, statusBar);
+            return;
+        }
+        if (character.isAboveGround() && character.speedY < 0 && !character.hitBlocked) {
+            MovableObject.characterStompsEnemy(character, enemy);
+        } else {
+            MovableObject.enemyHitsCharacter(character, statusBar);
+        }
+    }
+
+    static characterHitByEndboss(character, statusBar) {
+        character.hit();
+        statusBar.setPercentage(character.energy);
+    }
+
+    static characterStompsEnemy(character, enemy) {
+        SoundManager.play("chickKill", 1);
+        enemy.energy = 0;
+        character.speedY = 15;
+    }
+
+    static enemyHitsCharacter(character, statusBar) {
+        character.hit();
+        statusBar.setPercentage(character.energy);
+    }
+
+
 }
