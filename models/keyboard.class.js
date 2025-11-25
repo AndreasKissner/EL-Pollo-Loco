@@ -1,3 +1,6 @@
+/**
+ * Stores the current keyboard state for player input.
+ */
 class Keyboard{
     LEFT = false;
     RIGHT = false;
