@@ -127,17 +127,64 @@ function areTouchButtonsAvailable(...buttons) {
 /**
  * Connects a touch button to press and release actions.
  */
+/**
+ * Attaches all touch-based controls to a button element.
+ * Handles press and release actions for mobile devices.
+ *
+ * @param {HTMLElement} element - The button element.
+ * @param {Function} onPress - Function executed when the button is pressed.
+ * @param {Function} onRelease - Function executed when the button is released.
+ */
+function attachTouchEvents(element, onPress, onRelease) {
+    const handlePress = (e) => {
+        if (e && e.cancelable) e.preventDefault();
+        onPress();
+    };
+
+    const handleRelease = (e) => {
+        if (e && e.cancelable) e.preventDefault();
+        onRelease();
+    };
+
+    element.addEventListener('touchstart', handlePress, { passive: false });
+    element.addEventListener('touchend', handleRelease, { passive: false });
+    element.addEventListener('touchcancel', handleRelease, { passive: false });
+}
+
+
+/**
+ * Attaches mouse-based controls to a button element.
+ * Handles press and release actions for desktop devices.
+ *
+ * @param {HTMLElement} element - The button element.
+ * @param {Function} onPress - Function executed when the button is pressed.
+ * @param {Function} onRelease - Function executed when the button is released.
+ */
+function attachMouseEvents(element, onPress, onRelease) {
+    const handlePress = () => onPress();
+    const handleRelease = () => onRelease();
+
+    element.addEventListener('mousedown', handlePress);
+    element.addEventListener('mouseup', handleRelease);
+    element.addEventListener('mouseleave', handleRelease);
+}
+
+
+/**
+ * Connects both mouse and touch controls to a button element.
+ * Ensures full compatibility across mobile and desktop devices.
+ *
+ * @param {HTMLElement} element - The button element.
+ * @param {Function} onPress - Function executed when the button becomes active.
+ * @param {Function} onRelease - Function executed when the button is released.
+ */
 function attachButton(element, onPress, onRelease) {
     if (!element) return;
-    element.addEventListener('touchstart', (e) => {
-        if (e.cancelable) e.preventDefault();
-        onPress();
-    });
-    element.addEventListener('touchend', (e) => {
-        if (e.cancelable) e.preventDefault();
-        onRelease();
-    });
+
+    attachTouchEvents(element, onPress, onRelease);
+    attachMouseEvents(element, onPress, onRelease);
 }
+
 
 /**
  * Returns the player to the start screen by reloading index.html.
