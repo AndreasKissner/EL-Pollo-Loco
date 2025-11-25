@@ -132,28 +132,3 @@ button:hover {
 .start-menu .settings-menu {
     display: none !important;
 }
-
-/* ========================================================== */
-/* Handy Hochformat */
-@media (max-width: 480px) {
-    .start-btn {
-        font-size: 20px;
-        padding: 10px 22px;
-        bottom: 10%;
-    }
-
-    .settings-btn {
-        width: 50px;
-        height: 50px;
-    }
-
-    .keyboard-info {
-        font-size: 16px;
-        padding: 18px 20px;
-    }
-
-    .instruction-row img {
-        width: 30px;
-        height: 30px;
-    }
-}

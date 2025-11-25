@@ -22,7 +22,6 @@ class SoundManager {
             audio.autoplay = false;
             SoundManager.audioCache[name] = audio;
         }
-        console.log("AudioManager: Sounds erfolgreich vorgeladen.");
     }
 
     /**

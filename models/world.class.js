@@ -68,7 +68,6 @@ class World {
         if (this.character.isDead() || (endboss && endboss.isDead())) {
             this.gameOver = true;
             SoundManager.stopBackgroundMusic();
-            console.log("GAME OVER: Pepe oder Endboss ist tot alles stoppen.");
         }
     }
 
@@ -136,7 +135,6 @@ class World {
         this.throwableObjects.push(bottle);
         this.character.bottles--;
         this.statusBarBottle.setPercentage(this.character.bottles);
-        console.log("Bottle geworfen! Cooldown aktiv.");
     }
 
     checkcollision() {
@@ -179,13 +177,11 @@ class World {
             return;
         }
         enemy.hit();
-        console.log(`💥 Bottle trifft BOSS! Restenergie: ${enemy.energy}`);
     }
 
     handleBottleHitChicken(enemy) {
         SoundManager.play("chickKill", 1);
         enemy.energy = 0;
-        console.log("💥 Bottle trifft Huhn! Splash gestartet.");
     }
 
     applyBottleHitEffects(bottle) {

@@ -21,13 +21,6 @@
     box-shadow: 0 0 40px black;
 }
 
-@media (max-width: 600px) {
-    #cutscene-container video {
-        width: 98vw;
-        border-radius: 10px;
-    }
-}
-
 .cutscene-text {
     position: fixed;
     top: 50%;
@@ -92,15 +85,12 @@
 .btn-base {
     margin-top: 20px;
     padding: 12px 28px;
-
     font-size: 22px;
     font-family: 'mexican';
     color: rgb(10, 10, 10);
-
     background: #ffc100;
     border: none;
     border-radius: 10px;
-
     cursor: pointer;
     transition: 0.2s;
     box-shadow: 0 0 15px black;
@@ -130,14 +120,3 @@
     align-items: center;
 }
 
-/* ============================================================== */
-@media (max-width: 600px) {
-    .cutscene-text {
-        font-size: 26px;
-        color: orangered;
-    }
-
-    .cutscene-img img {
-        width: 90vw;
-    }
-}

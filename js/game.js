@@ -140,12 +140,10 @@ function attachTouchEvents(element, onPress, onRelease) {
         if (e && e.cancelable) e.preventDefault();
         onPress();
     };
-
     const handleRelease = (e) => {
         if (e && e.cancelable) e.preventDefault();
         onRelease();
     };
-
     element.addEventListener('touchstart', handlePress, { passive: false });
     element.addEventListener('touchend', handleRelease, { passive: false });
     element.addEventListener('touchcancel', handleRelease, { passive: false });
