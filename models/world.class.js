@@ -139,7 +139,12 @@ class World {
 
     checkcollision() {
         this.checkBottleEnemyCollisions();
-        this.checkCharacterEnemyCollisions();
+        MovableObject.handleCharacterEnemyCollisions(
+            this.character,
+            this.level.enemies,
+            this.statusBar
+        );
+
         this.checkCoinCollisions();
         this.checkGroundBottleCollisions();
         this.character.checkPlatformCollisions(this.level.platforms);
@@ -195,51 +200,6 @@ class World {
         bottle.speedY = 0;
         bottle.acceleration = 0;
         bottle.isFalling = false;
-    }
-
-    checkCharacterEnemyCollisions() {
-        this.level.enemies.forEach(enemy => {
-            this.handleCharacterEnemyCollision(enemy);
-        });
-    }
-
-    handleCharacterEnemyCollision(enemy) {
-        if (enemy.isDead() || !this.character.isColliding(enemy)) {
-            return;
-        }
-        if (enemy instanceof Endboss) {
-            this.handleEndbossHitsCharacter();
-            return;
-        }
-        if (this.isCharacterStompingEnemy()) {
-            this.handleCharacterStompsEnemy(enemy);
-        } else {
-            this.handleEnemyHitsCharacter();
-        }
-    }
-
-    handleEndbossHitsCharacter() {
-        this.character.hit();
-        this.statusBar.setPercentage(this.character.energy);
-    }
-
-    isCharacterStompingEnemy() {
-        return (
-            this.character.isAboveGround() &&
-            this.character.speedY < 0 &&
-            !this.character.hitBlocked
-        );
-    }
-
-    handleCharacterStompsEnemy(enemy) {
-        SoundManager.play("chickKill", 1);
-        enemy.energy = 0;
-        this.character.speedY = 15;
-    }
-
-    handleEnemyHitsCharacter() {
-        this.character.hit();
-        this.statusBar.setPercentage(this.character.energy);
     }
 
     checkCoinCollisions() {
