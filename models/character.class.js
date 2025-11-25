@@ -13,6 +13,8 @@ class Character extends MovableObject {
     coins = 0;
     bottles = 0;
     maxBottleLimit = 5;
+    deadKickApplied = false;
+
 
     offset = {
         top: 100,
@@ -190,11 +192,18 @@ class Character extends MovableObject {
     }
 
     /** Handles the character’s full death animation sequence. */
-    handleDeadAnimation() {
-        this.speed = 0;
-        this.playDeadSoundOnce();
-        this.updateDeadAnimationFrame();
+ handleDeadAnimation() {
+    this.speed = 0;
+    if (!this.deadKickApplied) {
+        this.deadKickApplied = true;
+        const direction = this.otherDirection ? 1 : -1;
+        this.speedY = 15;            
+        this.x += direction * -1;   
     }
+    this.playDeadSoundOnce();
+    this.updateDeadAnimationFrame();
+}
+
 
     /** Plays the death sound once when the character dies. */
     playDeadSoundOnce() {

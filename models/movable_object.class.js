@@ -146,37 +146,6 @@ class MovableObject extends DrawableObject {
         }, 1300);
     }
 
-    static handleSingleCharacterEnemyCollision(character, enemy, statusBar) {
-        if (enemy.isDead() || !character.isColliding(enemy)) {
-            return;
-        }
-        if (enemy instanceof Endboss) {
-            MovableObject.characterHitByEndboss(character, statusBar);
-            return;
-        }
-        if (character.isAboveGround() && character.speedY < 0 && !character.hitBlocked) {
-            MovableObject.characterStompsEnemy(character, enemy);
-        } else {
-            MovableObject.enemyHitsCharacter(character, statusBar);
-        }
-    }
-
-    static characterHitByEndboss(character, statusBar) {
-        character.hit();
-        statusBar.setPercentage(character.energy);
-    }
-
-    static characterStompsEnemy(character, enemy) {
-        SoundManager.play("chickKill", 1);
-        enemy.energy = 0;
-        character.speedY = 15;
-    }
-
-    static enemyHitsCharacter(character, statusBar) {
-        character.hit();
-        statusBar.setPercentage(character.energy);
-    }
-
     generateMinimumDistanceX(maxPosition, enemies) {
         const MIN_DISTANCE = 200;
         let newX;
@@ -242,11 +211,17 @@ class MovableObject extends DrawableObject {
         );
     }
 
-    handleStompOnEnemy(enemy) {
+  handleStompOnEnemy(enemy) {
+    if (enemy instanceof MiniChicken) {
+        SoundManager.play("miniChicken", 1.4);
+    } else {
         SoundManager.play("chickKill", 1);
-        enemy.energy = 0;
-        this.speedY = 15;
     }
+
+    enemy.energy = 0;
+    this.speedY = 15;
+}
+
 
     handleEnemyHits(statusBar) {
         this.hit();

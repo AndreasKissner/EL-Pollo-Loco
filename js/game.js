@@ -27,6 +27,7 @@ const ALL_GAME_SOUNDS = {
     'bossMusic': 'audio/endbossMusic.mp3',
     'youLose': 'audio/youLose.mp3',
     'victory': 'audio/win.mp3',
+    "miniChicken" :"audio/mini_chicken.mp3",
     'music': 'audio/musik.mp3'
 };
 
