@@ -187,5 +187,37 @@ class MovableObject extends DrawableObject {
         statusBar.setPercentage(character.energy);
     }
 
+    generateMinimumDistanceX(maxPosition, enemies) {
+    const MIN_DISTANCE = 200;
+    let newX;
+    let valid = false;
+    while (!valid) {
+        newX = maxPosition + 300 + Math.random() * 500;
+        valid = this.isValidSpawnPosition(enemies, newX, MIN_DISTANCE);
+    }
+    return newX;
+}
+
+isValidSpawnPosition(enemies, newX, minDistance) {
+    let valid = true;
+    enemies.forEach(other => {
+        if (this.isTooClose(other, newX, minDistance)) {
+            valid = false;
+        }
+    });
+    return valid;
+}
+
+isTooClose(other, newX, minDistance) {
+    if (other === this || other instanceof Endboss) {
+        return false;
+    }
+    return (
+        newX < other.x + other.width + minDistance &&
+        newX + this.width > other.x - minDistance
+    );
+}
+
+
 
 }
