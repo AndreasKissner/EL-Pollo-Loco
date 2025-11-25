@@ -151,7 +151,6 @@ function attachTouchEvents(element, onPress, onRelease) {
     element.addEventListener('touchcancel', handleRelease, { passive: false });
 }
 
-
 /**
  * Attaches mouse-based controls to a button element.
  * Handles press and release actions for desktop devices.
