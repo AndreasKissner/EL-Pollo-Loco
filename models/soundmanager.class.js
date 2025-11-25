@@ -1,12 +1,19 @@
+/**
+ * Handles all sound effects and background music for the game.
+ */
 class SoundManager {
 
     static audioCache = {};
     static isMuted = false;
-    static masterVolume = 1; 
+    static masterVolume = 1;
     static backgroundMusic = null;
     static currentMusicName = null;
     static currentMusicVolume = 0.3;
 
+    /**
+     * Preloads all audio files into cache.
+     * @param {Object} soundPaths - Sound name → file path.
+     */
     static loadSounds(soundPaths) {
         for (const name in soundPaths) {
             const audio = new Audio(soundPaths[name]);
@@ -19,65 +26,79 @@ class SoundManager {
     }
 
     /**
-     * SICHERES SOUND-PLAY:
-     * - Keine Unterbrechungen mehr
-     * - Keine play/pause Konflikte
-     * - Chrome wirft keine Fehler mehr
+     * Safely plays a sound effect with volume control.
+     * @param {string} name - Sound key.
+     * @param {number} volume - Additional volume multiplier.
      */
-  static play(name, volume = 1) {
-
-    if (SoundManager.masterVolume === 0) return;
-
-    const audio = SoundManager.audioCache[name];
-    if (!audio) return;
-
-    // 🔥 Wenn der Sound gerade läuft → sofort stoppen
-    if (!audio.paused) {
-        audio.pause();
-    }
-
-    // Immer zum Anfang spulen
-    audio.currentTime = 0;
-
-    audio.volume = 0.5 * volume * SoundManager.masterVolume;
-
-    audio.play().catch(err => {
-        console.warn(`Play-Fehler bei ${name}:`, err);
-    });
-}
-
-
-
-    static startBackgroundMusic(name, volume = 0.3) {
-
-        SoundManager.currentMusicVolume = volume;
-
-        if (SoundManager.isMuted) return;
+    static play(name, volume = 1) {
+        if (SoundManager.masterVolume === 0) return;
 
         const audio = SoundManager.audioCache[name];
-        if (!audio) {
-            console.warn(`Musik '${name}' nicht gefunden.`);
-            return;
-        }
+        if (!audio) return;
 
-        // Falls andere Musik läuft → stoppen
-        if (SoundManager.backgroundMusic && SoundManager.backgroundMusic !== audio) {
-            SoundManager.stopBackgroundMusic();
-        }
+        SoundManager.resetSound(audio);
+        SoundManager.applyVolume(audio, volume);
 
-        // Wenn Musik schon spielt → nichts tun
-        if (SoundManager.backgroundMusic === audio && !audio.paused) return;
-
-        audio.loop = true;
-        audio.volume = volume * SoundManager.masterVolume;
-
-        audio.play().catch(e => console.warn("Musik-Start Fehler:", e));
-
-        SoundManager.backgroundMusic = audio;
-        SoundManager.currentMusicName = name;
+        audio.play().catch(err => {
+            console.warn(`Play-Fehler bei ${name}:`, err);
+        });
     }
 
+    /**
+     * Stops & resets a sound before playing.
+     */
+    static resetSound(audio) {
+        if (!audio.paused) audio.pause();
+        audio.currentTime = 0;
+    }
 
+    /**
+     * Applies master + local volume.
+     */
+    static applyVolume(audio, volume) {
+        audio.volume = 0.5 * volume * SoundManager.masterVolume;
+    }
+
+    /**
+     * Starts looping background music.
+     * @param {string} name - Music key.
+     * @param {number} volume - Music volume.
+     */
+   static startBackgroundMusic(name, volume = 0.3) {
+    SoundManager.currentMusicVolume = volume;
+    if (SoundManager.isMuted) return;
+    const audio = SoundManager.audioCache[name];
+    if (!audio) {
+        return;
+    }
+    if (SoundManager.backgroundMusic && SoundManager.backgroundMusic !== audio) {
+        SoundManager.stopBackgroundMusic();
+    }
+    if (SoundManager.backgroundMusic === audio && !audio.paused) return;
+    SoundManager.configureMusic(audio, volume);
+    SoundManager.playMusic(audio);
+    SoundManager.backgroundMusic = audio;
+    SoundManager.currentMusicName = name;
+}
+
+    /**
+     * Configures loop & volume for background music.
+     */
+    static configureMusic(audio, volume) {
+        audio.loop = true;
+        audio.volume = volume * SoundManager.masterVolume;
+    }
+
+    /**
+     * Plays background music safely.
+     */
+    static playMusic(audio) {
+        audio.play().catch(e => console.warn("Musik-Start Fehler:", e));
+    }
+
+    /**
+     * Stops background music immediately.
+     */
     static stopBackgroundMusic() {
         if (SoundManager.backgroundMusic) {
             SoundManager.backgroundMusic.pause();
@@ -87,10 +108,8 @@ class SoundManager {
         SoundManager.currentMusicName = null;
     }
 
-
     /**
-     * Toggle-Mute – nur Volume ändern!  
-     * KEIN pause() mehr → KEINE Chrome-Bugs!
+     * Toggles mute state without pausing audio.
      */
     static toggleMute() {
         SoundManager.isMuted = !SoundManager.isMuted;
@@ -98,14 +117,26 @@ class SoundManager {
 
         console.log("Mute:", SoundManager.isMuted);
 
-        // Musik nur leiser/höher stellen
         if (SoundManager.backgroundMusic) {
-            SoundManager.backgroundMusic.volume =
-                SoundManager.currentMusicVolume * SoundManager.masterVolume;
+            SoundManager.updateMusicVolume();
+            SoundManager.resumeMusicIfNeeded();
+        }
+    }
 
-            if (!SoundManager.isMuted && SoundManager.backgroundMusic.paused) {
-                SoundManager.backgroundMusic.play().catch(e => console.warn(e));
-            }
+    /**
+     * Updates background music volume after mute toggle.
+     */
+    static updateMusicVolume() {
+        SoundManager.backgroundMusic.volume =
+            SoundManager.currentMusicVolume * SoundManager.masterVolume;
+    }
+
+    /**
+     * Resumes music after unmuting.
+     */
+    static resumeMusicIfNeeded() {
+        if (!SoundManager.isMuted && SoundManager.backgroundMusic.paused) {
+            SoundManager.backgroundMusic.play().catch(e => console.warn(e));
         }
     }
 }
