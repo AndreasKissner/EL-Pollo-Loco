@@ -1,15 +1,14 @@
+/**
+ * Small chicken enemy with simple movement and animation.
+ */
 class MiniChicken extends MovableObject {
+
     x = 0;
     y = 390;
     height = 35;
     width = 35;
 
-    offset = {
-        top: -10,
-        bottom: 0,
-        left: -10,
-        right: -10
-    };
+    offset = { top: -10, bottom: 0, left: -10, right: -10 };
 
     IMAGES_WALKIN = [
         'img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
@@ -18,54 +17,52 @@ class MiniChicken extends MovableObject {
     ];
 
     IMAGES_DEAD = [
-        'img/3_enemies_chicken/chicken_small/2_dead/dead.png',
+        'img/3_enemies_chicken/chicken_small/2_dead/dead.png'
     ];
 
+    /**
+     * Creates a mini chicken enemy.
+     * @param {number} x - Optional start position.
+     */
     constructor(x) {
         super().loadImage(this.IMAGES_WALKIN[0]);
         this.loadImages(this.IMAGES_WALKIN);
         this.loadImages(this.IMAGES_DEAD);
-
-        if (x) {
-            this.x = x;
-        } else {
-            this.x = 200 + Math.random() * 4500;
-        }
-
+        this.x = x ? x : 200 + Math.random() * 4500;
         this.speed = 0.25;
-   
     }
 
-animate() {
-
-    // Bewegung
-    setInterval(() => {
-        if (this.world && this.world.gameOver) {
-            return;
-        }
-
-        if (!this.isDead()) {
-            this.moveLeft();
-        }
-    }, 1000 / 60);
-
-
-    // Animation
-  setInterval(() => {
-
-    // ⬅️ HIER einfügen:
-    if (!this.world || !this.world.gameStarted) return;
-
-    if (this.world && this.world.gameOver) {
-        return; 
+    /**
+     * Starts movement and animation loops.
+     */
+    animate() {
+        this.startMovementLoop();
+        this.startAnimationLoop();
     }
 
-    if (this.isDead()) {
-        this.playAnimation(this.IMAGES_DEAD);
-    } else {
-        this.playAnimation(this.IMAGES_WALKIN);
+    /**
+     * Moves the chicken left continuously.
+     */
+    startMovementLoop() {
+        setInterval(() => {
+            if (this.world && this.world.gameOver) return;
+            if (!this.isDead()) this.moveLeft();
+        }, 1000 / 60);
     }
-}, 200);
+
+    /**
+     * Plays walking or dead animation.
+     */
+    startAnimationLoop() {
+        setInterval(() => {
+            if (!this.world || !this.world.gameStarted) return;
+            if (this.world && this.world.gameOver) return;
+            if (this.isDead()) {
+                this.playAnimation(this.IMAGES_DEAD);
+            } else {
+                this.playAnimation(this.IMAGES_WALKIN);
+            }
+        }, 200);
+    }
+
 }
-
-} 
