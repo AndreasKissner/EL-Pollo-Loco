@@ -139,74 +139,32 @@ class World {
         this.statusBarBottle.setPercentage(this.character.bottles);
     }
 
-    checkcollision() {
-        this.throwableObjects.forEach(bottle => {
-            bottle.checkEnemyCollisions(this.level.enemies);
-        });
-        this.character.checkEnemyCollisions(
-            this.level.enemies,
-            this.statusBar
-        );
-        this.checkCoinCollisions();
-        this.checkGroundBottleCollisions();
-        this.character.checkPlatformCollisions(this.level.platforms);
-    }
+ checkcollision() {
+    this.throwableObjects.forEach(bottle => {
+        bottle.checkEnemyCollisions(this.level.enemies);
+    });
 
-    checkCoinCollisions() {
-        this.level.coins.forEach((coin, index) => {
-            if (this.character.isColliding(coin)) {
-                this.collectCoin(index);
-            }
-        });
-    }
+    this.character.checkEnemyCollisions(
+        this.level.enemies,
+        this.statusBar
+    );
 
-    collectCoin(index) {
-        SoundManager.play("coinSelect", 0.3);
-        this.level.coins.splice(index, 1);
-        this.character.coins++;
-        this.statusBarCoins.percentage++;
-        this.statusBarCoins.setPercentage(this.statusBarCoins.percentage);
-        if (this.statusBarCoins.percentage >= 5) {
-            this.handleCoinBonus();
-        }
-    }
+    this.character.checkCoinCollisions(
+        this.level.coins,
+        this.statusBarCoins,
+        this.statusBarBottle,
+        this.floatingTexts
+    );
 
-    handleCoinBonus() {
-        this.statusBarCoins.percentage = 0;
-        this.statusBarCoins.setPercentage(0);
-        if (this.character.bottles < 10) {
-            this.grantExtraBottle();
-        }
-        this.statusBarBottle.setPercentage(this.character.bottles);
-    }
+    this.character.checkGroundBottleCollisions(
+        this.level.bottles,
+        this.statusBarBottle
+    );
 
-    grantExtraBottle() {
-        SoundManager.play("extraBottle", 0.4);
-        this.floatingTexts.push(
-            new FloatingText(this.character.x + 250, this.character.y + 200)
-        );
-        this.character.bottles++;
-    }
+    this.character.checkPlatformCollisions(this.level.platforms);
+}
 
-    checkGroundBottleCollisions() {
-        this.level.bottles.forEach((bottle, index) => {
-            if (this.character.isColliding(bottle)) {
-                this.collectGroundBottle(index);
-            }
-        });
-    }
-
-    collectGroundBottle(index) {
-        if (this.character.bottles >= 10) {
-            return;
-        }
-        SoundManager.play("bottleCollect", 0.4);
-        this.character.bottles++;
-        this.level.bottles.splice(index, 1);
-        this.statusBarBottle.setPercentage(this.character.bottles);
-    }
-
-
+    
 
     draw() {
         this.clearCanvas();

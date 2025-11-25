@@ -178,79 +178,140 @@ class MovableObject extends DrawableObject {
     }
 
     generateMinimumDistanceX(maxPosition, enemies) {
-    const MIN_DISTANCE = 200;
-    let newX;
-    let valid = false;
-    while (!valid) {
-        newX = maxPosition + 300 + Math.random() * 500;
-        valid = this.isValidSpawnPosition(enemies, newX, MIN_DISTANCE);
+        const MIN_DISTANCE = 200;
+        let newX;
+        let valid = false;
+        while (!valid) {
+            newX = maxPosition + 300 + Math.random() * 500;
+            valid = this.isValidSpawnPosition(enemies, newX, MIN_DISTANCE);
+        }
+        return newX;
     }
-    return newX;
-}
 
-isValidSpawnPosition(enemies, newX, minDistance) {
-    let valid = true;
-    enemies.forEach(other => {
-        if (this.isTooClose(other, newX, minDistance)) {
-            valid = false;
+    isValidSpawnPosition(enemies, newX, minDistance) {
+        let valid = true;
+        enemies.forEach(other => {
+            if (this.isTooClose(other, newX, minDistance)) {
+                valid = false;
+            }
+        });
+        return valid;
+    }
+
+    isTooClose(other, newX, minDistance) {
+        if (other === this || other instanceof Endboss) {
+            return false;
+        }
+        return (
+            newX < other.x + other.width + minDistance &&
+            newX + this.width > other.x - minDistance
+        );
+    }
+
+    checkEnemyCollisions(enemies, statusBar) {
+        enemies.forEach(enemy => {
+            this.handleEnemyCollision(enemy, statusBar);
+        });
+    }
+
+    handleEnemyCollision(enemy, statusBar) {
+        if (enemy.isDead() || !this.isColliding(enemy)) {
+            return;
+        }
+        if (enemy instanceof Endboss) {
+            this.handleEndbossHits(statusBar);
+            return;
+        }
+        if (this.isStompingEnemy()) {
+            this.handleStompOnEnemy(enemy);
+        } else {
+            this.handleEnemyHits(statusBar);
+        }
+    }
+
+    handleEndbossHits(statusBar) {
+        this.hit();
+        statusBar.setPercentage(this.energy);
+    }
+
+    isStompingEnemy() {
+        return (
+            this.isAboveGround() &&
+            this.speedY < 0 &&
+            !this.hitBlocked
+        );
+    }
+
+    handleStompOnEnemy(enemy) {
+        SoundManager.play("chickKill", 1);
+        enemy.energy = 0;
+        this.speedY = 15;
+    }
+
+    handleEnemyHits(statusBar) {
+        this.hit();
+        statusBar.setPercentage(this.energy);
+    }
+
+   checkCoinCollisions(coins, statusBarCoins, statusBarBottle, floatingTexts) {
+    coins.forEach((coin, index) => {
+        if (this.isColliding(coin)) {
+            this.collectCoin(
+                index,
+                coins,
+                statusBarCoins,
+                statusBarBottle,
+                floatingTexts
+            );
         }
     });
-    return valid;
 }
 
-isTooClose(other, newX, minDistance) {
-    if (other === this || other instanceof Endboss) {
-        return false;
+collectCoin(index, coins, statusBarCoins, statusBarBottle, floatingTexts) {
+    SoundManager.play("coinSelect", 0.3);
+    coins.splice(index, 1);
+    this.coins++;
+    statusBarCoins.percentage++;
+    statusBarCoins.setPercentage(statusBarCoins.percentage);
+    if (statusBarCoins.percentage >= 5) {
+        this.handleCoinBonus(statusBarCoins, statusBarBottle, floatingTexts);
     }
-    return (
-        newX < other.x + other.width + minDistance &&
-        newX + this.width > other.x - minDistance
-    );
 }
 
-checkEnemyCollisions(enemies, statusBar) {
-    enemies.forEach(enemy => {
-        this.handleEnemyCollision(enemy, statusBar);
+handleCoinBonus(statusBarCoins, statusBarBottle, floatingTexts) {
+    statusBarCoins.percentage = 0;
+    statusBarCoins.setPercentage(0);
+    if (this.bottles < 10) {
+        this.grantExtraBottle(statusBarBottle, floatingTexts);
+    }
+    statusBarBottle.setPercentage(this.bottles);
+}
+
+grantExtraBottle(statusBarBottle, floatingTexts) {
+    SoundManager.play("extraBottle", 0.4);
+    floatingTexts.push(
+        new FloatingText(this.x + 250, this.y + 200)
+    );
+    this.bottles++;
+    statusBarBottle.setPercentage(this.bottles);
+}
+
+checkGroundBottleCollisions(bottles, statusBarBottle) {
+    bottles.forEach((bottle, index) => {
+        if (this.isColliding(bottle)) {
+            this.collectGroundBottle(index, bottles, statusBarBottle);
+        }
     });
 }
 
-handleEnemyCollision(enemy, statusBar) {
-    if (enemy.isDead() || !this.isColliding(enemy)) {
+collectGroundBottle(index, bottles, statusBarBottle) {
+    if (this.bottles >= 10) {
         return;
     }
-    if (enemy instanceof Endboss) {
-        this.handleEndbossHits(statusBar);
-        return;
-    }
-    if (this.isStompingEnemy()) {
-        this.handleStompOnEnemy(enemy);
-    } else {
-        this.handleEnemyHits(statusBar);
-    }
-}
-
-handleEndbossHits(statusBar) {
-    this.hit();
-    statusBar.setPercentage(this.energy);
-}
-
-isStompingEnemy() {
-    return (
-        this.isAboveGround() &&
-        this.speedY < 0 &&
-        !this.hitBlocked
-    );
-}
-
-handleStompOnEnemy(enemy) {
-    SoundManager.play("chickKill", 1);
-    enemy.energy = 0;
-    this.speedY = 15;
-}
-
-handleEnemyHits(statusBar) {
-    this.hit();
-    statusBar.setPercentage(this.energy);
+    SoundManager.play("bottleCollect", 0.4);
+    this.bottles++;
+    bottles.splice(index, 1);
+    statusBarBottle.setPercentage(this.bottles);
 }
 
 }
