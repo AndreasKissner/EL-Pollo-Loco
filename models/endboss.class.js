@@ -1,17 +1,12 @@
+/**
+ * The Endboss enemy with alert, movement and death animations.
+ */
 class Endboss extends MovableObject {
 
     width = 450;
     height = 400;
-
-    // FIX: Bodenlinie des Spiels
     groundLevel = 440;
-
-    offset = {
-        top: 50,
-        bottom: 110,
-        left: 60,
-        right: 40
-    };
+    offset = { top: 50, bottom: 110, left: 60, right: 40 };
 
     speed = 2.25;
     direction = "left";
@@ -20,12 +15,9 @@ class Endboss extends MovableObject {
     alertZone = 3940;
     isAlert = false;
     lastFrameTime = 0;
-    frameInterval = 100; // Normale Animationsgeschwindigkeit (Walk/Alert/Hurt)
-
-    // 🔥 NEU: SPEZIELLE STEUERUNG FÜR DEN TODES-LOOP
-    deathFrameInterval = 250; // ⬅️ HIER die Zahl ÄNDERN (250ms = 4 Bilder pro Sekunde)
-    lastDeathFrameTime = 0;   // Timer für den Todes-Loop
-
+    frameInterval = 100;
+    deathFrameInterval = 250;
+    lastDeathFrameTime = 0;
     deathLoopCount = 0;
     maxDeathLoops = 2;
 
@@ -67,7 +59,9 @@ class Endboss extends MovableObject {
         'img/4_enemie_boss_chicken/5_dead/G26.png',
     ];
 
-
+    /**
+     * Loads images and initializes the boss.
+     */
     constructor() {
         super().loadImage(this.IMAGES_WALK[0]);
         this.loadImages(this.IMAGES_WALK);
@@ -75,153 +69,216 @@ class Endboss extends MovableObject {
         this.loadImages(this.IMAGES_DEAD);
         this.loadImages(this.IMAGES_HURT);
         this.x = this.maxX;
-
-        // 🔥 FIX: Korrekter Y-Startpunkt für GroundLevel=440
-        // 440 (Boden) - 400 (Höhe) = 40
         this.y = this.groundLevel - this.height;
-
         this.animate();
         this.applyGravity();
     }
-animate() {
-    setInterval(() => {
 
-        // ❗ Nur blockieren, wenn Spiel vorbei UND Boss noch lebt
-        if (this.world && this.world.gameOver && !this.isDead()) {
-            return;
-        }
+    /**
+     * Main update loop (movement + animations).
+     */
+    animate() {
+        setInterval(() => {
+            if (this.shouldStopEndboss()) return;
+            this.checkAlert();
+            this.updateAnimation();
+            this.updateMovement();
+        }, 1000 / 30);
+    }
 
-        this.checkAlert();
-        this.updateAnimation();
-        this.updateMovement();
-    }, 1000 / 30);
-}
+    /**
+     * Stops the boss when the game is over.
+     */
+    shouldStopEndboss() {
+        return this.world && this.world.gameOver && !this.isDead();
+    }
 
-
-
-checkAlert() {
-    if (!this.world || this.isDead()) return;
-
-    let playerX = this.world.character.x;
-
-    if (!this.isAlert && playerX >= this.alertZone) {
+    /**
+     * Detects if the player entered the alert zone.
+     */
+    checkAlert() {
+        if (this.shouldSkipAlert() || this.playerNotInAlertZone()) return;
         this.isAlert = true;
         this.alertStartTime = Date.now();
-
-        // 🔥 BOSSMUSIK STARTEN (nur 1x)
-        if (!this.bossMusicStarted) {
-            this.bossMusicStarted = true;
-
-            // Normale Musik stoppen
-            SoundManager.stopBackgroundMusic();
-
-            // 1 Sekunde warten → dann Bossmusik
-            setTimeout(() => {
-                SoundManager.startBackgroundMusic('bossMusic', 0.4);
-            }, 1000);
-        }
+        this.startBossMusic();
     }
-}
 
+    /**
+     * Skips alert check if world missing or boss dead.
+     */
+    shouldSkipAlert() {
+        return !this.world || this.isDead();
+    }
 
+    /**
+     * Returns true if player is not in alert range.
+     */
+    playerNotInAlertZone() {
+        let playerX = this.world.character.x;
+        return this.isAlert || playerX < this.alertZone;
+    }
+
+    /**
+     * Plays boss music after alert triggers.
+     */
+    startBossMusic() {
+        if (this.bossMusicStarted) return;
+        this.bossMusicStarted = true;
+        SoundManager.stopBackgroundMusic();
+        setTimeout(() => {
+            SoundManager.startBackgroundMusic('bossMusic', 0.4);
+        }, 1000);
+    }
+
+    /**
+     * Controls all boss animations (walk, alert, hurt, dead).
+     */
     updateAnimation() {
-        const now = Date.now();
-
-        // Normale Animations-Bremse
-        if (!this.isDead() && now - this.lastFrameTime < this.frameInterval) {
-            return;
-        }
-        this.lastFrameTime = now;
-
-        // 1. DEAD (höchste Priorität)
-        if (this.isDead()) {
-            this.handleDeathAnimationLoop(); // Nutzt den langsameren Timer intern
-            this.speed = 0;
-            return;
-        }
-
-        // 2. HURT (zweite Priorität)
-        if (this.isHurt()) {
-            this.playAnimation(this.IMAGES_HURT);
-            return;
-        }
-
-        // 3. Boss steht still (Idle)
-        if (!this.isAlert) {
-            this.img = this.imageCache[this.IMAGES_WALK[0]];
-            return;
-        }
-
-        const alertDuration = 2000;
-        // 4. Während Alert/Attack
-        if (Date.now() - this.alertStartTime < alertDuration) {
-            this.playAnimation(this.IMAGES_ALERT);
-            return;
-        }
-
-        // 5. Walking nach Alert
+        if (!this.isFrameTime()) return;
+        if (this.isDead()) return this.animateDeath();
+        if (this.isHurt()) return this.animateHurt();
+        if (!this.isAlert) return this.showIdle();
+        if (this.isInAlertPhase()) return this.playAnimation(this.IMAGES_ALERT);
         this.playAnimation(this.IMAGES_WALK);
     }
 
-
-    handleDeathAnimationLoop() {
-        let images = this.IMAGES_DEAD;
-
+    /**
+     * Checks frame timing for animation updates.
+     */
+    isFrameTime() {
         const now = Date.now();
-        // 🔥 HIER ist der Timer für die Todes-Geschwindigkeit
-        if (now - this.lastDeathFrameTime < this.deathFrameInterval) {
-            return;
-        }
-        this.lastDeathFrameTime = now; // Timer zurücksetzen
+        if (!this.isDead() && now - this.lastFrameTime < this.frameInterval) return false;
+        this.lastFrameTime = now;
+        return true;
+    }
 
-        // --- Loop Zähler ---
-        if (this.deathLoopCount >= this.maxDeathLoops) {
-            this.img = this.imageCache[images[images.length - 1]];
-            return;
-        }
+    /**
+     * Plays death animation.
+     */
+    animateDeath() {
+        this.handleDeathAnimationLoop();
+        this.speed = 0;
+    }
 
-        if (this.currentImage >= images.length) {
-            this.deathLoopCount++;
-            this.currentImage = 0;
+    /**
+     * Plays hurt animation.
+     */
+    animateHurt() {
+        this.playAnimation(this.IMAGES_HURT);
+    }
 
-            if (this.deathLoopCount >= this.maxDeathLoops) {
-                this.currentImage = images.length - 1;
-                this.img = this.imageCache[images[this.currentImage]];
-                return;
-            }
-        }
+    /**
+     * Shows idle frame before alert.
+     */
+    showIdle() {
+        this.img = this.imageCache[this.IMAGES_WALK[0]];
+    }
 
-        let path = images[this.currentImage];
-        this.img = this.imageCache[path];
+    /**
+     * Returns true if alert-phase timer is active.
+     */
+    isInAlertPhase() {
+        return Date.now() - this.alertStartTime < 2000;
+    }
+
+    /**
+     * Runs the death animation sequence.
+     */
+    handleDeathAnimationLoop() {
+        if (!this.isDeathFrameTime()) return;
+        if (this.deathLoopFinished()) return this.showFinalDeathFrame();
+        if (this.shouldRestartDeathLoop()) this.restartDeathLoop();
+        this.showCurrentDeathFrame();
         this.currentImage++;
     }
 
+    /**
+     * Checks timing for death animation frames.
+     */
+    isDeathFrameTime() {
+        const now = Date.now();
+        if (now - this.lastDeathFrameTime < this.deathFrameInterval) return false;
+        this.lastDeathFrameTime = now;
+        return true;
+    }
 
+    /**
+     * Returns true if all death loops are complete.
+     */
+    deathLoopFinished() {
+        return this.deathLoopCount >= this.maxDeathLoops;
+    }
+
+    /**
+     * Shows the final dead frame.
+     */
+    showFinalDeathFrame() {
+        let lastIndex = this.IMAGES_DEAD.length - 1;
+        this.img = this.imageCache[this.IMAGES_DEAD[lastIndex]];
+    }
+
+    /**
+     * Checks if death animation should restart from frame 0.
+     */
+    shouldRestartDeathLoop() {
+        return this.currentImage >= this.IMAGES_DEAD.length;
+    }
+
+    /**
+     * Restarts or finishes the death animation loop.
+     */
+    restartDeathLoop() {
+        this.deathLoopCount++;
+        this.currentImage = 0;
+        if (this.deathLoopFinished()) {
+            this.currentImage = this.IMAGES_DEAD.length - 1;
+            this.showFinalDeathFrame();
+        }
+    }
+
+    /**
+     * Shows the current death frame.
+     */
+    showCurrentDeathFrame() {
+        let path = this.IMAGES_DEAD[this.currentImage];
+        this.img = this.imageCache[path];
+    }
+
+    /**
+     * Updates boss movement logic.
+     */
     updateMovement() {
-        if (!this.isAlert || this.isDead() || this.isHurt()) {
-            return;
-        }
+        if (this.shouldNotMove()) return;
+        if (this.isInAlertPhase()) return;
+        this.moveInDirection();
+        this.checkDirectionLimits();
+    }
 
-        const alertDuration = 2000;
-        if (Date.now() - this.alertStartTime < alertDuration) {
-            return;
-        }
+    /**
+     * Stops movement if boss cannot move.
+     */
+    shouldNotMove() {
+        return !this.isAlert || this.isDead() || this.isHurt();
+    }
 
+    /**
+     * Moves left or right based on direction.
+     */
+    moveInDirection() {
         if (this.direction === "left") {
             this.moveLeft();
             this.otherDirection = false;
-
-            if (this.x <= this.minX) {
-                this.direction = "right";
-            }
-
         } else {
             this.moveRight();
             this.otherDirection = true;
-
-            if (this.x >= this.maxX) {
-                this.direction = "left";
-            }
         }
+    }
+
+    /**
+     * Switches direction at movement boundaries.
+     */
+    checkDirectionLimits() {
+        if (this.direction === "left" && this.x <= this.minX) this.direction = "right";
+        if (this.direction === "right" && this.x >= this.maxX) this.direction = "left";
     }
 }
