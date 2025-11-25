@@ -1,32 +1,37 @@
+/**
+ * Handles displaying and controlling cutscene videos.
+ */
 class GameVideo {
 
+    /**
+     * @param {string} videoId - ID of the video element.
+     */
     constructor(videoId) {
         this.container = document.getElementById("cutscene-container");
         this.videoElement = document.getElementById(videoId);
         this.onFinishCallback = null;
 
-        // Beim Ende des Videos automatisch verstecken
         this.videoElement.onended = () => {
-
             if (this.onFinishCallback) {
                 this.onFinishCallback();
             }
-
             const menu = document.getElementById("videoEndMenu");
             menu.classList.remove("d-none");
             menu.style.display = "flex";
-            /*     window.location.reload();   */
-            /*      window.location.href = "index.html"; */
-
         };
     }
 
-    // Video + Container sichtbar machen (mit Fade-In)
+    /**
+     * Shows the video container.
+     */
     show() {
         this.container.style.pointerEvents = "all";
         this.container.style.opacity = "1";
     }
 
+    /**
+     * Hides the video container.
+     */
     hide() {
         this.container.style.opacity = "0";
         setTimeout(() => {
@@ -34,6 +39,10 @@ class GameVideo {
         }, 1000);
     }
 
+    /**
+     * Starts the video from the beginning.
+     * @param {number} volume - Video volume.
+     */
     play(volume = 1) {
         this.show();
         this.videoElement.volume = volume;
@@ -41,11 +50,18 @@ class GameVideo {
         this.videoElement.play();
     }
 
+    /**
+     * Stops the video and hides the container.
+     */
     stop() {
         this.videoElement.pause();
         this.hide();
     }
 
+    /**
+     * Registers a callback to run when the video ends.
+     * @param {Function} callback
+     */
     onFinish(callback) {
         this.onFinishCallback = callback;
     }
