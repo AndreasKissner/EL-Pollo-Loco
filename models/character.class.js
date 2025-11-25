@@ -324,4 +324,40 @@ class Character extends MovableObject {
         this.currentPlatform = platform;
     }
 
+   checkPlatformCollisions(platforms) {
+        this.currentPlatform = null;
+        platforms.forEach(p => {
+            this.handlePlatformCollision(p);
+        });
+    }
+
+    handlePlatformCollision(p) {
+        const horizontal = this.isOnPlatformHorizontally(p);
+        const vertical = this.isOnPlatformVertically(p);
+        if (horizontal && vertical) {
+            this.snapCharacterToPlatform(p);
+        }
+    }
+
+    isOnPlatformHorizontally(p) {
+        return (
+            this.x + this.width > p.x + p.offset.left &&
+            this.x < p.x + p.width - p.offset.right
+        );
+    }
+
+    isOnPlatformVertically(p) {
+        return (
+            this.y + this.height > p.y - p.offset.top &&
+            this.y + this.height < p.y + 30 &&
+            this.speedY <= 0
+        );
+    }
+
+    snapCharacterToPlatform(p) {
+        this.y = p.y - this.height + p.offset.top;
+        this.speedY = 0;
+        this.currentPlatform = p;
+    }
 }
+

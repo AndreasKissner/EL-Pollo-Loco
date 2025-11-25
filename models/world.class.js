@@ -142,7 +142,8 @@ class World {
         this.checkCharacterEnemyCollisions();
         this.checkCoinCollisions();
         this.checkGroundBottleCollisions();
-        this.checkPlatformCollisions();
+        this.character.checkPlatformCollisions(this.level.platforms);
+
     }
 
     checkBottleEnemyCollisions() {
@@ -295,41 +296,7 @@ class World {
         this.statusBarBottle.setPercentage(this.character.bottles);
     }
 
-    checkPlatformCollisions() {
-        this.character.currentPlatform = null;
-        this.level.platforms.forEach(p => {
-            this.handlePlatformCollision(p);
-        });
-    }
 
-    handlePlatformCollision(p) {
-        const horizontal = this.isOnPlatformHorizontally(p);
-        const vertical = this.isOnPlatformVertically(p);
-        if (horizontal && vertical) {
-            this.snapCharacterToPlatform(p);
-        }
-    }
-
-    isOnPlatformHorizontally(p) {
-        return (
-            this.character.x + this.character.width > p.x + p.offset.left &&
-            this.character.x < p.x + p.width - p.offset.right
-        );
-    }
-
-    isOnPlatformVertically(p) {
-        return (
-            this.character.y + this.character.height > p.y - p.offset.top &&
-            this.character.y + this.character.height < p.y + 30 &&
-            this.character.speedY <= 0
-        );
-    }
-
-    snapCharacterToPlatform(p) {
-        this.character.y = p.y - this.character.height + p.offset.top;
-        this.character.speedY = 0;
-        this.character.currentPlatform = p;
-    }
 
     draw() {
         this.clearCanvas();
