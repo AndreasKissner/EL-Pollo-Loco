@@ -3,11 +3,23 @@
     src: url("fonts/mexican.ttf");
 }
 
+/* =================== FIX GEGEN SCROLLING =================== */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+    touch-action: none;
+}
+/* =========================================================== */
+ 
 body {
     margin: 0;
     padding: 0;
-    min-height: 100vh;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -18,6 +30,7 @@ body {
     background-position: center center;
     font-family: 'mexican', Arial, Helvetica, sans-serif;
 }
+
 
 .d-none {
     display: none;
@@ -198,4 +211,24 @@ canvas {
 .impressum-link a:hover {
     color: rgb(230, 91, 4);
     transform: scale(1.08);
+}
+
+.fullscreen-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background-color: rgba(243, 128, 5, 0.85);
+    border: 3px solid rgb(255, 181, 55);
+    color: black;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .15s;
+}
+
+.fullscreen-btn:active {
+    transform: scale(0.88);
 }
