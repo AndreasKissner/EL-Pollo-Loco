@@ -4,8 +4,7 @@
 }
 
 /* =================== FIX GEGEN SCROLLING =================== */
-html,
-body {
+html, body {
     margin: 0;
     padding: 0;
     width: 100%;
@@ -14,9 +13,8 @@ body {
     overscroll-behavior: none;
     touch-action: none;
 }
-
 /* =========================================================== */
-
+ 
 body {
     margin: 0;
     padding: 0;
@@ -88,8 +86,8 @@ canvas {
 
 .hud-top-right {
     position: absolute;
-    top: -290px;
-    right: -320px;
+    top: 20px;
+    right: 20px;
     display: flex;
     gap: 12px;
     pointer-events: auto;
@@ -195,19 +193,15 @@ canvas {
 }
 
 .impressum-link {
-    display: flex;
-    align-items: center;
-    gap: 30px;
     position: absolute;
-    top: 12px;
-    left: 30px;
+    top: 30px;
+    left: 10px;
     z-index: 9999;
     font-size: 16px;
 }
 
 .impressum-link a {
     color: rgba(243, 128, 5, 0.85);
-    font-size: 13px;
     text-decoration: none;
     font-weight: bold;
     text-shadow: 0 0 5px black;
@@ -220,11 +214,14 @@ canvas {
 }
 
 .fullscreen-btn {
-    width: 35px;
-    height: 30px;
+    width: 42px;
+    height: 42px;
     border-radius: 10px;
     background-color: rgba(243, 128, 5, 0.85);
     border: 3px solid rgb(255, 181, 55);
+    color: black;
+    font-size: 22px;
+    font-weight: bold;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -234,42 +231,4 @@ canvas {
 
 .fullscreen-btn:active {
     transform: scale(0.88);
-}
-
-.bigscreen-img {
-    width: 25px;
-}
-
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.75);
-    z-index: 999999999;
-    /* höher als alles */
-    pointer-events: auto;
-}
-
-
-/* Neue schönere Info-Box */
-.keyboard-info {
-    position: fixed;
-    top: 40px;
-    /* hier kannst du ändern */
-    right: 25px;
-    padding: 22px 32px;
-    border-radius: 14px;
-    background: #f6d8a3;
-    border: 3px solid rgb(243, 128, 5);
-    font-size: 20px;
-    color: #4a2b00;
-    box-shadow: 0 0 18px rgba(0, 0, 0, 0.6);
-    z-index: 2147483647 !important;
-}
-
-
-.hidden {
-    display: none !important;
 }

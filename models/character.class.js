@@ -192,17 +192,17 @@ class Character extends MovableObject {
     }
 
     /** Handles the character’s full death animation sequence. */
- handleDeadAnimation() {
-    this.speed = 0;
-    if (!this.deadKickApplied) {
-        this.deadKickApplied = true;
-        const direction = this.otherDirection ? 1 : -1;
-        this.speedY = 15;            
-        this.x += direction * -1;   
+    handleDeadAnimation() {
+        this.speed = 0;
+        if (!this.deadKickApplied) {
+            this.deadKickApplied = true;
+            const direction = this.otherDirection ? 1 : -1;
+            this.speedY = 15;
+            this.x += direction * -1;
+        }
+        this.playDeadSoundOnce();
+        this.updateDeadAnimationFrame();
     }
-    this.playDeadSoundOnce();
-    this.updateDeadAnimationFrame();
-}
 
 
     /** Plays the death sound once when the character dies. */
@@ -333,13 +333,21 @@ class Character extends MovableObject {
         this.currentPlatform = platform;
     }
 
-   checkPlatformCollisions(platforms) {
+    /**
+   * Checks collisions between character and all platforms.
+   * @param {Array} platforms - List of platform objects to test against.
+   */
+    checkPlatformCollisions(platforms) {
         this.currentPlatform = null;
         platforms.forEach(p => {
             this.handlePlatformCollision(p);
         });
     }
 
+    /**
+     * Handles the collision logic with a specific platform.
+     * @param {Object} p - Single platform to check against.
+     */
     handlePlatformCollision(p) {
         const horizontal = this.isOnPlatformHorizontally(p);
         const vertical = this.isOnPlatformVertically(p);
@@ -348,6 +356,11 @@ class Character extends MovableObject {
         }
     }
 
+    /**
+     * Checks if character overlaps platform horizontally.
+     * @param {Object} p - Platform object with x, width & offset.
+     * @returns {Boolean}
+     */
     isOnPlatformHorizontally(p) {
         return (
             this.x + this.width > p.x + p.offset.left &&
@@ -355,6 +368,11 @@ class Character extends MovableObject {
         );
     }
 
+    /**
+     * Checks vertical landing condition on platform.
+     * @param {Object} p - Platform object with y and offset.
+     * @returns {Boolean}
+     */
     isOnPlatformVertically(p) {
         return (
             this.y + this.height > p.y - p.offset.top &&
@@ -363,10 +381,13 @@ class Character extends MovableObject {
         );
     }
 
+    /**
+     * Snaps character to platform surface & stops falling.
+     * @param {Object} p - Platform touched / landed on.
+     */
     snapCharacterToPlatform(p) {
         this.y = p.y - this.height + p.offset.top;
         this.speedY = 0;
         this.currentPlatform = p;
     }
 }
-

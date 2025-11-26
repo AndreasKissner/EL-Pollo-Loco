@@ -63,22 +63,22 @@ class SoundManager {
      * @param {string} name - Music key.
      * @param {number} volume - Music volume.
      */
-   static startBackgroundMusic(name, volume = 0.3) {
-    SoundManager.currentMusicVolume = volume;
-    if (SoundManager.isMuted) return;
-    const audio = SoundManager.audioCache[name];
-    if (!audio) {
-        return;
+    static startBackgroundMusic(name, volume = 0.3) {
+        SoundManager.currentMusicVolume = volume;
+        if (SoundManager.isMuted) return;
+        const audio = SoundManager.audioCache[name];
+        if (!audio) {
+            return;
+        }
+        if (SoundManager.backgroundMusic && SoundManager.backgroundMusic !== audio) {
+            SoundManager.stopBackgroundMusic();
+        }
+        if (SoundManager.backgroundMusic === audio && !audio.paused) return;
+        SoundManager.configureMusic(audio, volume);
+        SoundManager.playMusic(audio);
+        SoundManager.backgroundMusic = audio;
+        SoundManager.currentMusicName = name;
     }
-    if (SoundManager.backgroundMusic && SoundManager.backgroundMusic !== audio) {
-        SoundManager.stopBackgroundMusic();
-    }
-    if (SoundManager.backgroundMusic === audio && !audio.paused) return;
-    SoundManager.configureMusic(audio, volume);
-    SoundManager.playMusic(audio);
-    SoundManager.backgroundMusic = audio;
-    SoundManager.currentMusicName = name;
-}
 
     /**
      * Configures loop & volume for background music.

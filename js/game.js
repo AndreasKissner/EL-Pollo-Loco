@@ -27,7 +27,7 @@ const ALL_GAME_SOUNDS = {
     'bossMusic': 'audio/endbossMusic.mp3',
     'youLose': 'audio/youLose.mp3',
     'victory': 'audio/win.mp3',
-    "miniChicken" :"audio/mini_chicken.mp3",
+    "miniChicken": "audio/mini_chicken.mp3",
     'music': 'audio/musik.mp3'
 };
 
@@ -35,8 +35,6 @@ const ALL_GAME_SOUNDS = {
  * Initializes the game by loading sounds, creating the world,
  * setting up UI elements, and starting background music.
  */
-
-
 function init() {
     canvas = document.getElementById("canvas");
     SoundManager.loadSounds(ALL_GAME_SOUNDS);
@@ -167,7 +165,6 @@ function attachMouseEvents(element, onPress, onRelease) {
     element.addEventListener('mouseleave', handleRelease);
 }
 
-
 /**
  * Connects both mouse and touch controls to a button element.
  * Ensures full compatibility across mobile and desktop devices.
@@ -182,7 +179,6 @@ function attachButton(element, onPress, onRelease) {
     attachTouchEvents(element, onPress, onRelease);
     attachMouseEvents(element, onPress, onRelease);
 }
-
 
 /**
  * Returns the player to the start screen by reloading index.html.

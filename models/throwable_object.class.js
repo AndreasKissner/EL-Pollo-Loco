@@ -134,49 +134,68 @@ class ThrowableObject extends MovableObject {
         clearInterval(this.movementIntervalId);
     }
 
+    /**
+ * Checks collisions with all enemies unless a hit already registered.
+ * @param {Array} enemies - List of active enemies on map.
+ */
     checkEnemyCollisions(enemies) {
-    if (this.hasHitGround || this.hasHitEnemy) {
-        return;
+        if (this.hasHitGround || this.hasHitEnemy) {
+            return;
+        }
+        enemies.forEach(enemy => {
+            this.handleCollisionWithEnemy(enemy);
+        });
     }
-    enemies.forEach(enemy => {
-        this.handleCollisionWithEnemy(enemy);
-    });
-}
 
-handleCollisionWithEnemy(enemy) {
-    if (enemy.isDead() || !this.isColliding(enemy)) {
-        return;
+    /**
+     * Handles full collision reaction based on enemy type.
+     * @param {Object} enemy - The enemy being collided with.
+     */
+    handleCollisionWithEnemy(enemy) {
+        if (enemy.isDead() || !this.isColliding(enemy)) {
+            return;
+        }
+        if (enemy instanceof Endboss) {
+            this.handleHitEndboss(enemy);
+        } else {
+            this.handleHitChicken(enemy);
+        }
+        this.applyHitEffects();
     }
-    if (enemy instanceof Endboss) {
-        this.handleHitEndboss(enemy);
-    } else {
-        this.handleHitChicken(enemy);
-    }
-    this.applyHitEffects();
-}
 
-handleHitEndboss(enemy) {
-    if (enemy.isHurt()) {
-        return;
+    /**
+     * Applies damage to Endboss if not currently hurt.
+     * @param {Object} enemy - Endboss instance.
+     */
+    handleHitEndboss(enemy) {
+        if (enemy.isHurt()) {
+            return;
+        }
+        enemy.hit();
     }
-    enemy.hit();
-}
 
-handleHitChicken(enemy) {
-    SoundManager.play("chickKill", 1);
-    enemy.energy = 0;
-}
-
-applyHitEffects() {
-    SoundManager.play("bottleBreak", 1);
-    this.hasHitEnemy = true;
-    if (this.movementIntervalId) {
-        clearInterval(this.movementIntervalId);
+    /**
+     * Kills chicken enemy instantly and plays sound.
+     * @param {Object} enemy - Regular chicken enemy.
+     */
+    handleHitChicken(enemy) {
+        SoundManager.play("chickKill", 1);
+        enemy.energy = 0;
     }
-    this.currentImage = 0;
-    this.speedY = 0;
-    this.acceleration = 0;
-    this.isFalling = false;
-}
+
+    /**
+     * Plays hit sound, stops movement & applies collision state.
+     */
+    applyHitEffects() {
+        SoundManager.play("bottleBreak", 1);
+        this.hasHitEnemy = true;
+        if (this.movementIntervalId) {
+            clearInterval(this.movementIntervalId);
+        }
+        this.currentImage = 0;
+        this.speedY = 0;
+        this.acceleration = 0;
+        this.isFalling = false;
+    }
 
 }

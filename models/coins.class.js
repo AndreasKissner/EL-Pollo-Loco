@@ -50,11 +50,11 @@ class Coin extends MovableObject {
         }, 300);
     }
 
-       /**
-     * Checks if the animation should stop.
-     * Used when the game is over to prevent further updates.
-     * @returns {boolean} True if the animation should stop.
-     */
+    /**
+  * Checks if the animation should stop.
+  * Used when the game is over to prevent further updates.
+  * @returns {boolean} True if the animation should stop.
+  */
     shouldStopAnimation() {
         return this.world && this.world.gameOver;
     }
