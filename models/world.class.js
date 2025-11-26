@@ -18,9 +18,9 @@ class World {
     gameStarted = false;
 
     /**
-     * Sets up world and starts render + game loop.
-     * @param {HTMLCanvasElement} canvas - Draw surface.
-     * @param {Object} keyboard - Key input handler.
+     * Initializes world + sets canvas, keyboard, objects & starts loop.
+     * @param {HTMLCanvasElement} canvas
+     * @param {Object} keyboard
      */
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext("2d");
@@ -32,7 +32,7 @@ class World {
     }
 
     /**
-     * Assigns world to character + all level objects.
+     * Connects character + all objects with world reference.
      */
     setWorld() {
         this.character.world = this;
@@ -41,8 +41,7 @@ class World {
     }
 
     /**
-     * Collects all enemies, coins, bottles and clouds.
-     * @returns {Array} Full object list in level.
+     * Collects all dynamic level objects into one array.
      */
     getAllLevelObjects() {
         return [
@@ -54,26 +53,28 @@ class World {
     }
 
     /**
-     * Links obj to world and starts animation if exists.
-     * @param {Object} obj - Level entity instance.
+     * Assigns world & starts animation if object supports it.
+     * @param {Object} obj - Enemy, coin, bottle or cloud.
      */
     prepareWorldObject(obj) {
         obj.world = this;
-        if (obj.animate) obj.animate();
+        if (obj.animate) {
+            obj.animate();
+        }
     }
 
     /**
-     * Starts core game loop (30 FPS interval).
+     * Main loop interval (30 FPS), triggers game logic.
      */
     run() {
         setInterval(() => this.gameLoop(), 1000 / 30);
     }
 
     /**
-     * Main loop: collisions, throws, respawn, victory, death.
+     * Executes collision checks, events & victory/game state.
      */
     gameLoop() {
-        if (this.gameOver) return;
+        if (this.gameOver) {return;}
         this.checkcollision();
         this.checkThrowObjects();
         this.checkRespawn();
@@ -82,7 +83,7 @@ class World {
     }
 
     /**
-     * Ends game on character/endboss death.
+     * Ends game if player or Endboss has died.
      */
     checkGameOverState() {
         const endboss = this.level.enemies.find(e => e instanceof Endboss);
@@ -92,11 +93,11 @@ class World {
         }
     }
 
-    /**
-     * Respawns enemies when passed or dead.
+       /**
+     * Respawns enemies behind player when they fall too far back.
      */
     checkRespawn() {
-        if (this.respawnStopped) return;
+        if (this.respawnStopped) {return;}
         let maxPosition = this.getMaxEnemyPosition();
         this.level.enemies.forEach(enemy => {
             maxPosition = this.respawnEnemyIfNeeded(enemy, maxPosition);
@@ -104,8 +105,7 @@ class World {
     }
 
     /**
-     * Returns furthest enemy X-position (Endboss excluded).
-     * @returns {number} Rightmost enemy coordinate.
+     * Returns highest enemy X-position (excluding Endboss).
      */
     getMaxEnemyPosition() {
         let maxPosition = 720;
@@ -118,21 +118,20 @@ class World {
     }
 
     /**
-     * Repositions enemy if offscreen + resets stats if dead.
-     * @param {Object} enemy - Enemy to check.
-     * @param {number} maxPosition - Current max spawn X.
-     * @returns {number} Updated maxPosition.
+     * Repositions enemy if off-screen & resets stats when dead.
+     * @param {Object} enemy
+     * @param {number} maxPosition
      */
     respawnEnemyIfNeeded(enemy, maxPosition) {
-        if (enemy instanceof Endboss || enemy.x >= -200) return maxPosition;
-
+        if (enemy instanceof Endboss || enemy.x >= -200) {
+            return maxPosition;
+        }
         const newX = enemy.generateMinimumDistanceX(
             maxPosition,
             this.level.enemies
         );
         enemy.x = newX;
         maxPosition = newX;
-
         if (enemy.isDead()) {
             enemy.energy = 100;
             enemy.speed = 0.15 + Math.random() * 0.25;
@@ -141,19 +140,21 @@ class World {
     }
 
     /**
-     * Checks bottle-throw cooldown + triggers throw.
+     * Handles bottle throw cooldown and input trigger.
      */
     checkThrowObjects() {
-        if (this.gameOver) return;
+        if (this.gameOver) { return; }
         const now = Date.now();
         const cooldown = 1500;
-        if (this.canThrowBottle(now, cooldown)) this.throwBottle(now);
+        if (this.canThrowBottle(now, cooldown)) {
+            this.throwBottle(now);
+        }
     }
 
     /**
-     * Returns true if cooldown passed + bottle available.
-     * @param {number} now - Current timestamp.
-     * @param {number} cooldown - Throw delay in ms.
+     * Verifies if bottle can be thrown now (cooldown, key, stock).
+     * @param {number} now - Current time in ms
+     * @param {number} cooldown - Required delay between throws
      */
     canThrowBottle(now, cooldown) {
         return (
@@ -163,9 +164,9 @@ class World {
         );
     }
 
-    /**
-     * Spawns bottle object and updates bottle UI.
-     * @param {number} now - Timestamp for cooldown reset.
+       /**
+     * Creates and throws a bottle in facing direction + updates UI.
+     * @param {number} now - Timestamp for cooldown handling.
      */
     throwBottle(now) {
         this.lastThrowTime = now;
@@ -182,13 +183,16 @@ class World {
     }
 
     /**
-     * Handles all collision-type interactions each frame.
+     * Runs collision checks for bottles, character, coins & platforms.
      */
     checkcollision() {
         this.throwableObjects.forEach(bottle => {
             bottle.checkEnemyCollisions(this.level.enemies);
         });
-        this.character.checkEnemyCollisions(this.level.enemies, this.statusBar);
+        this.character.checkEnemyCollisions(
+            this.level.enemies,
+            this.statusBar
+        );
         this.character.checkCoinCollisions(
             this.level.coins,
             this.statusBarCoins,
@@ -203,7 +207,7 @@ class World {
     }
 
     /**
-     * Renders frame, UI + schedules next draw.
+     * Clears canvas, draws world & HUD, then schedules new frame.
      */
     draw() {
         this.clearCanvas();
@@ -216,14 +220,14 @@ class World {
     }
 
     /**
-     * Clears full canvas for next frame.
+     * Clears entire visible canvas area.
      */
     clearCanvas() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     /**
-     * Draws world layers + character + cleanup.
+     * Draws map visual elements including character + objects.
      */
     drawWorldObjects() {
         this.addBackgroundAndPlatforms();
@@ -233,7 +237,7 @@ class World {
     }
 
     /**
-     * Renders background, platforms and clouds.
+     * Renders background + platforms + clouds in scene.
      */
     addBackgroundAndPlatforms() {
         this.addObjectsToMap(this.level.backgroundObjects);
@@ -242,7 +246,7 @@ class World {
     }
 
     /**
-     * Renders movable elements like coins, enemies, bottles.
+     * Draws all interactable/moving world objects.
      */
     addDynamicWorldObjects() {
         this.addObjectsToMap(this.level.coins);
@@ -253,7 +257,7 @@ class World {
     }
 
     /**
-     * Removes objects flagged for deletion.
+     * Removes bottles + texts that are flagged for deletion.
      */
     cleanupDeletableObjects() {
         this.throwableObjects = this.throwableObjects.filter(b => !b.markForDeletion);
@@ -261,7 +265,7 @@ class World {
     }
 
     /**
-     * Draws all HUD elements and counters.
+     * Draws UI elements like health + counters overlay.
      */
     drawUI() {
         this.addToMap(this.statusBar);
@@ -271,23 +275,23 @@ class World {
     }
 
     /**
-     * Schedules next render frame.
+     * Continues rendering next draw frame (60FPS typical).
      */
     scheduleNextFrame() {
         requestAnimationFrame(() => this.draw());
     }
 
     /**
-     * Adds each object of list to canvas.
-     * @param {Array} objects - Items to render.
+     * Adds multiple objects to canvas sequentially.
+     * @param {Array} objects - Drawable items.
      */
     addObjectsToMap(objects) {
         objects.forEach(o => this.addToMap(o));
     }
 
     /**
-     * Places drawable object onto canvas, flipping if needed.
-     * @param {Object} mo - Mapped object to draw.
+     * Draws single drawable incl. flip if facing left.
+     * @param {Object} mo - MovableObject or similar.
      */
     addToMap(mo) {
         if (mo.otherDirection) this.flipImage(mo);
@@ -297,8 +301,8 @@ class World {
     }
 
     /**
-     * Mirrors sprite horizontally.
-     * @param {Object} mo - Object being flipped.
+     * Horizontally flips drawing context for mirrored rendering.
+     * @param {Object} mo - Object to flip.
      */
     flipImage(mo) {
         this.ctx.save();
@@ -308,16 +312,16 @@ class World {
     }
 
     /**
-     * Restores normal orientation after flip.
-     * @param {Object} mo - Object being reset.
+     * Restores orientation after object flip.
+     * @param {Object} mo - Previously flipped object.
      */
     flipImageBack(mo) {
         mo.x = mo.x * -1;
         this.ctx.restore();
     }
 
-    /**
-     * Draws numeric HUD values (HP, coins, bottles).
+       /**
+     * Draws character stats (HP/Coins/Bottles) to HUD text area.
      */
     drawHudCounters() {
         this.ctx.font = "12px mexican";
@@ -327,18 +331,19 @@ class World {
         this.ctx.fillText(this.character.bottles, 145, 122);
     }
 
-
     /**
-   * Checks if endboss is defeated and triggers win.
-   */
+     * Checks if Endboss is defeated → triggers victory sequence.
+     */
     checkVictory() {
-        if (this.victoryPlayed) return;
+        if (this.victoryPlayed) {return;}
         const endboss = this.level.enemies.find(e => e instanceof Endboss);
-        if (endboss && endboss.isDead()) this.startVictorySequence();
+        if (endboss && endboss.isDead()) {
+            this.startVictorySequence();
+        }
     }
 
     /**
-     * Begins win sequence + plays victory music soon after.
+     * Starts win animation, music + execution chain.
      */
     startVictorySequence() {
         this.victoryPlayed = true;
@@ -347,7 +352,7 @@ class World {
     }
 
     /**
-     * Plays victory soundtrack + shows win text.
+     * Plays victory music + shows win text temporarily.
      */
     playVictoryMusic() {
         SoundManager.startBackgroundMusic("victory", 0.6);
@@ -356,7 +361,7 @@ class World {
     }
 
     /**
-     * Fades music + prepares final victory video.
+     * Ends victory track → shows next text then opens video.
      */
     finishVictoryMusic() {
         SoundManager.stopBackgroundMusic();
@@ -365,24 +370,24 @@ class World {
     }
 
     /**
-     * Plays final ending victory video.
+     * Plays final victory cutscene video.
      */
     playVictoryVideo() {
         victoryVideo.play(1);
     }
 
     /**
-     * Triggers defeat logic once + shows loss later.
+     * Triggers loss event once and delays showing defeat screen.
      */
     triggerLoss() {
-        if (this.lossPlayed) return;
+        if (this.lossPlayed) { return; }
         this.lossPlayed = true;
         SoundManager.stopBackgroundMusic();
         setTimeout(() => this.showLossScreen(), 500);
     }
 
     /**
-     * Displays game over UI + plays loss theme.
+     * Displays game over screen + plays defeat music.
      */
     showLossScreen() {
         SoundManager.startBackgroundMusic("youLose", 0.6);

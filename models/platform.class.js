@@ -18,8 +18,8 @@ class Platform extends MovableObject {
         this.offset = {
             top: 20,
             bottom: 60,
-            left: 40,
-            right: 40
+            left: 20,
+            right: 20
         };
     }
 }

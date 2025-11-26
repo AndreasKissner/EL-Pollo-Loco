@@ -10,7 +10,7 @@ class Cloud extends MovableObject {
     this.x = Math.random() * 400
     this.animate();
   }
-  
+
   /** Starts the cloud's movement animation. */
   animate() {
     this.moveLeft();

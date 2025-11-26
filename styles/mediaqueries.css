@@ -1,3 +1,4 @@
+
 /* =====================MEDIAQUERIES STYLE.CSS======================== */
 
 @media only screen and (max-width: 760px) {
@@ -89,68 +90,11 @@
     }
 }
 
-@media (max-width: 630px) {
-    .impressum-link {
-        display: flex;
-        align-items: center;
-        gap: 30px;
-        top: 12px;
-        left: 40px;
-    }
-
-    .impressum-text {
-        display: none;
-    }
-}
-
-
 @media (max-width: 780px) {
     .impressum-link {
-        font-size: 5px;
+        font-size: 12px;
     }
 }
-
-/* @media (max-width: 1630px) {
-    .hud-top-right {
-        right: -290px;
-        top: -290px;
-    }
-}
-
-@media (max-width: 1370px) {
-    .hud-top-right {
-        right: -290px;
-        top: -290px;
-    }
-}
-
-@media (max-width: 1305px) {
-    .hud-top-right {
-        right: -230px;
-        top: -260px;
-    }
-}
-
-@media (max-width: 1190px) {
-    .hud-top-right {
-        right: -150px;
-       
-    }
-}
-
-@media (max-width: 1080px) {
-    .hud-top-right {
-        right: -120px;
-
-    }
-}
-
-@media (max-width: 1000px) {
-    .hud-top-right {
-        right: 20px;
-        top: 12px;
-    }
-} 
 
 /* ===========MEDIAQUERIES CUTSCENE.CSS====================== */
 
@@ -171,6 +115,7 @@
         width: 90vw;
     }
 }
+
 
 /* ============MEDIAQUERIES START-MEUE.CSS======================= */
 

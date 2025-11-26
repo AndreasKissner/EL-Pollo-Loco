@@ -35,8 +35,6 @@ const ALL_GAME_SOUNDS = {
  * Initializes the game by loading sounds, creating the world,
  * setting up UI elements, and starting background music.
  */
-
-
 function init() {
     canvas = document.getElementById("canvas");
     SoundManager.loadSounds(ALL_GAME_SOUNDS);

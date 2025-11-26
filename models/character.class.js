@@ -334,27 +334,32 @@ class Character extends MovableObject {
     }
 
     /**
-  * Checks collision with all platforms.
-  * @param {Array} platforms - List of platform objects.
-  */
+   * Checks collisions between character and all platforms.
+   * @param {Array} platforms - List of platform objects to test against.
+   */
     checkPlatformCollisions(platforms) {
         this.currentPlatform = null;
-        platforms.forEach(p => this.handlePlatformCollision(p));
+        platforms.forEach(p => {
+            this.handlePlatformCollision(p);
+        });
     }
 
     /**
-     * Tests a single platform for valid collision.
-     * @param {Object} p - Platform to check.
+     * Handles the collision logic with a specific platform.
+     * @param {Object} p - Single platform to check against.
      */
     handlePlatformCollision(p) {
         const horizontal = this.isOnPlatformHorizontally(p);
         const vertical = this.isOnPlatformVertically(p);
-        if (horizontal && vertical) this.snapCharacterToPlatform(p);
+        if (horizontal && vertical) {
+            this.snapCharacterToPlatform(p);
+        }
     }
 
     /**
-     * True if character overlaps platform width.
-     * @param {Object} p - Platform object.
+     * Checks if character overlaps platform horizontally.
+     * @param {Object} p - Platform object with x, width & offset.
+     * @returns {Boolean}
      */
     isOnPlatformHorizontally(p) {
         return (
@@ -364,8 +369,9 @@ class Character extends MovableObject {
     }
 
     /**
-     * True if character lands vertically on top surface.
-     * @param {Object} p - Platform object.
+     * Checks vertical landing condition on platform.
+     * @param {Object} p - Platform object with y and offset.
+     * @returns {Boolean}
      */
     isOnPlatformVertically(p) {
         return (
@@ -376,8 +382,8 @@ class Character extends MovableObject {
     }
 
     /**
-     * Snaps character to platform height.
-     * @param {Object} p - Platform hit target.
+     * Snaps character to platform surface & stops falling.
+     * @param {Object} p - Platform touched / landed on.
      */
     snapCharacterToPlatform(p) {
         this.y = p.y - this.height + p.offset.top;
