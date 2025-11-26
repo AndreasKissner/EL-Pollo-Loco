@@ -99,29 +99,49 @@ button:hover {
 }
 
 .keyboard-info {
-    position: absolute;
-    top: 15%;
-    right: 50%;
-    transform: translateX(50%);
+    position: fixed;
+    top: 58%;
+    left: 50%;
+    transform: translate(-50%, -60%);
     background-color: rgba(0, 0, 0, 0.7);
-    padding: 5px 6px;
+    padding: 5px 16px;
     border-radius: 15px;
     color: rgb(235, 111, 3);
-    font-size: 16px;
+    font-size: 18px;
     text-align: left;
     backdrop-filter: blur(6px);
-    z-index: 99;
+    z-index: 999999999999;     /* 🔥 ganz oben */
+    transition: opacity .25s ease, transform .25s ease;
+    opacity: 0;
 }
 
-.keyboard-info.hidden {
-    display: none;
+.keyboard-info:not(.hidden) {
+    opacity: 1;
+    transform: translate(-50%, -50%);
 }
+
+/* overlay darunter */
+#keyboardOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(4px);
+    z-index: 99998;     /* ✔ unter der Infobox */
+    pointer-events: auto;
+    transition: opacity .25s ease;
+    opacity: 0;
+}
+#keyboardOverlay:not(.hidden) {
+    opacity: 1;
+}
+
 
 .instruction-row {
     display: flex;
     align-items: center;
     gap: 14px;
     margin-bottom: 10px;
+    font-size: 16px;
 }
 
 .instruction-row img {

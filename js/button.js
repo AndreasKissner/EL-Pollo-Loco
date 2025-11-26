@@ -10,10 +10,10 @@ function toggleSound() {
     icon.src = SoundManager.isMuted ? 'img/volume_off.png' : 'img/volume_on.png'
 }
 
-/**
- * Toggles the visibility of the keyboard instruction box.
- */
 function toggleKeyboardInfo() {
     const box = document.getElementById('keyboardInstructions')
+    const overlay = document.getElementById('keyboardOverlay')
+
     box.classList.toggle('hidden')
+    overlay.classList.toggle('hidden')
 }
