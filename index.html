@@ -17,8 +17,19 @@
   <div class="impressum-link">
     <a href="./html/impressum.html"><span class="impressum-text">Impressum & </span> SPielinfo</a>
     <button onclick="toggleFullscreen(document.documentElement)" class="fullscreen-btn">
-    <img class="bigscreen-img" src="./img/bigscreen.png" alt="BigScreen Button">
+      <img class="bigscreen-img" src="./img/bigscreen.png" alt="BigScreen Button" />
     </button>
+     <div class="hud-top-right">
+        <button id="hud-sound" onclick="toggleSound()" class="hud-btn" tabindex="-1">
+          <img id="sound-icon" src="img/volume_on.png" />
+        </button>
+        <button id="hud-keyboard" class="hud-btn" onclick="toggleKeyboardOverlay()">
+          <img src="img/key_space.png" />
+        </button>
+        <button id="hud-home" class="hud-btn" onclick="backToStart()">
+          <img src="img/home.png" />
+        </button>
+      </div>
   </div>
 
   <div id="rotate-overlay">
@@ -38,17 +49,7 @@
 
   <div id="game-container">
     <div id="game-hud">
-      <div class="hud-top-right">
-        <button id="hud-sound" onclick="toggleSound()" class="hud-btn" tabindex="-1">
-          <img id="sound-icon" src="img/volume_on.png" />
-        </button>
-     <button id="hud-keyboard" class="hud-btn" onclick="toggleKeyboardOverlay()">
-  <img src="img/key_space.png" />
-</button>
-   <button id="hud-home" class="hud-btn" onclick="backToStart()">
-  <img src="img/home.png" />
-</button>
-      </div>
+     
 
       <div id="keyboardInstructions" class="keyboard-info hidden">
         <div class="instruction-row">
@@ -67,7 +68,7 @@
           <img src="img/key_d.png" />
           <span>throw bottle</span>
         </div>
-          <div class="instruction-row">
+        <div class="instruction-row">
           <img src="img/bigscreen.png" />
           <span>bigscreen</span>
         </div>

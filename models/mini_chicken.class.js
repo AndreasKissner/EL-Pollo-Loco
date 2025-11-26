@@ -58,7 +58,7 @@ class MiniChicken extends MovableObject {
             if (!this.world || !this.world.gameStarted) return;
             if (this.world && this.world.gameOver) return;
             if (this.isDead()) {
-                 SoundManager.play("mini_chicken", 4);
+                SoundManager.play("mini_chicken", 4);
                 this.playAnimation(this.IMAGES_DEAD);
             } else {
                 this.playAnimation(this.IMAGES_WALKIN);

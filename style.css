@@ -3,7 +3,6 @@
     src: url("fonts/mexican.ttf");
 }
 
-/* =================== FIX GEGEN SCROLLING =================== */
 html,
 body {
     margin: 0;
@@ -14,8 +13,6 @@ body {
     overscroll-behavior: none;
     touch-action: none;
 }
-
-/* =========================================================== */
 
 body {
     margin: 0;
@@ -32,7 +29,6 @@ body {
     background-position: center center;
     font-family: 'mexican', Arial, Helvetica, sans-serif;
 }
-
 
 .d-none {
     display: none;
@@ -68,7 +64,6 @@ canvas {
     pointer-events: auto;
 }
 
-
 .hud-top-left {
     position: absolute;
     top: 20px;
@@ -87,11 +82,13 @@ canvas {
 }
 
 .hud-top-right {
-    position: absolute;
-    top: -290px;
-    right: -320px;
-    display: flex;
-    gap: 12px;
+     display: flex;
+    align-items: center;
+    gap: 30px;
+
+    top: 12px;
+    left: 30px;
+    z-index: 9999;
     pointer-events: auto;
 }
 
@@ -248,16 +245,12 @@ canvas {
     height: 100%;
     background: rgba(0, 0, 0, 0.75);
     z-index: 999999999;
-    /* höher als alles */
     pointer-events: auto;
 }
 
-
-/* Neue schönere Info-Box */
 .keyboard-info {
     position: fixed;
     top: 40px;
-    /* hier kannst du ändern */
     right: 25px;
     padding: 22px 32px;
     border-radius: 14px;
@@ -268,7 +261,6 @@ canvas {
     box-shadow: 0 0 18px rgba(0, 0, 0, 0.6);
     z-index: 2147483647 !important;
 }
-
 
 .hidden {
     display: none !important;
