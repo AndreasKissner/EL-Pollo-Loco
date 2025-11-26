@@ -30,6 +30,7 @@
       <button onclick="backToStart()" class="hud-btn">
         <img class="bigscreen-img" src="./img/home.png" alt="" />
       </button>
+      
     </div>
   </div>
 
@@ -40,7 +41,8 @@
     </div>
   </div>
 
-  <div id="start-screen" class="start-screen">
+<div id="start-screen" class="start-screen d-none">
+
     <div id="startMenu" class="start-menu">
       <img src="img/9_intro_outro_screens/start/startscreen_1.png" id="startImage" class="start-image"
         alt="Startscreen" />
@@ -106,6 +108,7 @@
     </div>
 
     <div id="videoEndMenu" class="cutscene-text d-none">
+     <button onclick="resetGame()" class="btn-base">Restart</button>
       <button class="btn-base lose-btn" onclick="backToStart()">
         Back to Menu
       </button>
@@ -119,6 +122,7 @@
 
     <div id="loseText" class="you-loose d-none">
       <img src="img/You won, you lost/You lost.png" alt="" />
+    <button onclick="resetGame()" class="btn-base">Restart</button>
       <button class="btn-base lose-btn" onclick="backToStart()">
         Back to Menu
       </button>

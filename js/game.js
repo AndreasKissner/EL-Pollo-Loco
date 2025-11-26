@@ -83,14 +83,19 @@ window.addEventListener('keyup', (event) => {
 function startGame() {
     document.querySelector('.impressum-none').classList.add('hidden'); 
     document.querySelector('.hud-top-right').classList.add('butten-for'); 
+
     const startScreen = document.getElementById("start-screen");
-    startScreen.style.display = "none";
+    // startScreen.classList.add("d-none");   // ❌ raus
+    startScreen.style.display = "none";       // ✅ wieder so wie früher
+
     const canvas = document.getElementById("canvas");
     canvas.style.display = "block";
     init();
     world.gameStarted = true;
     checkInitBtn();
 }
+
+
 
 
 /**
@@ -198,4 +203,34 @@ function attachButton(element, onPress, onRelease) {
  */
 function backToStart() {
     window.location.href = "index.html";
+}
+
+// Startet das Spiel automatisch, wenn ?autostart=1 in der URL steht
+// Startet das Spiel automatisch, wenn ?autostart=1 in der URL steht
+window.addEventListener("load", () => {
+    const params = new URLSearchParams(window.location.search);
+    const autostart = params.get("autostart");
+    const startScreen = document.getElementById("start-screen");
+
+    if (autostart === "1") {
+        // Direkt ins Spiel → Startscreen bleibt unsichtbar
+        startGame();
+    } else {
+        // Normale Seite: Startscreen jetzt erst anzeigen
+        startScreen.classList.remove("d-none");
+    }
+});
+
+
+
+/**
+ * Restartet das komplette Spiel.
+ * - Alles wird zurückgesetzt
+ * - Seite wird neu geladen (Level, Gegner, Coins usw. sind wieder frisch)
+ */
+function resetGame() {
+    SoundManager.stopBackgroundMusic(); // Sicherheit
+
+    // Seite neu laden und Autostart aktivieren
+    window.location.href = "index.html?autostart=1";
 }

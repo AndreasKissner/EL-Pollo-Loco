@@ -4,7 +4,6 @@
  * - Updates the sound icon depending on whether the sound is muted.
  */
 function toggleSound() {
-    console.log('🔊 Sound Button clicked')
     SoundManager.toggleMute()
     const icon = document.getElementById('sound-icon')
     icon.src = SoundManager.isMuted ? 'img/volume_off.png' : 'img/volume_on.png'

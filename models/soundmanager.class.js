@@ -113,9 +113,6 @@ class SoundManager {
     static toggleMute() {
         SoundManager.isMuted = !SoundManager.isMuted;
         SoundManager.masterVolume = SoundManager.isMuted ? 0 : 1;
-
-        console.log("Mute:", SoundManager.isMuted);
-
         if (SoundManager.backgroundMusic) {
             SoundManager.updateMusicVolume();
             SoundManager.resumeMusicIfNeeded();
