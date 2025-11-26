@@ -5,6 +5,11 @@
     canvas {
         width: 100%;
     }
+ 
+
+    .impressum-link a{
+        font-size: 16px;
+    }
 }
 
 @media only screen and (max-height: 480px) {
@@ -90,10 +95,13 @@
     }
 }
 
+
 @media (max-width: 780px) {
     .impressum-link {
         font-size: 12px;
     }
+
+  
 }
 
 /* ===========MEDIAQUERIES CUTSCENE.CSS====================== */
