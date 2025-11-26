@@ -15,7 +15,7 @@
 
 <body>
   <div class="impressum-link">
-    <a href="./html/impressum.html">Impressum & SPielinfo</a>
+    <a href="./html/impressum.html"><span class="impressum-text">Impressum & </span> SPielinfo</a>
     <button onclick="toggleFullscreen(document.documentElement)" class="fullscreen-btn">
     <img class="bigscreen-img" src="./img/bigscreen.png" alt="BigScreen Button">
     </button>
@@ -44,6 +44,9 @@
         </button>
      <button id="hud-keyboard" class="hud-btn" onclick="toggleKeyboardOverlay()">
   <img src="img/key_space.png" />
+</button>
+   <button id="hud-home" class="hud-btn" onclick="backToStart()">
+  <img src="img/home.png" />
 </button>
       </div>
 
