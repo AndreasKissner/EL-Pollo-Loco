@@ -37,7 +37,7 @@
 
 .start-btn {
     position: absolute;
-    top: 76%;
+    top: 74%;
     width: 100%;
     left: 50%;
     width: 172px;
@@ -120,13 +120,12 @@ button:hover {
     transform: translate(-50%, -50%);
 }
 
-/* overlay darunter */
 #keyboardOverlay {
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.45);
     backdrop-filter: blur(4px);
-    z-index: 99998;     /* ✔ unter der Infobox */
+    z-index: 99998;  
     pointer-events: auto;
     transition: opacity .25s ease;
     opacity: 0;
@@ -134,7 +133,6 @@ button:hover {
 #keyboardOverlay:not(.hidden) {
     opacity: 1;
 }
-
 
 .instruction-row {
     display: flex;
