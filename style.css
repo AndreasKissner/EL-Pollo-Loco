@@ -6,6 +6,8 @@
 /* =================== FIX GEGEN SCROLLING =================== */
 html,
 body {
+     background-color: #000;   /* oder die Grundfarbe vom Canvas */
+ 
     margin: 0;
     padding: 0;
     width: 100%;
