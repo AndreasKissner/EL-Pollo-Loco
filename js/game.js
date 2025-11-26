@@ -74,9 +74,15 @@ window.addEventListener('keyup', (event) => {
 });
 
 
+/**
+ * Startet das Spiel.
+ * - Blendet Startscreen und Impressum aus.
+ * - Zeigt das Canvas und initialisiert die Game-Welt.
+ * - Aktiviert HUD-Buttons und Touch-Button Support.
+ */
 function startGame() {
     document.querySelector('.impressum-none').classList.add('hidden'); 
-     document.querySelector('.hud-top-right').classList.add('butten-for'); 
+    document.querySelector('.hud-top-right').classList.add('butten-for'); 
     const startScreen = document.getElementById("start-screen");
     startScreen.style.display = "none";
     const canvas = document.getElementById("canvas");
@@ -86,6 +92,11 @@ function startGame() {
     checkInitBtn();
 }
 
+
+/**
+ * Prüft, ob Touch-Buttons existieren und initialisiert sie.
+ * - Verhindert Fehler falls mobile-Steuerung nicht geladen wurde.
+ */
 function checkInitBtn() {
     if (typeof initTouchButtons === 'function') {
         initTouchButtons();
@@ -93,6 +104,7 @@ function checkInitBtn() {
         console.warn('initTouchButtons() nicht gefunden – ist js/button.js eingebunden?');
     }
 }
+
 
 /**
 * Initializes all mobile touch buttons and links them to keyboard controls.
