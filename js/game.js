@@ -38,12 +38,19 @@ const ALL_GAME_SOUNDS = {
 function init() {
     canvas = document.getElementById("canvas");
     SoundManager.loadSounds(ALL_GAME_SOUNDS);
+    const savedMuteState = localStorage.getItem('soundMuted');
+    if (savedMuteState === 'true') {
+        SoundManager.isMuted = true;
+        SoundManager.masterVolume = 0;
+    }
     world = new World(canvas, keyboard);
     winText = new CutsceneText("winText");
     laterText = new CutsceneText("laterText");
     victoryVideo = new GameVideo("victoryVideo");
     SoundManager.startBackgroundMusic('music', 0.1);
-};
+    const icon = document.getElementById('sound-icon');
+    if (icon) icon.src = SoundManager.isMuted ? 'img/volume_off.png' : 'img/volume_on.png';
+}
 
 /**
  * Handles key presses and updates the keyboard state based on the pressed key.
@@ -73,30 +80,23 @@ window.addEventListener('keyup', (event) => {
     }
 });
 
-
 /**
- * Startet das Spiel.
- * - Blendet Startscreen und Impressum aus.
- * - Zeigt das Canvas und initialisiert die Game-Welt.
- * - Aktiviert HUD-Buttons und Touch-Button Support.
+ * Starts the game.
+ * - Hides the start screen and imprint.
+ * - Shows the canvas and initializes the game world.
+ * - Activates HUD buttons and touch button support.
  */
 function startGame() {
-    document.querySelector('.impressum-none').classList.add('hidden'); 
-    document.querySelector('.hud-top-right').classList.add('butten-for'); 
-
+    document.querySelector('.impressum-none').classList.add('hidden');
+    document.querySelector('.hud-top-right').classList.add('butten-for');
     const startScreen = document.getElementById("start-screen");
-    // startScreen.classList.add("d-none");   // ❌ raus
-    startScreen.style.display = "none";       // ✅ wieder so wie früher
-
+    startScreen.style.display = "none";
     const canvas = document.getElementById("canvas");
     canvas.style.display = "block";
     init();
     world.gameStarted = true;
     checkInitBtn();
 }
-
-
-
 
 /**
  * Prüft, ob Touch-Buttons existieren und initialisiert sie.
@@ -109,7 +109,6 @@ function checkInitBtn() {
         console.warn('initTouchButtons() nicht gefunden – ist js/button.js eingebunden?');
     }
 }
-
 
 /**
 * Initializes all mobile touch buttons and links them to keyboard controls.
@@ -205,32 +204,29 @@ function backToStart() {
     window.location.href = "index.html";
 }
 
-// Startet das Spiel automatisch, wenn ?autostart=1 in der URL steht
-// Startet das Spiel automatisch, wenn ?autostart=1 in der URL steht
-window.addEventListener("load", () => {
+/**
+ * Restarts the entire game.
+ * - Resets everything
+ * - Reloads the page (level, enemies, coins, etc. are refreshed)
+ */
+function resetGame() {
+    SoundManager.stopBackgroundMusic();
+    window.location.href = "index.html?autostart=1";
+}
+
+// Autostart / Start screen decision after loading game.js
+(function () {
     const params = new URLSearchParams(window.location.search);
     const autostart = params.get("autostart");
     const startScreen = document.getElementById("start-screen");
-
+    const savedMuteState = localStorage.getItem('soundMuted');
+    const icon = document.getElementById('sound-icon');
+    if (icon && savedMuteState === 'true') {
+        icon.src = 'img/volume_off.png';
+    }
     if (autostart === "1") {
-        // Direkt ins Spiel → Startscreen bleibt unsichtbar
         startGame();
     } else {
-        // Normale Seite: Startscreen jetzt erst anzeigen
         startScreen.classList.remove("d-none");
     }
-});
-
-
-
-/**
- * Restartet das komplette Spiel.
- * - Alles wird zurückgesetzt
- * - Seite wird neu geladen (Level, Gegner, Coins usw. sind wieder frisch)
- */
-function resetGame() {
-    SoundManager.stopBackgroundMusic(); // Sicherheit
-
-    // Seite neu laden und Autostart aktivieren
-    window.location.href = "index.html?autostart=1";
-}
+})();
