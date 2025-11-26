@@ -75,7 +75,8 @@ window.addEventListener('keyup', (event) => {
 
 
 function startGame() {
-    document.querySelector('.impressum-link').classList.add('hidden');
+    document.querySelector('.impressum-none').classList.add('hidden'); 
+     document.querySelector('.hud-top-right').classList.add('butten-for'); 
     const startScreen = document.getElementById("start-screen");
     startScreen.style.display = "none";
     const canvas = document.getElementById("canvas");
