@@ -15,5 +15,8 @@ function toggleSound() {
  */
 function toggleKeyboardInfo() {
     const box = document.getElementById('keyboardInstructions')
+    const overlay = document.getElementById('keyboardOverlay')
+
     box.classList.toggle('hidden')
+    overlay.classList.toggle('hidden')
 }
