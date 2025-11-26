@@ -13,7 +13,19 @@ function toggleSound() {
 /**
  * Toggles the visibility of the keyboard instruction box.
  */
-function toggleKeyboardInfo() {
-    const box = document.getElementById('keyboardInstructions')
-    box.classList.toggle('hidden')
+function toggleKeyboardOverlay() {
+    const overlay = document.getElementById("screenOverlay");
+    const box = document.getElementById("keyboardInstructions");
+    overlay.classList.toggle("hidden");
+    box.classList.toggle("hidden");
+    if (!box.classList.contains("hidden")) {
+        document.body.appendChild(box);
+    }
+    overlay.onclick = () => {
+        overlay.classList.add("hidden");
+        box.classList.add("hidden");
+    };
 }
+
+
+
