@@ -47,6 +47,7 @@ function init() {
     winText = new CutsceneText("winText");
     laterText = new CutsceneText("laterText");
     victoryVideo = new GameVideo("victoryVideo");
+    window.victoryVideoElement = document.getElementById("victoryVideo");
     SoundManager.startBackgroundMusic('music', 0.1);
     const icon = document.getElementById('sound-icon');
     if (icon) icon.src = SoundManager.isMuted ? 'img/volume_off.png' : 'img/volume_on.png';
@@ -142,9 +143,7 @@ function areTouchButtonsAvailable(...buttons) {
     return allPresent;
 }
 
-/**
- * Connects a touch button to press and release actions.
- */
+
 /**
  * Attaches all touch-based controls to a button element.
  * Handles press and release actions for mobile devices.
