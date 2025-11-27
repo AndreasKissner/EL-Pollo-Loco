@@ -24,24 +24,28 @@ class SoundManager {
         }
     }
 
-    /**
-     * Safely plays a sound effect with volume control.
-     * @param {string} name - Sound key.
-     * @param {number} volume - Additional volume multiplier.
-     */
-    static play(name, volume = 1) {
-        if (SoundManager.masterVolume === 0) return;
+   /**
+ * Safely plays a sound effect with volume control.
+ * @param {string} name - Sound key.
+ * @param {number} volume - Additional volume multiplier.
+ */
+static play(name, volume = 1) {
+    if (SoundManager.masterVolume === 0) return;
 
-        const audio = SoundManager.audioCache[name];
-        if (!audio) return;
+    const audio = SoundManager.audioCache[name];
+    if (!audio) return;
 
-        SoundManager.resetSound(audio);
-        SoundManager.applyVolume(audio, volume);
+    SoundManager.resetSound(audio);
+    SoundManager.applyVolume(audio, volume);
 
-        audio.play().catch(err => {
-            console.warn(`Play-Fehler bei ${name}:`, err);
-        });
-    }
+    audio.play().catch(err => {
+        // Diesen Fehler ignorieren: play() wurde nur durch pause() unterbrochen
+        if (err.name === 'AbortError') {
+            return;
+        }
+    });
+}
+
 
     /**
      * Stops & resets a sound before playing.
