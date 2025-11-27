@@ -268,14 +268,20 @@ class Character extends MovableObject {
     }
 
     /** Updates idle timing and plays idle or long-idle animations. */
-    handleIdleAnimation() {
-        this.idleTimer++;
-        if (this.idleTimer > 50) {
-            this.playAnimation(this.IMAGES_LONG_IDLE);
-            return;
-        }
+  handleIdleAnimation() {
+    if (this.world.keyboard.D) {
+        this.idleTimer = 0;
         this.playAnimation(this.IMAGES_IDLE);
+        return;
     }
+    this.idleTimer++;
+    if (this.idleTimer > 50) {
+        this.playAnimation(this.IMAGES_LONG_IDLE); // Schlaf
+        return;
+    }
+    this.playAnimation(this.IMAGES_IDLE);
+}
+
 
     /** Checks if the character is above the ground or a platform. */
     isAboveGround() {
