@@ -93,6 +93,8 @@ function startGame() {
     startScreen.style.display = "none";
     const canvas = document.getElementById("canvas");
     canvas.style.display = "block";
+    document.body.classList.add('game-started');
+
     init();
     world.gameStarted = true;
     checkInitBtn();

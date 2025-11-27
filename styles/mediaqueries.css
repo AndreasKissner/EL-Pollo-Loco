@@ -1,13 +1,11 @@
-
 /* =====================MEDIAQUERIES STYLE.CSS======================== */
 
 @media only screen and (max-width: 760px) {
     canvas {
         width: 100%;
     }
- 
 
-    .impressum-link a{
+    .impressum-link a {
         font-size: 16px;
     }
 }
@@ -43,10 +41,11 @@
     }
 }
 
+/* Kleine / mittlere Devices: Buttons nur wenn Spiel läuft */
 @media (min-width: 480px) and (max-width: 760px) {
 
-    .hud-bottom-left,
-    .hud-bottom-right {
+    .game-started .hud-bottom-left,
+    .game-started .hud-bottom-right {
         display: flex;
     }
 }
@@ -64,8 +63,8 @@
     }
 }
 
-@media (min-width: 480px) and (max-width: 1000px) {
-
+/* NEU / ANGEPASST – Tablets & iPad im Querformat mitnehmen */
+@media (min-width: 480px) and (max-width: 1400px) {
     html,
     body {
         margin: 0;
@@ -88,20 +87,18 @@
         height: 100%;
     }
 
-    .hud-bottom-left,
-    .hud-bottom-right {
+    /* Buttons nur im Spiel, und auf Tablet übereinander (column) */
+    .game-started .hud-bottom-left,
+    .game-started .hud-bottom-right {
         display: flex;
         flex-direction: column;
     }
 }
 
-
 @media (max-width: 780px) {
     .impressum-link {
         font-size: 12px;
     }
-
-  
 }
 
 /* ===========MEDIAQUERIES CUTSCENE.CSS====================== */
@@ -123,7 +120,6 @@
         width: 90vw;
     }
 }
-
 
 /* ============MEDIAQUERIES START-MEUE.CSS======================= */
 
