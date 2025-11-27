@@ -41,14 +41,14 @@
     }
 }
 
-/* Kleine / mittlere Devices: Buttons nur wenn Spiel läuft */
-@media (min-width: 480px) and (max-width: 760px) {
+@media (min-width: 480px) and (max-width: 760px) and (hover: none) and (pointer: coarse) {
 
     .game-started .hud-bottom-left,
     .game-started .hud-bottom-right {
         display: flex;
     }
 }
+
 
 @media only screen and (max-width: 480px) and (orientation: portrait) {
     #rotate-overlay {
@@ -63,8 +63,8 @@
     }
 }
 
-/* NEU / ANGEPASST – Tablets & iPad im Querformat mitnehmen */
-@media (min-width: 480px) and (max-width: 1400px) {
+@media (min-width: 480px) and (max-width: 1400px) and (hover: none) and (pointer: coarse) {
+
     html,
     body {
         margin: 0;
@@ -87,13 +87,13 @@
         height: 100%;
     }
 
-    /* Buttons nur im Spiel, und auf Tablet übereinander (column) */
     .game-started .hud-bottom-left,
     .game-started .hud-bottom-right {
         display: flex;
         flex-direction: column;
     }
 }
+
 
 @media (max-width: 780px) {
     .impressum-link {
