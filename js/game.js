@@ -11,6 +11,7 @@ let canvas;
 let world;
 let keyboard = new Keyboard();
 let victoryVideo;
+let gameId = 0;
 
 const ALL_GAME_SOUNDS = {
     'jump': 'audio/jump.mp3',
@@ -204,7 +205,9 @@ function attachButton(element, onPress, onRelease) {
  * Returns the player to the start screen by reloading index.html.
  */
 function backToStart() {
-    window.location.href = "index.html";
+    stopCurrentGame();
+    hideGameElements();
+    showStartScreen();
 }
 
 /**
@@ -213,23 +216,63 @@ function backToStart() {
  * - Reloads the page (level, enemies, coins, etc. are refreshed)
  */
 function resetGame() {
+    stopCurrentGame();
+    hideGameElements();
+    startGame();
+}
+
+function stopCurrentGame() {
+    gameId++;
     SoundManager.stopBackgroundMusic();
-    window.location.href = "index.html?autostart=1";
+    if (world) {
+        world.gameOver = true;
+    }
+    world = null;
+    keyboard = new Keyboard();
+    level1 = createLevel1();
+}
+
+function hideGameElements() {
+    document.getElementById("canvas").style.display = "none";
+    document.getElementById("loseText").classList.add("d-none");
+    document.getElementById("loseText").style.display = "none";
+    document.getElementById("videoEndMenu").classList.add("d-none");
+    document.getElementById("videoEndMenu").style.display = "none";
+    document.getElementById("winText").style.display = "none";
+    document.getElementById("laterText").style.display = "none";
+    
+    // Video komplett zurücksetzen
+    let video = document.getElementById("victoryVideo");
+    if (video) {
+        video.pause();
+        video.currentTime = 0;
+        video.style.display = "none";
+    }
+    
+    // Cutscene Container zurücksetzen
+    let cutsceneContainer = document.getElementById("cutscene-container");
+    if (cutsceneContainer) {
+        cutsceneContainer.style.opacity = "0";
+        cutsceneContainer.style.pointerEvents = "none";
+    }
+}
+
+function showStartScreen() {
+    const startScreen = document.getElementById("start-screen");
+    startScreen.style.display = "flex";
+    startScreen.classList.remove("d-none");
+    document.querySelector('.impressum-none').classList.remove('hidden');
+    document.querySelector('.hud-top-right').classList.remove('butten-for');
+    document.body.classList.remove('game-started');
 }
 
 // Autostart / Start screen decision after loading game.js
 (function () {
-    const params = new URLSearchParams(window.location.search);
-    const autostart = params.get("autostart");
     const startScreen = document.getElementById("start-screen");
     const savedMuteState = localStorage.getItem('soundMuted');
     const icon = document.getElementById('sound-icon');
     if (icon && savedMuteState === 'true') {
         icon.src = 'img/volume_off.png';
     }
-    if (autostart === "1") {
-        startGame();
-    } else {
-        startScreen.classList.remove("d-none");
-    }
+    startScreen.classList.remove("d-none");
 })();

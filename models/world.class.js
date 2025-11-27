@@ -16,6 +16,7 @@ class World {
     lossPlayed = false;
     gameOver = false;
     gameStarted = false;
+    myGameId = 0;
 
     /**
      * Initializes world + sets canvas, keyboard, objects & starts loop.
@@ -23,6 +24,7 @@ class World {
      * @param {Object} keyboard
      */
     constructor(canvas, keyboard) {
+        this.myGameId = gameId;
         this.ctx = canvas.getContext("2d");
         this.canvas = canvas;
         this.keyboard = keyboard;
@@ -67,14 +69,17 @@ class World {
      * Main loop interval (30 FPS), triggers game logic.
      */
     run() {
-        setInterval(() => this.gameLoop(), 1000 / 30);
-    }
+    setInterval(() => {
+        if (this.myGameId !== gameId) return;
+        this.gameLoop();
+    }, 1000 / 30);
+}
 
     /**
      * Executes collision checks, events & victory/game state.
      */
     gameLoop() {
-        if (this.gameOver) {return;}
+        if (this.gameOver) { return; }
         this.checkcollision();
         this.checkThrowObjects();
         this.checkRespawn();
@@ -93,11 +98,11 @@ class World {
         }
     }
 
-       /**
-     * Respawns enemies behind player when they fall too far back.
-     */
+    /**
+  * Respawns enemies behind player when they fall too far back.
+  */
     checkRespawn() {
-        if (this.respawnStopped) {return;}
+        if (this.respawnStopped) { return; }
         let maxPosition = this.getMaxEnemyPosition();
         this.level.enemies.forEach(enemy => {
             maxPosition = this.respawnEnemyIfNeeded(enemy, maxPosition);
@@ -164,10 +169,10 @@ class World {
         );
     }
 
-       /**
-     * Creates and throws a bottle in facing direction + updates UI.
-     * @param {number} now - Timestamp for cooldown handling.
-     */
+    /**
+  * Creates and throws a bottle in facing direction + updates UI.
+  * @param {number} now - Timestamp for cooldown handling.
+  */
     throwBottle(now) {
         this.lastThrowTime = now;
         const direction = this.character.otherDirection ? -1 : 1;
@@ -277,9 +282,12 @@ class World {
     /**
      * Continues rendering next draw frame (60FPS typical).
      */
-    scheduleNextFrame() {
-        requestAnimationFrame(() => this.draw());
-    }
+   scheduleNextFrame() {
+    requestAnimationFrame(() => {
+        if (this.myGameId !== gameId) return;
+        this.draw();
+    });
+}
 
     /**
      * Adds multiple objects to canvas sequentially.
@@ -320,9 +328,9 @@ class World {
         this.ctx.restore();
     }
 
-       /**
-     * Draws character stats (HP/Coins/Bottles) to HUD text area.
-     */
+    /**
+  * Draws character stats (HP/Coins/Bottles) to HUD text area.
+  */
     drawHudCounters() {
         this.ctx.font = "12px mexican";
         this.ctx.fillStyle = "red";
@@ -335,7 +343,7 @@ class World {
      * Checks if Endboss is defeated → triggers victory sequence.
      */
     checkVictory() {
-        if (this.victoryPlayed) {return;}
+        if (this.victoryPlayed) { return; }
         const endboss = this.level.enemies.find(e => e instanceof Endboss);
         if (endboss && endboss.isDead()) {
             this.startVictorySequence();

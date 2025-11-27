@@ -43,8 +43,11 @@ class GameVideo {
      * Starts the video from the beginning.
      * @param {number} volume - Video volume.
      */
-   play(volume = 1) {
+play(volume = 1) {
     this.show();
+    
+    // Video sichtbar machen
+    this.videoElement.style.display = "block";
 
     // 🔥 Wenn Sound muted ist → Video SOFORT stumm starten
     this.videoElement.muted = SoundManager.isMuted;
@@ -53,7 +56,6 @@ class GameVideo {
     this.videoElement.currentTime = 0;
     this.videoElement.play();
 }
-
 
     /**
      * Stops the video and hides the container.
