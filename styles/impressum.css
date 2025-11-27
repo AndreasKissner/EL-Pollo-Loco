@@ -1,0 +1,109 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.hidden {
+  display: none !important;
+}
+
+body {
+  font-family: 'Trebuchet MS', sans-serif;
+  background-image: url('../img/background.svg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: #fff3dd;
+  min-height: 100vh;
+}
+
+.imp-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(rgba(0, 0, 0, 0.25),
+      rgba(0, 0, 0, 0.55));
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+.imp-box {
+  background: rgba(0, 0, 0, 0.6);
+  border: 3px solid rgba(243, 128, 5, 0.95);
+  border-radius: 20px;
+  max-width: 750px;
+  width: 95%;
+  padding: 35px;
+  box-shadow:
+    0 0 25px rgba(243, 128, 5, 0.6),
+    0 0 60px rgba(200, 70, 0, 0.3);
+
+  backdrop-filter: blur(2px);
+}
+
+.imp-box h1 {
+  text-align: center;
+  font-size: 44px;
+  margin-bottom: 25px;
+  background: linear-gradient(90deg, #ffa64d, #ffcf76);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+
+
+.imp-box h2 {
+  margin-top: 28px;
+  color: #ffcc89;
+  text-shadow: 0 0 6px black;
+  font-size: 22px;
+}
+
+.imp-box p {
+  line-height: 1.7;
+  font-size: 17px;
+  text-shadow: 0 0 6px black;
+  color: #fff1db;
+}
+
+.back-btn {
+  display: inline-block;
+  margin-top: 35px;
+  padding: 12px 18px;
+  background: linear-gradient(90deg, rgba(243, 128, 5, 0.95), rgba(255, 170, 40, 1));
+  color: white;
+  text-decoration: none;
+  border-radius: 12px;
+  font-weight: bold;
+  transition: 0.25s ease;
+  text-shadow: 0 0 6px black;
+  box-shadow: 0 0 10px rgba(243, 128, 5, 0.7);
+}
+
+.back-btn:hover {
+  transform: scale(1.08);
+  box-shadow:
+    0 0 18px rgba(255, 140, 0, 1),
+    0 0 35px rgba(255, 180, 0, 0.8);
+}
+
+.game-info li {
+  margin: 10px 0;
+  font-size: 17px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}

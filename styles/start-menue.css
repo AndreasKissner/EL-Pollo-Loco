@@ -1,0 +1,154 @@
+.start-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    z-index: 100;
+    pointer-events: none;
+}
+
+.start-screen button {
+    pointer-events: auto;
+}
+
+.start-screen.hidden {
+    display: none !important;
+}
+
+.start-menu {
+    position: relative;
+    width: 100%;
+    max-width: 720px;
+    aspect-ratio: 720 / 480;
+}
+
+.start-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.start-btn {
+    position: absolute;
+    top: 74%;
+    width: 100%;
+    left: 50%;
+    width: 172px;
+    height: 71px;
+    transform: translateX(-50%);
+    background-color: rgba(243, 128, 5, 0.85);
+    border-radius: 12px;
+    font-size: 24px;
+    font-family: mexican;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.start-btn:hover {
+    transform: translateX(-50%) scale(1.06);
+}
+
+.settings-menu {
+    position: absolute;
+    top: calc(35% - 240px + 25px);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+
+.settings-btn {
+    width: 60px;
+    height: 60px;
+    background-color: (243, 128, 5, 0.85);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.settings-btn img {
+    width: 32px;
+    height: 32px;
+}
+
+.settings-btn:hover {
+    transform: scale(1.07);
+}
+
+button {
+    position: relative;
+    background: rgb(242, 175, 5);
+    padding: 5px 20px;
+    border: none;
+    border-radius: 25px;
+}
+
+button:hover {
+    background-color: rgb(231, 134, 7);
+}
+
+.keyboard-info {
+    position: fixed;
+    top: 58%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 5px 16px;
+    border-radius: 15px;
+    color: rgb(235, 111, 3);
+    font-size: 18px;
+    text-align: left;
+    backdrop-filter: blur(6px);
+    z-index: 999999999999;     /* 🔥 ganz oben */
+    transition: opacity .25s ease, transform .25s ease;
+    opacity: 0;
+}
+
+.keyboard-info:not(.hidden) {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+}
+
+#keyboardOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(4px);
+    z-index: 99998;  
+    pointer-events: auto;
+    transition: opacity .25s ease;
+    opacity: 0;
+}
+#keyboardOverlay:not(.hidden) {
+    opacity: 1;
+}
+
+.instruction-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.instruction-row img {
+    width: 38px;
+    height: 38px;
+}
+
+.start-menu .settings-menu {
+    display: none !important;
+}
+
+
