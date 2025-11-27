@@ -10,12 +10,6 @@
     }
 }
 
-@media only screen and (max-height: 480px) {
-    canvas {
-        height: 100vh;
-    }
-}
-
 @media (max-width: 1200px) {
     canvas {
         border: none;
