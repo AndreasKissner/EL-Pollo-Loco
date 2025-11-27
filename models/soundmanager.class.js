@@ -70,18 +70,14 @@ static play(name, volume = 1) {
 static startBackgroundMusic(name, volume = 0.3) {
     SoundManager.currentMusicVolume = volume;
     SoundManager.currentMusicName = name;
-    
     const audio = SoundManager.audioCache[name];
     if (!audio) return;
-    
     if (SoundManager.backgroundMusic && SoundManager.backgroundMusic !== audio) {
         SoundManager.stopBackgroundMusic();
     }
     if (SoundManager.backgroundMusic === audio && !audio.paused) return;
-    
     SoundManager.configureMusic(audio, volume);
     SoundManager.backgroundMusic = audio;
-    
     if (!SoundManager.isMuted) {
         SoundManager.playMusic(audio);
     }

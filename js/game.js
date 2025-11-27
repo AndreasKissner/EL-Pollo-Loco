@@ -1,86 +1,119 @@
 /**
  * Prevents the default browser action when the Space key is pressed.
  */
-window.addEventListener("keydown", (element) => {
-    if (element.code === "Space") {
-        element.preventDefault();
+window.addEventListener('keydown', element => {
+    if (element.code === 'Space') {
+        element.preventDefault()
     }
-});
+})
 
-let canvas;
-let world;
-let keyboard = new Keyboard();
-let victoryVideo;
-let gameId = 0;
+let canvas
+let world
+let keyboard = new Keyboard()
+let victoryVideo
+let gameId = 0
 
 const ALL_GAME_SOUNDS = {
-    'jump': 'audio/jump.mp3',
-    'hurtPepe': 'audio/hurt.mp3',
-    'deadPepe': 'audio/deadPepe.mp3',
-    "bottleThrow": "audio/bottleThrow.mp3",
-    "coinSelect": "audio/coinSelect.mp3",
-    'bottleCollect': 'audio/bottleCollect.mp3',
-    'chickKill': 'audio/chickKill.mp3',
-    'extraBottle': 'audio/extraBottle.mp3',
-    "hurtEndboss": 'audio/hurtEndboss.mp3',
-    "walkingPepe": 'audio/walking_pepe.mp3',
-    "bottleBreak": "audio/brokenBottle.mp3",
-    'bossMusic': 'audio/endbossMusic.mp3',
-    'youLose': 'audio/youLose.mp3',
-    'victory': 'audio/win.mp3',
-    "miniChicken": "audio/mini_chicken.mp3",
-    'music': 'audio/musik.mp3'
-};
+    jump: 'audio/jump.mp3',
+    hurtPepe: 'audio/hurt.mp3',
+    deadPepe: 'audio/deadPepe.mp3',
+    bottleThrow: 'audio/bottleThrow.mp3',
+    coinSelect: 'audio/coinSelect.mp3',
+    bottleCollect: 'audio/bottleCollect.mp3',
+    chickKill: 'audio/chickKill.mp3',
+    extraBottle: 'audio/extraBottle.mp3',
+    hurtEndboss: 'audio/hurtEndboss.mp3',
+    walkingPepe: 'audio/walking_pepe.mp3',
+    bottleBreak: 'audio/brokenBottle.mp3',
+    bossMusic: 'audio/endbossMusic.mp3',
+    youLose: 'audio/youLose.mp3',
+    victory: 'audio/win.mp3',
+    miniChicken: 'audio/mini_chicken.mp3',
+    music: 'audio/musik.mp3'
+}
+
+/**
+ * Restores the saved mute state from localStorage.
+ */
+function restoreMuteState() {
+    const savedMuteState = localStorage.getItem('soundMuted')
+    if (savedMuteState === 'true') {
+        SoundManager.isMuted = true
+        SoundManager.masterVolume = 0
+    }
+}
 
 /**
  * Initializes the game by loading sounds, creating the world,
  * setting up UI elements, and starting background music.
  */
 function init() {
-    canvas = document.getElementById("canvas");
-    SoundManager.loadSounds(ALL_GAME_SOUNDS);
-    const savedMuteState = localStorage.getItem('soundMuted');
-    if (savedMuteState === 'true') {
-        SoundManager.isMuted = true;
-        SoundManager.masterVolume = 0;
+    canvas = document.getElementById('canvas')
+    SoundManager.loadSounds(ALL_GAME_SOUNDS)
+    restoreMuteState()
+    world = new World(canvas, keyboard)
+    winText = new CutsceneText('winText')
+    laterText = new CutsceneText('laterText')
+    victoryVideo = new GameVideo('victoryVideo')
+    window.victoryVideoElement = document.getElementById('victoryVideo')
+    SoundManager.startBackgroundMusic('music', 0.1)
+    const icon = document.getElementById('sound-icon')
+    if (icon) {
+        icon.src = SoundManager.isMuted ? 'img/volume_off.png' : 'img/volume_on.png'
     }
-    world = new World(canvas, keyboard);
-    winText = new CutsceneText("winText");
-    laterText = new CutsceneText("laterText");
-    victoryVideo = new GameVideo("victoryVideo");
-    window.victoryVideoElement = document.getElementById("victoryVideo");
-    SoundManager.startBackgroundMusic('music', 0.1);
-    const icon = document.getElementById('sound-icon');
-    if (icon) icon.src = SoundManager.isMuted ? 'img/volume_off.png' : 'img/volume_on.png';
 }
 
 /**
  * Handles key presses and updates the keyboard state based on the pressed key.
  */
-window.addEventListener('keydown', (event) => {
+window.addEventListener('keydown', event => {
     switch (event.code) {
-        case "ArrowRight": keyboard.RIGHT = true; break;
-        case "ArrowLeft": keyboard.LEFT = true; break;
-        case "ArrowUp": keyboard.UP = true; break;
-        case "ArrowDown": keyboard.DOWN = true; break;
-        case "Space": keyboard.SPACE = true; break;
-        case "KeyD": keyboard.D = true; break;
+        case 'ArrowRight':
+            keyboard.RIGHT = true
+            break
+        case 'ArrowLeft':
+            keyboard.LEFT = true
+            break
+        case 'ArrowUp':
+            keyboard.UP = true
+            break
+        case 'ArrowDown':
+            keyboard.DOWN = true
+            break
+        case 'Space':
+            keyboard.SPACE = true
+            break
+        case 'KeyD':
+            keyboard.D = true
+            break
     }
-});
+})
 
 /**
  * Handles key releases and updates the keyboard state when a key is released.
  */
-window.addEventListener('keyup', (event) => {
+window.addEventListener('keyup', event => {
     switch (event.code) {
-        case "ArrowRight": keyboard.RIGHT = false; break;
-        case "ArrowLeft": keyboard.LEFT = false; break;
-        case "ArrowUp": keyboard.UP = false; break;
-        case "ArrowDown": keyboard.DOWN = false; break;
-        case "Space": keyboard.SPACE = false; break;
-        case "KeyD": keyboard.D = false; break;
+        case 'ArrowRight':
+            keyboard.RIGHT = false
+            break
+        case 'ArrowLeft':
+            keyboard.LEFT = false
+            break
+        case 'ArrowUp':
+            keyboard.UP = false
+            break
+        case 'ArrowDown':
+            keyboard.DOWN = false
+            break
+        case 'Space':
+            keyboard.SPACE = false
+            break
+        case 'KeyD':
+            keyboard.D = false
+            break
     }
-});
+})
 
 /**
  * Starts the game.
@@ -89,17 +122,16 @@ window.addEventListener('keyup', (event) => {
  * - Activates HUD buttons and touch button support.
  */
 function startGame() {
-    document.querySelector('.impressum-none').classList.add('hidden');
-    document.querySelector('.hud-top-right').classList.add('butten-for');
-    const startScreen = document.getElementById("start-screen");
-    startScreen.style.display = "none";
-    const canvas = document.getElementById("canvas");
-    canvas.style.display = "block";
-    document.body.classList.add('game-started');
-
-    init();
-    world.gameStarted = true;
-    checkInitBtn();
+    document.querySelector('.impressum-none').classList.add('hidden')
+    document.querySelector('.hud-top-right').classList.add('butten-for')
+    const startScreen = document.getElementById('start-screen')
+    startScreen.style.display = 'none'
+    const canvas = document.getElementById('canvas')
+    canvas.style.display = 'block'
+    document.body.classList.add('game-started')
+    init()
+    world.gameStarted = true
+    checkInitBtn()
 }
 
 /**
@@ -108,27 +140,45 @@ function startGame() {
  */
 function checkInitBtn() {
     if (typeof initTouchButtons === 'function') {
-        initTouchButtons();
+        initTouchButtons()
     } else {
-        console.warn('initTouchButtons() nicht gefunden – ist js/button.js eingebunden?');
+        console.warn(
+            'initTouchButtons() nicht gefunden – ist js/button.js eingebunden?'
+        )
     }
 }
 
 /**
-* Initializes all mobile touch buttons and links them to keyboard controls.
-*/
+ * Initializes all mobile touch buttons and links them to keyboard controls.
+ */
 function initTouchButtons() {
-    const btnLeft = document.getElementById('btn-left');
-    const btnRight = document.getElementById('btn-right');
-    const btnJump = document.getElementById('btn-jump');
-    const btnThrow = document.getElementById('btn-throw');
+    const btnLeft = document.getElementById('btn-left')
+    const btnRight = document.getElementById('btn-right')
+    const btnJump = document.getElementById('btn-jump')
+    const btnThrow = document.getElementById('btn-throw')
     if (!areTouchButtonsAvailable(btnLeft, btnRight, btnJump, btnThrow)) {
-        return;
+        return
     }
-    attachButton(btnLeft, () => keyboard.LEFT = true, () => keyboard.LEFT = false);
-    attachButton(btnRight, () => keyboard.RIGHT = true, () => keyboard.RIGHT = false);
-    attachButton(btnJump, () => keyboard.SPACE = true, () => keyboard.SPACE = false);
-    attachButton(btnThrow, () => keyboard.D = true, () => keyboard.D = false);
+    attachButton(
+        btnLeft,
+        () => (keyboard.LEFT = true),
+        () => (keyboard.LEFT = false)
+    )
+    attachButton(
+        btnRight,
+        () => (keyboard.RIGHT = true),
+        () => (keyboard.RIGHT = false)
+    )
+    attachButton(
+        btnJump,
+        () => (keyboard.SPACE = true),
+        () => (keyboard.SPACE = false)
+    )
+    attachButton(
+        btnThrow,
+        () => (keyboard.D = true),
+        () => (keyboard.D = false)
+    )
 }
 
 /**
@@ -137,11 +187,11 @@ function initTouchButtons() {
  * @returns {boolean} True if all buttons are present, otherwise false.
  */
 function areTouchButtonsAvailable(...buttons) {
-    const allPresent = buttons.every(btn => btn);
+    const allPresent = buttons.every(btn => btn)
     if (!allPresent) {
-        console.warn("Touch buttons not found – check IDs in index.html");
+        console.warn('Touch buttons not found – check IDs in index.html')
     }
-    return allPresent;
+    return allPresent
 }
 
 /**
@@ -156,17 +206,17 @@ function areTouchButtonsAvailable(...buttons) {
  * @param {Function} onRelease - Function executed when the button is released.
  */
 function attachTouchEvents(element, onPress, onRelease) {
-    const handlePress = (e) => {
-        if (e && e.cancelable) e.preventDefault();
-        onPress();
-    };
-    const handleRelease = (e) => {
-        if (e && e.cancelable) e.preventDefault();
-        onRelease();
-    };
-    element.addEventListener('touchstart', handlePress, { passive: false });
-    element.addEventListener('touchend', handleRelease, { passive: false });
-    element.addEventListener('touchcancel', handleRelease, { passive: false });
+    const handlePress = e => {
+        if (e && e.cancelable) e.preventDefault()
+        onPress()
+    }
+    const handleRelease = e => {
+        if (e && e.cancelable) e.preventDefault()
+        onRelease()
+    }
+    element.addEventListener('touchstart', handlePress, { passive: false })
+    element.addEventListener('touchend', handleRelease, { passive: false })
+    element.addEventListener('touchcancel', handleRelease, { passive: false })
 }
 
 /**
@@ -178,12 +228,12 @@ function attachTouchEvents(element, onPress, onRelease) {
  * @param {Function} onRelease - Function executed when the button is released.
  */
 function attachMouseEvents(element, onPress, onRelease) {
-    const handlePress = () => onPress();
-    const handleRelease = () => onRelease();
+    const handlePress = () => onPress()
+    const handleRelease = () => onRelease()
 
-    element.addEventListener('mousedown', handlePress);
-    element.addEventListener('mouseup', handleRelease);
-    element.addEventListener('mouseleave', handleRelease);
+    element.addEventListener('mousedown', handlePress)
+    element.addEventListener('mouseup', handleRelease)
+    element.addEventListener('mouseleave', handleRelease)
 }
 
 /**
@@ -195,19 +245,19 @@ function attachMouseEvents(element, onPress, onRelease) {
  * @param {Function} onRelease - Function executed when the button is released.
  */
 function attachButton(element, onPress, onRelease) {
-    if (!element) return;
+    if (!element) return
 
-    attachTouchEvents(element, onPress, onRelease);
-    attachMouseEvents(element, onPress, onRelease);
+    attachTouchEvents(element, onPress, onRelease)
+    attachMouseEvents(element, onPress, onRelease)
 }
 
 /**
  * Returns the player to the start screen by reloading index.html.
  */
 function backToStart() {
-    stopCurrentGame();
-    hideGameElements();
-    showStartScreen();
+    stopCurrentGame()
+    hideGameElements()
+    showStartScreen()
 }
 
 /**
@@ -216,63 +266,135 @@ function backToStart() {
  * - Reloads the page (level, enemies, coins, etc. are refreshed)
  */
 function resetGame() {
-    stopCurrentGame();
-    hideGameElements();
-    startGame();
+    stopCurrentGame()
+    hideGameElements()
+    startGame()
 }
 
 function stopCurrentGame() {
-    gameId++;
-    SoundManager.stopBackgroundMusic();
+    gameId++
+    SoundManager.stopBackgroundMusic()
     if (world) {
-        world.gameOver = true;
+        world.gameOver = true
     }
-    world = null;
-    keyboard = new Keyboard();
-    level1 = createLevel1();
+    world = null
+    keyboard = new Keyboard()
+    level1 = createLevel1()
 }
 
+/**
+ * Hides all game-related elements.
+ */
 function hideGameElements() {
-    document.getElementById("canvas").style.display = "none";
-    document.getElementById("loseText").classList.add("d-none");
-    document.getElementById("loseText").style.display = "none";
-    document.getElementById("videoEndMenu").classList.add("d-none");
-    document.getElementById("videoEndMenu").style.display = "none";
-    document.getElementById("winText").style.display = "none";
-    document.getElementById("laterText").style.display = "none";
-    
-    // Video komplett zurücksetzen
-    let video = document.getElementById("victoryVideo");
-    if (video) {
-        video.pause();
-        video.currentTime = 0;
-        video.style.display = "none";
-    }
-    
-    // Cutscene Container zurücksetzen
-    let cutsceneContainer = document.getElementById("cutscene-container");
-    if (cutsceneContainer) {
-        cutsceneContainer.style.opacity = "0";
-        cutsceneContainer.style.pointerEvents = "none";
+    hideCanvasAndTexts()
+    resetVictoryVideo()
+    resetCutsceneContainer()
+}
+
+/**
+ * Hides canvas and all text overlays.
+ */
+function hideCanvasAndTexts() {
+    hideCanvas()
+    hideLoseText()
+    hideVideoEndMenu()
+    hideWinText()
+    hideLaterText()
+}
+
+/**
+ * Hides the game canvas.
+ */
+function hideCanvas() {
+    const canvas = document.getElementById('canvas')
+    if (canvas) {
+        canvas.style.display = 'none'
     }
 }
 
+/**
+ * Hides the "lose" text overlay.
+ */
+function hideLoseText() {
+    const loseText = document.getElementById('loseText')
+    if (loseText) {
+        loseText.classList.add('d-none')
+        loseText.style.display = 'none'
+    }
+}
+
+/**
+ * Hides the video end menu overlay.
+ */
+function hideVideoEndMenu() {
+    const videoEndMenu = document.getElementById('videoEndMenu')
+    if (videoEndMenu) {
+        videoEndMenu.classList.add('d-none')
+        videoEndMenu.style.display = 'none'
+    }
+}
+
+/**
+ * Hides the "win" text overlay.
+ */
+function hideWinText() {
+    const winText = document.getElementById('winText')
+    if (winText) {
+        winText.style.display = 'none'
+    }
+}
+
+/**
+ * Hides the "later" text overlay.
+ */
+function hideLaterText() {
+    const laterText = document.getElementById('laterText')
+    if (laterText) {
+        laterText.style.display = 'none'
+    }
+}
+
+
+/**
+ * Stops and hides the victory video.
+ */
+function resetVictoryVideo() {
+    const video = document.getElementById('victoryVideo')
+    if (!video) return
+    video.pause()
+    video.currentTime = 0
+    video.style.display = 'none'
+}
+
+/**
+ * Resets the cutscene container overlay.
+ */
+function resetCutsceneContainer() {
+    const cutsceneContainer = document.getElementById('cutscene-container')
+    if (!cutsceneContainer) return
+    cutsceneContainer.style.opacity = '0'
+    cutsceneContainer.style.pointerEvents = 'none'
+}
+
+/**
+ * Shows the start screen and restores default UI state.
+ */
 function showStartScreen() {
-    const startScreen = document.getElementById("start-screen");
-    startScreen.style.display = "flex";
-    startScreen.classList.remove("d-none");
-    document.querySelector('.impressum-none').classList.remove('hidden');
-    document.querySelector('.hud-top-right').classList.remove('butten-for');
-    document.body.classList.remove('game-started');
+    const startScreen = document.getElementById('start-screen')
+    startScreen.style.display = 'flex'
+    startScreen.classList.remove('d-none')
+    document.querySelector('.impressum-none').classList.remove('hidden')
+    document.querySelector('.hud-top-right').classList.remove('butten-for')
+    document.body.classList.remove('game-started')
 }
 
 // Autostart / Start screen decision after loading game.js
-(function () {
-    const startScreen = document.getElementById("start-screen");
-    const savedMuteState = localStorage.getItem('soundMuted');
-    const icon = document.getElementById('sound-icon');
+; (function () {
+    const startScreen = document.getElementById('start-screen')
+    const savedMuteState = localStorage.getItem('soundMuted')
+    const icon = document.getElementById('sound-icon')
     if (icon && savedMuteState === 'true') {
-        icon.src = 'img/volume_off.png';
+        icon.src = 'img/volume_off.png'
     }
-    startScreen.classList.remove("d-none");
-})();
+    startScreen.classList.remove('d-none')
+})()
