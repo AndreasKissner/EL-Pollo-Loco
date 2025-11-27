@@ -112,14 +112,14 @@ class SoundManager {
      * Toggles mute state without pausing audio.
      */
     static toggleMute() {
-        SoundManager.isMuted = !SoundManager.isMuted
-        SoundManager.masterVolume = SoundManager.isMuted ? 0 : 1
-        if (window.victoryVideoElement) {
-            window.victoryVideoElement.muted = SoundManager.isMuted;
+        SoundManager.isMuted = !SoundManager.isMuted;
+        SoundManager.masterVolume = SoundManager.isMuted ? 0 : 1;
+        if (window.victoryVideo && window.victoryVideo.videoElement) {
+            window.victoryVideo.videoElement.muted = SoundManager.isMuted;
         }
         if (SoundManager.backgroundMusic) {
-            SoundManager.updateMusicVolume()
-            SoundManager.resumeMusicIfNeeded()
+            SoundManager.updateMusicVolume();
+            SoundManager.resumeMusicIfNeeded();
         }
     }
 

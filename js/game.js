@@ -143,7 +143,9 @@ function areTouchButtonsAvailable(...buttons) {
     return allPresent;
 }
 
-
+/**
+ * Connects a touch button to press and release actions.
+ */
 /**
  * Attaches all touch-based controls to a button element.
  * Handles press and release actions for mobile devices.
