@@ -1,9 +1,5 @@
-
 /**
- * Toggles the game sound on or off and persists the state.
- * - Calls SoundManager.toggleMute() to switch the mute state.
- * - Updates the sound icon depending on whether the sound is muted.
- * - Saves the mute state to localStorage.
+ * Toggles game sound and saves the mute state.
  */
 function toggleSound() {
     SoundManager.toggleMute();
@@ -12,6 +8,9 @@ function toggleSound() {
     localStorage.setItem('soundMuted', SoundManager.isMuted);
 }
 
+/**
+ * Shows or hides the keyboard help overlay.
+ */
 function toggleKeyboardInfo() {
     const box = document.getElementById('keyboardInstructions')
     const overlay = document.getElementById('keyboardOverlay')

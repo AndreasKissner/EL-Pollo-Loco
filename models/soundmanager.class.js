@@ -24,24 +24,28 @@ class SoundManager {
         }
     }
 
-    /**
-     * Safely plays a sound effect with volume control.
-     * @param {string} name - Sound key.
-     * @param {number} volume - Additional volume multiplier.
-     */
-    static play(name, volume = 1) {
-        if (SoundManager.masterVolume === 0) return;
+   /**
+ * Safely plays a sound effect with volume control.
+ * @param {string} name - Sound key.
+ * @param {number} volume - Additional volume multiplier.
+ */
+static play(name, volume = 1) {
+    if (SoundManager.masterVolume === 0) return;
 
-        const audio = SoundManager.audioCache[name];
-        if (!audio) return;
+    const audio = SoundManager.audioCache[name];
+    if (!audio) return;
 
-        SoundManager.resetSound(audio);
-        SoundManager.applyVolume(audio, volume);
+    SoundManager.resetSound(audio);
+    SoundManager.applyVolume(audio, volume);
 
-        audio.play().catch(err => {
-            console.warn(`Play-Fehler bei ${name}:`, err);
-        });
-    }
+    audio.play().catch(err => {
+        // Diesen Fehler ignorieren: play() wurde nur durch pause() unterbrochen
+        if (err.name === 'AbortError') {
+            return;
+        }
+    });
+}
+
 
     /**
      * Stops & resets a sound before playing.
@@ -66,18 +70,14 @@ class SoundManager {
 static startBackgroundMusic(name, volume = 0.3) {
     SoundManager.currentMusicVolume = volume;
     SoundManager.currentMusicName = name;
-    
     const audio = SoundManager.audioCache[name];
     if (!audio) return;
-    
     if (SoundManager.backgroundMusic && SoundManager.backgroundMusic !== audio) {
         SoundManager.stopBackgroundMusic();
     }
     if (SoundManager.backgroundMusic === audio && !audio.paused) return;
-    
     SoundManager.configureMusic(audio, volume);
     SoundManager.backgroundMusic = audio;
-    
     if (!SoundManager.isMuted) {
         SoundManager.playMusic(audio);
     }
