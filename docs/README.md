@@ -1,7 +1,7 @@
 ﻿# EL-Pollo-Loco
 El Pollo Loco – JavaScript Jump & Run Game
 
-[➡ Live ansehen]([https://andreaskissner.github.io/Gib-Nicht-auf/](https://andreaskissner.github.io/EL-Pollo-Loco/))
+[➡ Live ansehen]([https://andreaskissner.github.io/Gib-Nicht-auf/](https://andreaskissner.github.io/EL-Pollo-Loco/)
 
 
 El Pollo Loco ist ein selbst entwickeltes 2D Jump-and-Run Browsergame, programmiert in HTML, CSS und reinem JavaScript – ohne Frameworks.
@@ -82,3 +82,4 @@ Für Mobile gibt es eine eigene Touch-Steuerung.
 
 
 Das Projekt wurde komplett ohne externe Libraries erstellt.
+
