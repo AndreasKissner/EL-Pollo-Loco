@@ -15,16 +15,6 @@
         border: none;
     }
 }
-@media (max-width: 1000px) {
-  body.game-started .hud-bottom-left,
-  body.game-started .hud-bottom-right {
-    display: flex;
-    flex-direction: column;
-  }
-}
-
-
-
 
 
 @media (max-width: 760px) {
