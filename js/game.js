@@ -354,7 +354,6 @@ function hideLaterText() {
     }
 }
 
-
 /**
  * Stops and hides the victory video.
  */
