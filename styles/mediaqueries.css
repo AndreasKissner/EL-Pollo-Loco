@@ -27,12 +27,12 @@
 
     .hud-bottom-left {
         left: 20px;
-        bottom: 20px;
+        bottom: 60px;
     }
 
     .hud-bottom-right {
         right: 20px;
-        bottom: 20px;
+        bottom: 60px;
     }
 }
 
@@ -58,7 +58,7 @@
     }
 }
 
-@media (min-width: 480px) and (max-width: 1400px) and (hover: none) and (pointer: coarse) {
+@media (min-width: 480px) and (max-width: 1400px)  {
 
     html,
     body {
