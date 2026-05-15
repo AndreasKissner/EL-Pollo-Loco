@@ -2,7 +2,7 @@
 
 **Ein 2D Jump & Run Browsergame — entwickelt mit HTML, CSS und Vanilla JavaScript.**
 
-[➡ Live ansehen](https://andreaskissner.github.io/Gib-Nicht-auf/)
+[➡ Live ansehen](https://elpolloloco.andreas-kissner.cloud/)
 
 ---
 
