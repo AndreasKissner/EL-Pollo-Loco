@@ -1,85 +1,101 @@
-﻿# EL-Pollo-Loco
-El Pollo Loco – JavaScript Jump & Run Game
+# El Pollo Loco
 
-[➡ Live ansehen]([https://andreaskissner.github.io/Gib-Nicht-auf/](https://andreaskissner.github.io/EL-Pollo-Loco/)
+**Ein 2D Jump & Run Browsergame — entwickelt mit HTML, CSS und Vanilla JavaScript.**
 
+[➡ Live ansehen](https://andreaskissner.github.io/Gib-Nicht-auf/)
 
-El Pollo Loco ist ein selbst entwickeltes 2D Jump-and-Run Browsergame, programmiert in HTML, CSS und reinem JavaScript – ohne Frameworks.
-Der Spieler steuert Pepe, sammelt Items, weicht Gegnern aus und besiegt den Endboss, um das Spiel zu gewinnen.
+---
 
-Features
+## Über das Spiel
 
-Komplettes 2D-Canvas-Spiel
+El Pollo Loco ist ein selbst entwickeltes Browsergame ohne externe Frameworks oder Libraries. Der Spieler steuert Pepe durch ein scrollendes Level, sammelt Items, weicht Gegnern aus und besiegt am Ende den Endboss.
 
-Spielercharakter mit Lauf-, Sprung-, Hurt- und Idle-Animation
+---
 
-Gegner: Chickens, Mini-Chickens und ein Endboss
+## Features
 
-Flaschenwurf mit Flug-, Rotations- und Zersplitterungsanimation
+**Gameplay**
+- Vollständiges 2D-Canvas-Spiel mit eigener Game-Loop-Struktur
+- Spielercharakter mit Lauf-, Sprung-, Hurt- und Idle-Animationen
+- Gegner: Chickens, Mini-Chickens und ein Endboss
+- Flaschenwurf mit Flug-, Rotations- und Zersplitterungsanimation
+- Coin- und Bottle-Sammelsystem
+- Plattformen für vertikalen Levelaufbau
 
-Coins- und Bottle-Sammelsystem
+**UI & Sound**
+- Statusbars für Gesundheit, Coins, Bottles und Endboss-Leben
+- Schnittszenen (Cutscenes) mit Videounterstützung
+- Soundmanager für Musik und Soundeffekte
+- Vollbildmodus
 
-Statusbars für Gesundheit, Coins, Bottles und Endboss
+**Steuerung**
+- Touch-Steuerung für mobile Geräte (On-Screen Buttons)
+- Keyboard-Steuerung für Desktop
 
-Plattformen für vertikalen Levelaufbau
+---
 
-Schnittszenen (Cutscenes) mit Videounterstützung
+## Steuerung
 
-Touch-Steuerung für Mobilegeräte
+### Desktop
 
-Soundmanager für Musik und Effekte
+| Taste | Aktion |
+|---|---|
+| `←` / `→` | Bewegen |
+| `↑` oder `Space` | Springen |
+| `D` | Flasche werfen |
 
-Vollbildmodus-Unterstützung
+### Mobile
 
-Optimierte Performance durch eigene Game-Loop-Struktur
+On-Screen Buttons für Laufen, Springen und Werfen.
 
-Steuerung
+---
 
-Desktop:
+## Ziel des Spiels
 
-Pfeiltasten links/rechts: Bewegung
+Sammle Flaschen und Coins, weiche Gegnern aus oder besiege sie. Sobald Pepe den hinteren Bereich des Levels erreicht, wird der Endboss aktiviert. Nach dem Bosskampf endet das Spiel mit einer Cutscene.
 
-Pfeiltaste hoch oder Space: Springen
+---
 
-Taste D: Flasche werfen
-
-Mobile:
-
-On-Screen Buttons für Laufen, Springen, Werfen
-
-Projektstruktur
-
-/img – Grafiken, Spritesheets und Animationen
-
-/audio – Sounds und Hintergrundmusik
-
-/js/models – Klassen für Charaktere, Gegner, Objekte
-
-/js/world – World- und Game-Logik
-
-/js/ui – Statusbars, Touch-Buttons, Video-System
-
-index.html – Hauptseite
-
-style.css – Layout, Touch-Buttons, UI
-
-Installation und Start
+## Installation & Start
 
 Keine Installation nötig.
-Einfach das Projekt herunterladen oder clonen und anschließend die index.html im Browser öffnen.
 
-Ziel des Spiels
+1. Repository herunterladen oder clonen:
+   ```bash
+   git clone https://github.com/AndreasKissner/Gib-Nicht-auf.git
+   ```
+2. `index.html` im Browser öffnen — fertig.
 
-Sammle Flaschen, Coins und besiege alle Gegner.
-Der Endboss wird aktiv, sobald der Spieler den hinteren Teil des Levels erreicht.
-Nach dem Bosskampf endet das Spiel mit einer Cutscene.
+---
 
-Hinweise
+## Projektstruktur
 
-Das Game läuft in allen modernen Browsern.
+```
+El-Pollo-Loco/
+├── index.html              # Einstiegspunkt
+├── style.css               # Layout, Touch-Buttons, UI
+├── img/                    # Grafiken, Spritesheets, Animationen
+├── audio/                  # Sounds und Hintergrundmusik
+└── js/
+    ├── models/             # Klassen für Charaktere, Gegner, Objekte
+    ├── world/              # World- und Game-Logik
+    └── ui/                 # Statusbars, Touch-Buttons, Video-System
+```
 
-Für Mobile gibt es eine eigene Touch-Steuerung.
+---
 
+## Technologien
 
-Das Projekt wurde komplett ohne externe Libraries erstellt.
+| Technologie | Verwendung |
+|---|---|
+| HTML5 Canvas | Spielrendering |
+| CSS3 | Layout & UI |
+| Vanilla JavaScript | Spiellogik, OOP |
 
+---
+
+## Hinweise
+
+- Läuft in allen modernen Browsern
+- Keine externen Libraries oder Frameworks verwendet
+- Mobile-optimiert mit eigener Touch-Steuerung
