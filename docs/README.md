@@ -41,7 +41,7 @@ El Pollo Loco ist ein selbst entwickeltes Browsergame ohne externe Frameworks od
 | Taste | Aktion |
 |---|---|
 | `←` / `→` | Bewegen |
-| `↑` oder `Space` | Springen |
+| `Space` | Springen |
 | `D` | Flasche werfen |
 
 ### Mobile
@@ -62,7 +62,7 @@ Keine Installation nötig.
 
 1. Repository herunterladen oder clonen:
    ```bash
-   git clone https://github.com/AndreasKissner/Gib-Nicht-auf.git
+   git clone https://github.com/AndreasKissner/EL-Pollo-Loco.git
    ```
 2. `index.html` im Browser öffnen — fertig.
 
@@ -73,13 +73,18 @@ Keine Installation nötig.
 ```
 El-Pollo-Loco/
 ├── index.html              # Einstiegspunkt
-├── style.css               # Layout, Touch-Buttons, UI
+├── style.css               # Basis-Layout, Touch-Buttons, UI
+├── script.js               # Vollbild-Funktionen
+├── js/                     # Spielsteuerung (game.js), HUD-Buttons (button.js)
+├── models/                 # Klassen: Character, Gegner, World, SoundManager, Statusbars, ...
+├── levels/                 # Level-Definition (level1.js)
+├── styles/                 # Startmenü, Cutscene, Media Queries, Impressum
+├── html/                   # Unterseiten (Impressum)
 ├── img/                    # Grafiken, Spritesheets, Animationen
 ├── audio/                  # Sounds und Hintergrundmusik
-└── js/
-    ├── models/             # Klassen für Charaktere, Gegner, Objekte
-    ├── world/              # World- und Game-Logik
-    └── ui/                 # Statusbars, Touch-Buttons, Video-System
+├── video/                  # Cutscene-Video
+├── fonts/                  # Lokale Schrift
+└── docs/                   # Dokumentation
 ```
 
 ---
