@@ -73,11 +73,11 @@ class World {
      * Main loop interval (30 FPS), triggers game logic.
      */
     run() {
-    setInterval(() => {
-        if (this.myGameId !== gameId) return;
-        this.gameLoop();
-    }, 1000 / 30);
-}
+        setInterval(() => {
+            if (this.myGameId !== gameId) return;
+            this.gameLoop();
+        }, 1000 / 30);
+    }
 
     /**
      * Executes collision checks, events & victory/game state.
@@ -286,12 +286,12 @@ class World {
     /**
      * Continues rendering next draw frame (60FPS typical).
      */
-   scheduleNextFrame() {
-    requestAnimationFrame(() => {
-        if (this.myGameId !== gameId) return;
-        this.draw();
-    });
-}
+    scheduleNextFrame() {
+        requestAnimationFrame(() => {
+            if (this.myGameId !== gameId) return;
+            this.draw();
+        });
+    }
 
     /**
      * Adds multiple objects to canvas sequentially.
