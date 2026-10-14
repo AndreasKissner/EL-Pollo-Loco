@@ -1,3 +1,8 @@
+/**
+ * Base class for all moving game objects. Provides gravity, movement,
+ * collision detection, energy and hit handling.
+ */
+
 class MovableObject extends DrawableObject {
 
     img;

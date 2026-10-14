@@ -1,3 +1,8 @@
+/**
+ * Creates and returns a new Level with all enemies, clouds, platforms,
+ * background objects, coins and bottles.
+ * @returns {Level} The fully built first level.
+ */
 function createLevel1() {
     return new Level(
         [

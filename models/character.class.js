@@ -1,3 +1,7 @@
+/**
+ * Playable character Pepe. Handles movement, jumping, animations,
+ * item collection and collisions with enemies and platforms.
+ */
 class Character extends MovableObject {
     height = 270;
     width = 120;
@@ -83,6 +87,9 @@ class Character extends MovableObject {
         'img/2_character_pepe/4_hurt/H-43.png'
     ];
 
+    /**
+ * Creates Pepe, preloads all animation images and starts gravity and animation.
+ */
     constructor() {
         super().loadImage('img/2_character_pepe/2_walk/W-21.png')
         this.loadImages(this.IMAGES_WALKING);
@@ -268,19 +275,19 @@ class Character extends MovableObject {
     }
 
     /** Updates idle timing and plays idle or long-idle animations. */
-  handleIdleAnimation() {
-    if (this.world.keyboard.D) {
-        this.idleTimer = 0;
+    handleIdleAnimation() {
+        if (this.world.keyboard.D) {
+            this.idleTimer = 0;
+            this.playAnimation(this.IMAGES_IDLE);
+            return;
+        }
+        this.idleTimer++;
+        if (this.idleTimer > 50) {
+            this.playAnimation(this.IMAGES_LONG_IDLE); // Schlaf
+            return;
+        }
         this.playAnimation(this.IMAGES_IDLE);
-        return;
     }
-    this.idleTimer++;
-    if (this.idleTimer > 50) {
-        this.playAnimation(this.IMAGES_LONG_IDLE); // Schlaf
-        return;
-    }
-    this.playAnimation(this.IMAGES_IDLE);
-}
 
 
     /** Checks if the character is above the ground or a platform. */

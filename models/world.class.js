@@ -1,3 +1,7 @@
+/**
+ * Central game controller. Runs the game loop, handles collisions,
+ * throwing, respawns, drawing and the victory and loss sequences.
+ */
 class World {
     character = new Character();
     level = level1;

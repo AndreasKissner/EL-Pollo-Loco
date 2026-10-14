@@ -271,6 +271,10 @@ function resetGame() {
     startGame()
 }
 
+
+/**
+ * Stops the running game and resets world, keyboard and level.
+ */
 function stopCurrentGame() {
     gameId++
     SoundManager.stopBackgroundMusic()
