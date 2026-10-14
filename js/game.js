@@ -33,15 +33,41 @@ const ALL_GAME_SOUNDS = {
 }
 
 /**
+ * Reads the saved mute state from localStorage.
+ * @returns {boolean} True if sound was saved as muted, false otherwise or if storage is unavailable.
+ */
+function getSavedMuteState() {
+    try {
+        return localStorage.getItem('soundMuted') === 'true'
+    } catch (error) {
+        console.warn('localStorage not available:', error)
+        return false
+    }
+}
+
+/**
+ * Saves the mute state to localStorage.
+ * @param {boolean} isMuted - Current mute state.
+ */
+function saveMuteState(isMuted) {
+    try {
+        localStorage.setItem('soundMuted', isMuted)
+    } catch (error) {
+        console.warn('Could not save mute state:', error)
+    }
+}
+
+
+/**
  * Restores the saved mute state from localStorage.
  */
 function restoreMuteState() {
-    const savedMuteState = localStorage.getItem('soundMuted')
-    if (savedMuteState === 'true') {
+    if (getSavedMuteState()) {
         SoundManager.isMuted = true
         SoundManager.masterVolume = 0
     }
 }
+
 
 /**
  * Initializes the game by loading sounds, creating the world,
@@ -394,10 +420,10 @@ function showStartScreen() {
 // Autostart / Start screen decision after loading game.js
 ; (function () {
     const startScreen = document.getElementById('start-screen')
-    const savedMuteState = localStorage.getItem('soundMuted')
     const icon = document.getElementById('sound-icon')
-    if (icon && savedMuteState === 'true') {
+    if (icon && getSavedMuteState()) {
         icon.src = 'img/volume_off.png'
     }
     startScreen.classList.remove('d-none')
 })()
+

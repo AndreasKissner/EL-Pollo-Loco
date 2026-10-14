@@ -5,7 +5,8 @@ function toggleSound() {
     SoundManager.toggleMute();
     const icon = document.getElementById('sound-icon');
     icon.src = SoundManager.isMuted ? 'img/volume_off.png' : 'img/volume_on.png';
-    localStorage.setItem('soundMuted', SoundManager.isMuted);
+    saveMuteState(SoundManager.isMuted);
+
 }
 
 /**
