@@ -41,11 +41,12 @@ class GameVideo {
 
     /**
      * Starts the video from the beginning.
+     * Shows the end menu if the video cannot be played.
      * @param {number} volume - Video volume.
      */
 play(volume = 1) {
     this.show();
-    
+
     // Video sichtbar machen
     this.videoElement.style.display = "block";
 
@@ -54,7 +55,11 @@ play(volume = 1) {
     this.videoElement.volume = SoundManager.isMuted ? 0 : volume;
 
     this.videoElement.currentTime = 0;
-    this.videoElement.play();
+    this.videoElement.play().catch(error => {
+        if (error.name === 'AbortError') return;
+        console.warn('Video could not be played:', error);
+        this.videoElement.onended();
+    });
 }
 
     /**

@@ -20,11 +20,17 @@ class DrawableObject {
    }
 
    /**
-    * Draws the object.
+    * Draws the object. Skips drawing if the image is missing or broken,
+    * so a single bad image cannot stop the render loop.
     * @param {CanvasRenderingContext2D} ctx
     */
    draw(ctx) {
-      ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+      if (!this.img || !this.img.complete || this.img.naturalWidth === 0) return;
+      try {
+         ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+      } catch (error) {
+         console.warn('Could not draw image:', this.img.src, error);
+      }
    }
 
    /**
